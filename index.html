@@ -197,7 +197,7 @@
         .btn-review-exam:hover { background: #f0f7ff; border-color: var(--tsa-blue); }
 
         /* QUIZ VIEW */
-        #quiz-view { display: none; flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+        #quiz-view { display: none; flex: 1; overflow: hidden; flex-direction: column; }
         .main-workspace { display: flex; flex: 1; overflow: hidden; }
         
         .question-panel { flex: 1; display: flex; overflow: hidden; background: var(--panel-bg); }
@@ -330,7 +330,7 @@
             </div>
 
             <div class="home-actions">
-                <button class="home-act-btn neon-blue" onclick="navToDashboard('all')">
+                <button class="home-act-btn neon-blue" onclick="navToSubjectPortal()">
                     📚 Vào Tủ Sách Đề Thi
                 </button>
                 <button class="home-act-btn neon-green" onclick="openImportOptionsModal()">
@@ -341,10 +341,49 @@
                 </button>
             </div>
 
-            <h3 style="font-size: 17px; color: #0f172a; margin-bottom: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; font-weight: 800; display:flex; justify-content:space-between; align-items:center;">
-                <span>📚 TỦ SÁCH CÁC MÔN HỌC (CHUẨN GDPT 2018 & TSA)</span>
-                <span style="font-size: 12px; color: #64748b; font-weight: 600;">Chọn môn để vào luyện đề & xem Cố vấn AI</span>
-            </h3>
+            <div style="background: white; border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 14px; font-weight: 700; display:flex; align-items:center; gap:8px;">
+                    <span>✨</span> Hướng Dẫn & Tính Năng Nổi Bật
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px;">
+                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
+                        <strong style="color: #2563eb; display:block; margin-bottom: 5px; font-size: 14px;">📚 1. Tủ Sách Flashcard 10 Môn</strong>
+                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Phân loại đề thi trực quan theo 9 môn thi THPT Quốc Gia (Toán, Lý, Hóa, Sinh, Anh, Văn, Sử, Địa) + TSA Bách Khoa.</span>
+                    </div>
+                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
+                        <strong style="color: #7c3aed; display:block; margin-bottom: 5px; font-size: 14px;">🤖 2. Cố Vấn Học Tập AI GDPT 2018</strong>
+                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Tự động nhận diện câu sai, đánh giá sự tiến bộ theo chuyên đề chuẩn SGK mới và định hướng lộ trình cải thiện điểm.</span>
+                    </div>
+                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
+                        <strong style="color: #059669; display:block; margin-bottom: 5px; font-size: 14px;">🔥 3. Tạo Đề Gộp Câu Sai & Luyện Thi</strong>
+                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Gộp các câu từng làm sai hoặc bookmark từ nhiều đề thành bộ đề luyện tập chuyên sâu không sợ lặp lại lỗi cũ.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TỦ SÁCH CÁC MÔN HỌC (FLASHCARD VIEW) -->
+    <div id="portal-view" style="display: none; padding: 30px; overflow-y: auto; flex: 1;">
+        <div class="home-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <button class="btn-back" onclick="navToHome()" style="margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span>←</span> <span>Quay về Trang chủ</span>
+                    </button>
+                    <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
+                        📚 Tủ Sách Đề Thi Theo Môn
+                    </h2>
+                    <p style="font-size: 13.5px; color: #64748b; margin: 0;">
+                        Chọn môn học để xem bộ đề, luyện thi và nhận đánh giá từ Cố vấn AI
+                    </p>
+                </div>
+                <div>
+                    <button onclick="navToDashboard('all')" style="background: #334155; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 13.5px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); transition: 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#334155'">
+                        <span>📚</span> Xem tất cả đề thi
+                    </button>
+                </div>
+            </div>
 
             <div class="subject-portal-grid">
                 <!-- 1. TOÁN -->
@@ -500,7 +539,7 @@
         </div>
     </div>
 
-    <!-- 2. TỦ ĐỀ THI (DASHBOARD VIEW) -->
+    <!-- 3. DANH SÁCH ĐỀ THI THEO MÔN (DASHBOARD VIEW) -->
     <div id="dashboard-view">
         <div class="sidebar" id="main-sidebar">
             <div class="sidebar-title">Danh Mục Phân Môn</div>
@@ -520,8 +559,11 @@
         <div class="dashboard-content">
             <div class="dashboard-container" id="grid-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-                        <span>←</span> <span>Quay lại Tủ Sách</span>
+                    <button class="btn-back" onclick="navToSubjectPortal()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span>←</span> <span>Quay lại Tủ sách môn</span>
+                    </button>
+                    <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; background: #f8fafc; border: 1px solid var(--border-color);">
+                        <span>🏠</span> <span>Trang chủ</span>
                     </button>
                 </div>
                 <!-- WIDGET CỐ VẤN AI THEO MÔN -->
@@ -824,7 +866,7 @@
     </div>
 
     <!-- 3. PHÒNG BÀI LÀM (QUIZ VIEW) -->
-    <div id="quiz-view">
+    <div id="quiz-view" style="display: none;">
         <div class="main-workspace">
             <div class="question-panel">
                 <div class="reading-context" id="reading-context-area">
@@ -1113,24 +1155,64 @@
             const homeView = document.getElementById('home-view');
             homeView.style.display = 'block';
             applyViewTransition(homeView);
+            const portalView = document.getElementById('portal-view');
+            if (portalView) portalView.style.display = 'none';
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
             document.getElementById('header-logo-brand').innerText = "bntz";
             document.getElementById('main-title').innerText = "Trang chủ";
+            const hdrBtn = document.getElementById('header-btn-area');
+            if (hdrBtn) hdrBtn.innerHTML = '';
+            isCombineMode = false;
+            renderHomeStats();
+        }
+
+        function navToSubjectPortal() {
+            document.getElementById('home-view').style.display = 'none';
+            const portalView = document.getElementById('portal-view');
+            if (portalView) {
+                portalView.style.display = 'block';
+                applyViewTransition(portalView);
+            }
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'none';
+            document.getElementById('btn-sidebar-toggle').style.display = 'none';
+            document.getElementById('header-logo-brand').innerText = "bntz";
+            document.getElementById('main-title').innerText = "Tủ sách đề thi";
+            const hdrBtn = document.getElementById('header-btn-area');
+            if (hdrBtn) hdrBtn.innerHTML = '';
             isCombineMode = false;
             renderHomeStats();
         }
 
         function navToDashboard(sub = 'all') {
             document.getElementById('home-view').style.display = 'none';
+            const portalView = document.getElementById('portal-view');
+            if (portalView) portalView.style.display = 'none';
             const dashView = document.getElementById('dashboard-view');
             dashView.style.display = 'flex';
             applyViewTransition(dashView);
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'block';
             document.getElementById('header-logo-brand').innerText = "bntz";
-            document.getElementById('main-title').innerText = "Phòng luyện đề";
+            const hdrBtn = document.getElementById('header-btn-area');
+            if (hdrBtn) hdrBtn.innerHTML = '';
+            
+            const titleMap = { 
+                'all': 'Tất cả đề thi', 
+                'toan': 'Môn Toán', 
+                'ly': 'Môn Vật Lý', 
+                'hoa': 'Môn Hóa Học',
+                'sinh': 'Môn Sinh Học',
+                'anh': 'Môn Tiếng Anh',
+                'van': 'Môn Ngữ Văn',
+                'su': 'Môn Lịch Sử',
+                'dia': 'Môn Địa Lý',
+                'tsa': 'Môn TSA Bách Khoa', 
+                'other': 'Các Môn Khác' 
+            };
+            document.getElementById('main-title').innerText = "Phòng luyện đề - " + (titleMap[sub] || 'Tất cả');
             
             document.getElementById('grid-container').style.display = 'block';
             document.getElementById('detail-view-panel').style.display = 'none';
@@ -2364,6 +2446,8 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
 
         function launchQuizView(subCode) {
             document.getElementById('home-view').style.display = 'none';
+            const portalView = document.getElementById('portal-view');
+            if (portalView) portalView.style.display = 'none';
             document.getElementById('dashboard-view').style.display = 'none'; 
             const quizView = document.getElementById('quiz-view');
             quizView.style.display = 'flex';
@@ -2835,7 +2919,7 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
                         store.clear();
                         for (const [k, v] of Object.entries(library)) { store.put({ id: k, data: v }); }
                     }
-                    if (document.getElementById('home-view').style.display !== 'none') renderHomeStats();
+                    if ((document.getElementById('home-view') && document.getElementById('home-view').style.display !== 'none') || (document.getElementById('portal-view') && document.getElementById('portal-view').style.display !== 'none')) renderHomeStats();
                     if (document.getElementById('dashboard-view').style.display !== 'none') renderDashboardGrid();
                     if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel').style.display !== 'none') openDetailView(activeDetailKey);
                 });
