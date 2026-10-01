@@ -52,6 +52,9 @@
         .neon-green { background: linear-gradient(145deg, #059669, #10b981); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(16,185,129,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #34d399; }
         .neon-green:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(16,185,129,0.9), 0 0 40px rgba(16,185,129,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
 
+        .neon-purple { background: linear-gradient(145deg, #6d28d9, #8b5cf6); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(139,92,246,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #a78bfa; }
+        .neon-purple:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(139,92,246,0.9), 0 0 40px rgba(139,92,246,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
+
         .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
         .folder-card { padding: 20px; border-radius: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; border: 1px solid; }
         .folder-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); }
@@ -92,7 +95,13 @@
         .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
         .dashboard-container { max-width: 1000px; margin: 0 auto; width: 100%; }
         
-        .top-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #fff; padding: 16px 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .top-action-bar { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; background: #fff; padding: 14px 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .search-box-wrapper { position: relative; flex: 1; max-width: 420px; min-width: 240px; }
+        .search-input-field { width: 100%; padding: 9px 34px 9px 38px; border: 1.5px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; transition: all 0.2s ease; background: #f8fafc; color: #1e293b; }
+        .search-input-field:focus { border-color: var(--tsa-blue); background: #ffffff; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .search-input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 15px; pointer-events: none; }
+        .search-clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 13px; line-height: 1; padding: 4px; border-radius: 50%; }
+        .search-clear-btn:hover { color: #475569; background: #e2e8f0; }
         .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         
         .subject-card { display: flex; flex-direction: column; padding: 20px; border-radius: 10px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 5px rgba(0,0,0,0.04); position: relative; border: 1px solid; }
@@ -203,6 +212,16 @@
         .cfg-row { margin-bottom: 15px; }
         .cfg-row label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #0f172a; }
         .cfg-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; outline: none; }
+
+        /* AI IMPORT & PREVIEW STYLES */
+        .ai-dropzone { border: 2px dashed #a78bfa; border-radius: 10px; padding: 24px; text-align: center; background: #fbfbfe; cursor: pointer; transition: all 0.2s ease; margin: 15px 0; }
+        .ai-dropzone:hover, .ai-dropzone.dragover { border-color: #7c3aed; background: #f5f3ff; }
+        .ai-file-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f1f5f9; border-radius: 6px; margin-bottom: 6px; font-size: 13px; }
+        .ai-spinner { width: 36px; height: 36px; border: 4px solid #e2e8f0; border-top: 4px solid #7c3aed; border-radius: 50%; animation: ai-spin 1s linear infinite; margin: 0 auto 12px; }
+        @keyframes ai-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .ai-preview-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .ai-preview-badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: #ede9fe; color: #6d28d9; }
+        .ai-preview-explanation { margin-top: 10px; padding: 10px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; color: #1e3a8a; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -214,6 +233,9 @@
             <span class="exam-title" id="main-title">Trang chủ</span>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="openApiKeyModal()" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px 11px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; color: #475569; display: flex; align-items: center; gap: 5px; transition: 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" title="Cài đặt Gemini API Key">
+                <span>🔑</span> <span id="header-key-label">Gemini Key</span>
+            </button>
             <span id="cloud-sync-badge" class="cloud-status">☁️ Đang kết nối Cloud...</span>
             <div id="header-btn-area"></div>
         </div>
@@ -248,6 +270,9 @@
                 </button>
                 <button class="home-act-btn neon-green" onclick="openImportOptionsModal()">
                     📥 Nạp Đề Thi Mới
+                </button>
+                <button class="home-act-btn neon-purple" onclick="openAiImportModal()">
+                    🤖 Nhập đề bằng AI (PDF / Ảnh)
                 </button>
             </div>
 
@@ -300,8 +325,13 @@
         <div class="dashboard-content">
             <div class="dashboard-container" id="grid-container">
                 <div class="top-action-bar">
-                    <div>
-                        <strong id="current-filter-title" style="color: #0f172a; font-size: 15px;">Đang xem: Tất cả đề thi</strong>
+                    <div style="display: flex; align-items: center; gap: 15px; flex: 1; min-width: 280px; flex-wrap: wrap;">
+                        <strong id="current-filter-title" style="color: #0f172a; font-size: 15px; white-space: nowrap;">Đang xem: Tất cả đề thi</strong>
+                        <div class="search-box-wrapper">
+                            <span class="search-input-icon">🔍</span>
+                            <input type="text" id="exam-search-input" class="search-input-field" placeholder="Tìm kiếm tên đề, chuyên đề, năm thi..." oninput="handleSearchExam(this.value)" onkeydown="if(event.key === 'Escape') clearExamSearch()">
+                            <button id="btn-clear-search" class="search-clear-btn" onclick="clearExamSearch()" style="display: none;" title="Xóa tìm kiếm">✕</button>
+                        </div>
                     </div>
                     <div id="combine-action-area">
                         <button onclick="toggleCombineMode()" style="background: #e11d48; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(225,29,72,0.2); font-size: 13px;">
@@ -339,8 +369,12 @@
 
     <!-- MODAL NẠP ĐỀ THI -->
     <div id="import-options-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 420px;">
+        <div class="modal-content" style="width: 440px;">
             <h3 style="color: var(--tsa-blue); margin-bottom: 15px;">Nạp Đề Thi Mới</h3>
+            <button class="import-opt-btn" onclick="openAiImportModalFromOptions()" style="border-color: #c4b5fd; background: #faf5ff;">
+                <strong style="color: #7c3aed; display: block; margin-bottom: 4px;">🤖 0. Nhập Đề Bằng AI (PDF / Ảnh)</strong>
+                <span style="font-size: 12px; color: #64748b;">Tự động nhận diện câu hỏi, giải đáp án & trích xuất cấu trúc đề thi</span>
+            </button>
             <button class="import-opt-btn" onclick="triggerFileInput()">
                 <strong style="color: var(--tsa-blue); display: block; margin-bottom: 4px;">📥 1. Tải Lên File JSON Từ Máy</strong>
                 <span style="font-size: 12px; color: #64748b;">Chọn file `.json` đã lưu trên máy tính của bạn</span>
@@ -352,6 +386,164 @@
             </button>
             <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
                 <button onclick="closeImportOptionsModal()" style="padding: 6px 14px; cursor: pointer;">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CÀI ĐẶT GEMINI API KEY -->
+    <div id="api-key-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 480px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="color: #7c3aed; margin: 0; font-size: 18px; display:flex; align-items:center; gap:8px;">
+                    🔑 Cài Đặt Gemini API Key
+                </h3>
+                <button onclick="closeApiKeyModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8;">✕</button>
+            </div>
+            
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.5;">
+                API Key được lưu an toàn trong <strong>localStorage</strong> của trình duyệt, không lưu lên server và không bị lộ ra mã nguồn công khai.
+            </p>
+
+            <div class="cfg-row">
+                <label>Gemini API Key:</label>
+                <div style="position: relative;">
+                    <input type="password" id="gemini-key-input" class="cfg-input" placeholder="Dán khóa AIzaSy... vào đây" style="padding-right: 40px;">
+                    <button type="button" onclick="toggleKeyVisibility()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #64748b;" title="Hiện / Ẩn Key">👁️</button>
+                </div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 5px;">
+                    Chưa có API key? Lấy miễn phí tại: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #7c3aed; text-decoration: underline; font-weight: bold;">Google AI Studio</a>
+                </div>
+            </div>
+
+            <div class="cfg-row">
+                <label>Mô hình Gemini (Model):</label>
+                <select id="gemini-model-select" class="cfg-input">
+                    <option value="gemini-2.5-flash">gemini-2.5-flash (Khuyên dùng - Nhanh & chính xác nhất)</option>
+                    <option value="gemini-1.5-flash">gemini-1.5-flash (Bản tiêu chuẩn)</option>
+                    <option value="gemini-2.0-flash">gemini-2.0-flash (Tốc độ cao)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button onclick="closeApiKeyModal()" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
+                <button onclick="saveApiKeySettings()" style="padding: 8px 18px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">💾 Lưu Cài Đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NẠP ĐỀ BẰNG AI -->
+    <div id="ai-import-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 580px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="color: #7c3aed; margin: 0; font-size: 18px; display:flex; align-items:center; gap:8px;">
+                    🤖 Nhập Đề Bằng AI (PDF / Ảnh)
+                </h3>
+                <button onclick="closeAiImportModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8;">✕</button>
+            </div>
+
+            <!-- Trạng thái API Key -->
+            <div id="ai-key-status-bar" style="padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: #faf5ff; border: 1px solid #e9d5ff;">
+                <span id="ai-key-status-text" style="color: #6b21a8; font-weight: 500;">🔑 Đang kiểm tra API Key...</span>
+                <button onclick="openApiKeyModal()" style="background: none; border: 1px solid #c084fc; color: #7c3aed; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold;">⚙️ Cài đặt</button>
+            </div>
+
+            <!-- Vùng chọn phân môn -->
+            <div class="cfg-row">
+                <label>Phân môn (AI sẽ tự động nhận diện hoặc bạn có thể chỉ định):</label>
+                <select id="ai-subject-select" class="cfg-input">
+                    <option value="auto">✨ Tự động nhận diện môn học</option>
+                    <option value="tsa">TSA Bách Khoa</option>
+                    <option value="toan">Môn Toán</option>
+                    <option value="ly">Môn Vật Lý</option>
+                    <option value="hoa">Môn Hóa Học</option>
+                    <option value="sinh">Môn Sinh Học</option>
+                    <option value="van">Môn Ngữ Văn</option>
+                    <option value="su">Môn Lịch Sử</option>
+                    <option value="dia">Môn Địa Lý</option>
+                    <option value="anh">Môn Tiếng Anh</option>
+                    <option value="other">Môn Khác</option>
+                </select>
+            </div>
+
+            <!-- Vùng Dropzone Upload -->
+            <div id="ai-dropzone" class="ai-dropzone" onclick="document.getElementById('ai-file-input').click()">
+                <div style="font-size: 36px; margin-bottom: 8px;">📄</div>
+                <strong style="color: #6d28d9; font-size: 15px; display: block; margin-bottom: 4px;">Kéo thả file PDF hoặc Ảnh đề thi vào đây</strong>
+                <span style="font-size: 12px; color: #64748b;">Hỗ trợ file .pdf hoặc nhiều file ảnh (.jpg, .png, .webp)</span>
+            </div>
+            <input type="file" id="ai-file-input" accept=".pdf,image/*" multiple style="display: none;" onchange="handleAiFileSelected(event)">
+
+            <!-- Danh sách file đã chọn -->
+            <div id="ai-selected-files-list" style="max-height: 120px; overflow-y: auto; margin-bottom: 15px;"></div>
+
+            <!-- Trạng thái Loading / Spinner -->
+            <div id="ai-processing-state" style="display: none; text-align: center; padding: 25px 15px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; margin-bottom: 15px;">
+                <div class="ai-spinner"></div>
+                <h4 id="ai-processing-step" style="color: #6d28d9; font-size: 15px; margin-bottom: 6px;">Đang phân tích tài liệu...</h4>
+                <p id="ai-processing-hint" style="font-size: 13px; color: #64748b; margin: 0;">AI đang tự động giải bài và tìm đáp án đúng...</p>
+            </div>
+
+            <!-- Nút hành động -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button onclick="closeAiImportModal()" style="padding: 9px 18px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
+                <button id="btn-start-ai-extract" onclick="startAiExtraction()" style="padding: 9px 20px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px;" disabled>
+                    <span>🚀 Bắt Đầu Trích Xuất Bằng AI</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DUYỆT NHANH ĐỀ THI AI BÓC TÁCH (PREVIEW) -->
+    <div id="ai-preview-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 860px; max-height: 92vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 15px;">
+                <div>
+                    <h3 style="color: #7c3aed; margin: 0 0 4px 0; font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                        📋 Duyệt Đề Thi AI Bóc Tách
+                    </h3>
+                    <p style="font-size: 13px; color: #64748b; margin: 0;">Kiểm tra nội dung, đáp án tự giải và chỉnh sửa thông tin trước khi lưu.</p>
+                </div>
+                <button onclick="closeAiPreviewModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #94a3b8;">✕</button>
+            </div>
+
+            <!-- Thanh cấu hình thông tin đề thi -->
+            <div style="display: flex; gap: 12px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; flex-wrap: wrap;">
+                <div style="flex: 2; min-width: 240px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">Tên đề thi:</label>
+                    <input type="text" id="ai-preview-title-input" class="cfg-input" style="padding: 8px 12px; font-weight: 600;" placeholder="Nhập tên đề thi...">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">Phân môn:</label>
+                    <select id="ai-preview-subject-select" class="cfg-input" style="padding: 8px 12px;">
+                        <option value="tsa">TSA Bách Khoa</option>
+                        <option value="toan">Môn Toán</option>
+                        <option value="ly">Môn Vật Lý</option>
+                        <option value="hoa">Môn Hóa Học</option>
+                        <option value="sinh">Môn Sinh Học</option>
+                        <option value="van">Môn Ngữ Văn</option>
+                        <option value="su">Môn Lịch Sử</option>
+                        <option value="dia">Môn Địa Lý</option>
+                        <option value="anh">Môn Tiếng Anh</option>
+                        <option value="other">Môn Khác</option>
+                    </select>
+                </div>
+                <div style="padding-top: 18px;">
+                    <span id="ai-preview-count-badge" class="ai-preview-badge" style="font-size: 13px; padding: 8px 12px;">
+                        0 câu hỏi
+                    </span>
+                </div>
+            </div>
+
+            <!-- Danh sách câu hỏi cuộn -->
+            <div id="ai-preview-questions-container" style="flex: 1; overflow-y: auto; padding-right: 5px; max-height: 55vh;"></div>
+
+            <!-- Footer nút bấm -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <button onclick="closeAiPreviewModal()" style="padding: 9px 18px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-weight: 500;">Hủy bỏ</button>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="reopenAiImportModal()" style="padding: 9px 16px; border: 1px solid #a78bfa; background: #faf5ff; color: #7c3aed; border-radius: 6px; cursor: pointer; font-weight: bold;">🔄 Quét Lại</button>
+                    <button onclick="confirmSaveAiExam()" style="padding: 9px 22px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(16,185,129,0.3); font-size: 14px;">💾 Xác Nhận Lưu Đề Này</button>
+                </div>
             </div>
         </div>
     </div>
@@ -578,6 +770,9 @@
         let currentFilter = 'all';
         let activeDetailKey = null; 
         let isCombineMode = false;
+        let currentSearchQuery = '';
+        let aiSelectedFiles = [];
+        let currentAiExtractedData = null;
         
         let currentSession = { mode: '', subjectKey: '', subject: '', questions: [], answers: {}, bookmarks: {}, currentIndex: 0, totalSeconds: 0, intervalTotal: null, isSubmitted: false, scoreCard: {} };
         let cfgMode = '';
@@ -647,6 +842,519 @@
         function toggleSidebar() { document.getElementById('main-sidebar').classList.toggle('collapsed'); }
 
         // --- IMPORT ---
+        function getGeminiApiKey() {
+            return localStorage.getItem('gemini_api_key') || '';
+        }
+
+        function getGeminiModel() {
+            return localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+        }
+
+        function updateHeaderKeyStatus() {
+            const key = getGeminiApiKey();
+            const label = document.getElementById('header-key-label');
+            if (label) {
+                label.innerText = key ? 'Gemini Key ✓' : 'Gemini Key';
+                label.style.color = key ? '#7c3aed' : '#475569';
+            }
+        }
+
+        function openApiKeyModal() {
+            const key = getGeminiApiKey();
+            const model = getGeminiModel();
+            document.getElementById('gemini-key-input').value = key;
+            document.getElementById('gemini-model-select').value = model;
+            document.getElementById('api-key-modal').style.display = 'flex';
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('api-key-modal').style.display = 'none';
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('gemini-key-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function saveApiKeySettings() {
+            const key = document.getElementById('gemini-key-input').value.trim();
+            const model = document.getElementById('gemini-model-select').value;
+            localStorage.setItem('gemini_api_key', key);
+            localStorage.setItem('gemini_model', model);
+            updateHeaderKeyStatus();
+            updateAiKeyStatusBar();
+            closeApiKeyModal();
+            alert("Đã lưu cấu hình Gemini API Key thành công!");
+        }
+
+        function updateAiKeyStatusBar() {
+            const key = getGeminiApiKey();
+            const model = getGeminiModel();
+            const textEl = document.getElementById('ai-key-status-text');
+            if (!textEl) return;
+            if (key) {
+                const masked = key.length > 8 ? key.substring(0, 6) + '...' + key.substring(key.length - 4) : '******';
+                textEl.innerHTML = `🔑 Đang dùng: <strong style="color:#7c3aed;">${masked}</strong> | Model: <strong>${model}</strong>`;
+            } else {
+                textEl.innerHTML = `<span style="color:#dc2626;">⚠️ Chưa có Gemini API Key! Bấm Cài đặt để nhập key.</span>`;
+            }
+        }
+
+        function openAiImportModal() {
+            const key = getGeminiApiKey();
+            if (!key) {
+                openApiKeyModal();
+                return;
+            }
+            updateAiKeyStatusBar();
+            resetAiImportState();
+            document.getElementById('ai-import-modal').style.display = 'flex';
+            initAiDropzone();
+        }
+
+        function openAiImportModalFromOptions() {
+            closeImportOptionsModal();
+            openAiImportModal();
+        }
+
+        function closeAiImportModal() {
+            document.getElementById('ai-import-modal').style.display = 'none';
+            resetAiImportState();
+        }
+
+        function reopenAiImportModal() {
+            closeAiPreviewModal();
+            openAiImportModal();
+        }
+
+        function resetAiImportState() {
+            aiSelectedFiles = [];
+            const fileInput = document.getElementById('ai-file-input');
+            if (fileInput) fileInput.value = '';
+            renderAiFileList();
+            const proc = document.getElementById('ai-processing-state');
+            if (proc) proc.style.display = 'none';
+            const dropzone = document.getElementById('ai-dropzone');
+            if (dropzone) dropzone.style.display = 'block';
+            const fileListEl = document.getElementById('ai-selected-files-list');
+            if (fileListEl) fileListEl.style.display = 'block';
+            const btn = document.getElementById('btn-start-ai-extract');
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+        }
+
+        function initAiDropzone() {
+            const zone = document.getElementById('ai-dropzone');
+            if (!zone || zone.dataset.initialized) return;
+            zone.dataset.initialized = 'true';
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                zone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    zone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    zone.classList.remove('dragover');
+                }, false);
+            });
+
+            zone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    addAiFiles(files);
+                }
+            });
+        }
+
+        function handleAiFileSelected(event) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                addAiFiles(files);
+            }
+        }
+
+        function addAiFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+                const isImage = file.type.startsWith('image/');
+                if (!isPdf && !isImage) {
+                    alert(`Tệp "${file.name}" không hợp lệ. Vui lòng chọn file PDF hoặc hình ảnh.`);
+                    continue;
+                }
+                if (isPdf) {
+                    aiSelectedFiles = [file];
+                    break;
+                } else {
+                    if (aiSelectedFiles.some(f => f.name.toLowerCase().endsWith('.pdf'))) {
+                        aiSelectedFiles = [];
+                    }
+                    aiSelectedFiles.push(file);
+                }
+            }
+            renderAiFileList();
+        }
+
+        function removeAiFile(idx) {
+            aiSelectedFiles.splice(idx, 1);
+            renderAiFileList();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function renderAiFileList() {
+            const listEl = document.getElementById('ai-selected-files-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            if (aiSelectedFiles.length === 0) {
+                const btn = document.getElementById('btn-start-ai-extract');
+                if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+                return;
+            }
+
+            aiSelectedFiles.forEach((f, idx) => {
+                const isPdf = f.name.toLowerCase().endsWith('.pdf');
+                const icon = isPdf ? '📕' : '🖼️';
+                listEl.innerHTML += `
+                    <div class="ai-file-item">
+                        <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                            <span>${icon}</span>
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; font-weight: 500;">${escapeHtml(f.name)}</span>
+                            <span style="color: #64748b; font-size: 11px;">(${formatFileSize(f.size)})</span>
+                        </div>
+                        <button onclick="removeAiFile(${idx})" style="background: none; border: none; color: #ef4444; font-size: 15px; cursor: pointer; padding: 2px 6px;" title="Xóa file này">✕</button>
+                    </div>`;
+            });
+
+            const btn = document.getElementById('btn-start-ai-extract');
+            if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const result = reader.result;
+                    const base64 = result.substring(result.indexOf(',') + 1);
+                    const mimeType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+                    resolve({ mimeType, data: base64, name: file.name });
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function startAiExtraction() {
+            const apiKey = getGeminiApiKey();
+            if (!apiKey) {
+                alert("Vui lòng cài đặt Gemini API Key trước!");
+                openApiKeyModal();
+                return;
+            }
+            if (aiSelectedFiles.length === 0) {
+                alert("Vui lòng chọn ít nhất 1 file PDF hoặc Ảnh đề thi!");
+                return;
+            }
+
+            const model = getGeminiModel();
+            const preferredSubject = document.getElementById('ai-subject-select').value;
+            
+            document.getElementById('ai-dropzone').style.display = 'none';
+            document.getElementById('ai-selected-files-list').style.display = 'none';
+            document.getElementById('btn-start-ai-extract').disabled = true;
+            document.getElementById('btn-start-ai-extract').style.opacity = '0.5';
+            const procState = document.getElementById('ai-processing-state');
+            procState.style.display = 'block';
+
+            const stepEl = document.getElementById('ai-processing-step');
+            const hintEl = document.getElementById('ai-processing-hint');
+
+            try {
+                stepEl.innerText = "Đang mã hóa tệp tài liệu...";
+                hintEl.innerText = `Đang chuẩn bị ${aiSelectedFiles.length} tệp dữ liệu...`;
+
+                const fileParts = [];
+                for (let i = 0; i < aiSelectedFiles.length; i++) {
+                    const converted = await fileToBase64(aiSelectedFiles[i]);
+                    fileParts.push({
+                        inlineData: {
+                            mimeType: converted.mimeType,
+                            data: converted.data
+                        }
+                    });
+                }
+
+                stepEl.innerText = "Đang gửi yêu cầu đến Gemini AI...";
+                hintEl.innerText = `Sử dụng mô hình ${model}. Quá trình đọc đề và tự động giải có thể mất 15-40 giây...`;
+
+                const promptText = `Bạn là chuyên gia khảo thí và giáo viên luyện thi xuất sắc. Nhiệm vụ của bạn là đọc và phân tích kỹ tài liệu đề thi đính kèm (PDF hoặc hình ảnh), nhận diện toàn bộ các câu hỏi trắc nghiệm, TỰ ĐỘNG GIẢI CHI TIẾT TỪNG CÂU VÀ TÌM ĐÁP ÁN ĐÚNG nếu đề gốc chưa có đáp án, kèm lời giải thích ngắn gọn, sau đó trả về cấu trúc JSON chuẩn của hệ thống.
+
+YÊU CẦU QUAN TRỌNG:
+1. Phân môn (subject): Phải là một trong các mã sau: 'tsa', 'toan', 'ly', 'hoa', 'sinh', 'van', 'su', 'dia', 'anh', 'other'.
+${preferredSubject !== 'auto' ? `(Người dùng đã chỉ định ưu tiên chọn môn: "${preferredSubject}", hãy sử dụng mã môn này nếu phù hợp).` : ''}
+2. Tiêu đề đề thi (title): Tự động đặt tên trang trọng, súc tích dựa trên thông tin trong đề (ví dụ: "Đề Thi Thử Tốt Nghiệp THPT Môn Toán 2024").
+3. Nhận diện các dạng câu hỏi:
+   - Dạng trắc nghiệm 4 lựa chọn ('multiple_choice'): Mảng "options" chứa chính xác nội dung từng phương án. TUYỆT ĐỐI CẮT BỎ nhãn tiền tố như "A.", "B.", "C.", "D.", "A)", "B)" ở đầu mỗi phương án. Trường "correct_answer" bắt buộc là số nguyên chỉ số phương án đúng: 0 (cho A), 1 (cho B), 2 (cho C), 3 (cho D).
+   - Dạng trắc nghiệm Đúng / Sai ('true_false'): Thường gồm 4 mệnh đề con a, b, c, d. Mảng "options" chứa 4 mệnh đề (loại bỏ tiền tố a., b., c., d.). Trường "correct_answer" là object ánh xạ chỉ số sang 'T' hoặc 'F', ví dụ: {"0": "T", "1": "F", "2": "T", "3": "F"}.
+   - Dạng trả lời ngắn ('short_answer'): Điền số hoặc kết quả ngắn. "correct_answer" là chuỗi kết quả (ví dụ: "12.5" hoặc "-4").
+4. TỰ ĐỘNG GIẢI & LỜI GIẢI THÍCH (explanation):
+   - Nếu tài liệu đã có sẵn bảng đáp án ở cuối, hãy đối chiếu và lấy đáp án đó.
+   - NẾU ĐỀ CHƯA CÓ ĐÁP ÁN, BẠN PHẢI TỰ SUY LUẬN VÀ GIẢI TOÁN/KHOA HỌC CHÍNH XÁC ĐỂ CHỌN ĐÁP ÁN ĐÚNG.
+   - Luôn cung cấp lời giải thích / hướng dẫn giải ngắn gọn, dễ hiểu vào trường "explanation" của từng câu.
+5. CÔNG THỨC TOÁN & KÝ HIỆU KHOA HỌC:
+   - Bắt buộc viết dưới dạng chuẩn LaTeX kẹp giữa cặp ký hiệu $ (ví dụ: $x^2 + 2x - 3 = 0$, $\\int_0^1 f(x)dx$).
+6. NGỮ LIỆU CHUNG (context):
+   - Nếu có đoạn văn đọc hiểu, bảng biểu hoặc ngữ liệu dùng chung cho nhiều câu hỏi, hãy điền đầy đủ văn bản ngữ liệu đó vào trường "context" của các câu tương ứng. Nếu không có ngữ liệu chung thì để chuỗi rỗng "".
+
+CẤU TRÚC JSON MẪU BẮT BUỘC TRẢ VỀ:
+{
+  "title": "Tên Đề Thi",
+  "subject": "toan",
+  "questions": [
+    {
+      "type": "multiple_choice",
+      "text": "Nội dung câu hỏi...",
+      "options": ["Phương án 1", "Phương án 2", "Phương án 3", "Phương án 4"],
+      "correct_answer": 0,
+      "explanation": "Giải thích ngắn gọn tại sao đáp án A đúng...",
+      "context": ""
+    }
+  ]
+}
+
+CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
+
+                const requestBody = {
+                    contents: [
+                        {
+                            parts: [
+                                { text: promptText },
+                                ...fileParts
+                            ]
+                        }
+                    ],
+                    generationConfig: {
+                        temperature: 0.2,
+                        responseMimeType: "application/json"
+                    }
+                };
+
+                stepEl.innerText = "Gemini AI đang bóc tách và giải đề...";
+                hintEl.innerText = "Đang nhận diện các câu hỏi trắc nghiệm và tính toán đáp án...";
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    let errDetail = "";
+                    try {
+                        const errJson = await response.json();
+                        errDetail = errJson.error?.message || response.statusText;
+                    } catch {
+                        errDetail = response.statusText;
+                    }
+                    if (response.status === 400 && errDetail.includes("API key")) {
+                        throw new Error("Gemini API Key không hợp lệ hoặc không có quyền truy cập. Vui lòng kiểm tra lại API Key.");
+                    } else if (response.status === 429) {
+                        throw new Error("Đã vượt quá giới hạn lượt gọi Gemini API (Rate Limit / Quota). Vui lòng thử lại sau giây lát.");
+                    } else {
+                        throw new Error(`Lỗi từ Gemini API (${response.status}): ${errDetail}`);
+                    }
+                }
+
+                const resData = await response.json();
+                const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) {
+                    throw new Error("Không nhận được nội dung phản hồi từ mô hình Gemini AI.");
+                }
+
+                let cleanJson = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                const firstBrace = cleanJson.indexOf('{');
+                const lastBrace = cleanJson.lastIndexOf('}');
+                if (firstBrace !== -1 && lastBrace !== -1) {
+                    cleanJson = cleanJson.substring(firstBrace, lastBrace + 1);
+                }
+
+                const parsedExam = JSON.parse(cleanJson);
+                if (!parsedExam.questions || !Array.isArray(parsedExam.questions) || parsedExam.questions.length === 0) {
+                    throw new Error("Không trích xuất được câu hỏi nào từ tệp tài liệu.");
+                }
+
+                parsedExam.subject = parsedExam.subject || (preferredSubject !== 'auto' ? preferredSubject : 'other');
+                parsedExam.title = parsedExam.title || "Đề thi AI trích xuất - " + new Date().toLocaleDateString('vi-VN');
+                parsedExam.questions.forEach((q, idx) => {
+                    q.type = q.type || 'multiple_choice';
+                    q.text = q.text || `Câu hỏi ${idx + 1}`;
+                    q.options = q.options || [];
+                    q.context = q.context || '';
+                    q.explanation = q.explanation || '';
+                });
+
+                currentAiExtractedData = parsedExam;
+                closeAiImportModal();
+                openAiPreviewModal(parsedExam);
+
+            } catch (err) {
+                console.error("AI Extract error:", err);
+                alert("Có lỗi khi bóc tách đề thi bằng AI:\n" + err.message);
+                document.getElementById('ai-dropzone').style.display = 'block';
+                document.getElementById('ai-selected-files-list').style.display = 'block';
+                document.getElementById('btn-start-ai-extract').disabled = false;
+                document.getElementById('btn-start-ai-extract').style.opacity = '1';
+                procState.style.display = 'none';
+            }
+        }
+
+        function openAiPreviewModal(examData) {
+            document.getElementById('ai-preview-title-input').value = examData.title || '';
+            const subSelect = document.getElementById('ai-preview-subject-select');
+            if (subSelect) subSelect.value = examData.subject || 'other';
+
+            renderAiPreviewQuestions();
+            document.getElementById('ai-preview-modal').style.display = 'flex';
+        }
+
+        function closeAiPreviewModal() {
+            document.getElementById('ai-preview-modal').style.display = 'none';
+        }
+
+        function renderAiPreviewQuestions() {
+            const container = document.getElementById('ai-preview-questions-container');
+            const badge = document.getElementById('ai-preview-count-badge');
+            if (!container || !currentAiExtractedData) return;
+
+            const questions = currentAiExtractedData.questions || [];
+            badge.innerText = `✨ ${questions.length} câu hỏi`;
+
+            if (questions.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:#64748b;">Không còn câu hỏi nào trong danh sách.</div>`;
+                return;
+            }
+
+            const typeNames = {
+                'multiple_choice': 'Trắc nghiệm 1 đáp án',
+                'true_false': 'Đúng / Sai',
+                'short_answer': 'Điền đáp án ngắn',
+                'multiple_response': 'Chọn nhiều đáp án',
+                'fill_in_the_blanks': 'Điền khuyết'
+            };
+
+            let html = '';
+            questions.forEach((q, qIdx) => {
+                const typeLabel = typeNames[q.type] || q.type;
+                html += `
+                    <div class="ai-preview-card" id="ai-q-card-${qIdx}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="color: var(--tsa-blue); font-size: 15px;">Câu ${qIdx + 1}</strong>
+                                <span class="ai-preview-badge">${typeLabel}</span>
+                            </div>
+                            <button onclick="deleteAiPreviewQuestion(${qIdx})" style="background: none; border: 1px solid #fca5a5; color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;" title="Xóa câu này khỏi danh sách">🗑️ Xóa</button>
+                        </div>`;
+
+                if (q.context && q.context.trim() !== "") {
+                    html += `
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; color: #475569;">
+                            <strong style="color: #0f172a; display: block; margin-bottom: 4px;">📖 Ngữ liệu chung:</strong>
+                            ${q.context.replace(/\n/g, '<br>')}
+                        </div>`;
+                }
+
+                html += `<div style="font-size: 14.5px; line-height: 1.6; color: #1e293b; margin-bottom: 12px; font-weight: 500;">${q.text.replace(/\n/g, '<br>')}</div>`;
+
+                if (q.type === 'multiple_choice' && q.options) {
+                    html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-bottom: 10px;">`;
+                    q.options.forEach((opt, oIdx) => {
+                        const isCorrect = (q.correct_answer === oIdx || q.correct_answer === oIdx.toString());
+                        const borderBg = isCorrect ? 'border: 2px solid #10b981; background: #ecfdf5;' : 'border: 1px solid #e2e8f0; background: #ffffff;';
+                        const labelBg = isCorrect ? 'background: #10b981; color: white;' : 'background: #f1f5f9; color: #475569;';
+                        html += `
+                            <div style="display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 6px; ${borderBg} font-size: 13.5px;">
+                                <span style="font-weight: bold; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; ${labelBg} flex-shrink: 0;">${labels[oIdx] || oIdx}</span>
+                                <div style="flex: 1; word-break: break-word;">${opt} ${isCorrect ? '<strong style="color:#059669; font-size: 11px; margin-left: 4px;">(✓ Đáp án đúng)</strong>' : ''}</div>
+                            </div>`;
+                    });
+                    html += `</div>`;
+                } else if (q.type === 'true_false' && q.options) {
+                    html += `<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 10px;">`;
+                    q.options.forEach((opt, oIdx) => {
+                        const ansVal = q.correct_answer?.[oIdx] || q.correct_answer?.[oIdx.toString()] || '';
+                        html += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 13px;">
+                                <div><strong>${String.fromCharCode(97 + oIdx)})</strong> ${opt}</div>
+                                <span style="font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: ${ansVal === 'T' ? '#d1fae5; color: #065f46;' : '#fee2e2; color: #991b1b;'}">${ansVal === 'T' ? '● ĐÚNG' : (ansVal === 'F' ? '● SAI' : ansVal)}</span>
+                            </div>`;
+                    });
+                    html += `</div>`;
+                } else if (q.type === 'short_answer') {
+                    html += `
+                        <div style="padding: 8px 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; margin-bottom: 10px; font-size: 13px;">
+                            🎯 <strong>Đáp án đúng:</strong> <span style="font-size: 15px; font-weight: bold; color: #065f46;">${q.correct_answer}</span>
+                        </div>`;
+                }
+
+                if (q.explanation && q.explanation.trim() !== "") {
+                    html += `
+                        <div class="ai-preview-explanation">
+                            💡 <strong>Lời giải / Giải thích:</strong> ${q.explanation.replace(/\n/g, '<br>')}
+                        </div>`;
+                }
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+
+            if (window.MathJax) {
+                MathJax.typesetPromise([container]).catch(err => console.log('MathJax preview render error', err));
+            }
+        }
+
+        function deleteAiPreviewQuestion(idx) {
+            if (!currentAiExtractedData || !currentAiExtractedData.questions) return;
+            currentAiExtractedData.questions.splice(idx, 1);
+            renderAiPreviewQuestions();
+        }
+
+        async function confirmSaveAiExam() {
+            if (!currentAiExtractedData || !currentAiExtractedData.questions || currentAiExtractedData.questions.length === 0) {
+                alert("Đề thi không có câu hỏi nào để lưu!");
+                return;
+            }
+
+            const title = document.getElementById('ai-preview-title-input').value.trim() || "Đề thi AI - " + new Date().toLocaleDateString('vi-VN');
+            const subject = document.getElementById('ai-preview-subject-select').value || 'other';
+
+            const finalExamData = {
+                title: title,
+                subject: subject,
+                questions: currentAiExtractedData.questions,
+                history: []
+            };
+
+            const uniqueId = subject + "_" + Date.now();
+            await saveToDB(uniqueId, finalExamData);
+
+            closeAiPreviewModal();
+            alert(`🎉 Nạp đề bằng AI thành công!\nĐề "${title}" (${finalExamData.questions.length} câu) đã được lưu vào Tủ sách và đồng bộ lên Firebase Cloud!`);
+            
+            navToDashboard(subject);
+            openDetailView(uniqueId);
+        }
         function openImportOptionsModal() { document.getElementById('import-options-modal').style.display = 'flex'; }
         function closeImportOptionsModal() { document.getElementById('import-options-modal').style.display = 'none'; }
         function triggerFileInput() { closeImportOptionsModal(); document.getElementById('file-upload').click(); }
@@ -684,6 +1392,34 @@
         }
 
         // --- DASHBOARD GRID ---
+        function normalizeStr(str) {
+            return (str || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'd');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function handleSearchExam(query) {
+            currentSearchQuery = (query || '').trim();
+            const clearBtn = document.getElementById('btn-clear-search');
+            if (clearBtn) clearBtn.style.display = currentSearchQuery ? 'block' : 'none';
+            renderDashboardGrid();
+        }
+
+        function clearExamSearch() {
+            const input = document.getElementById('exam-search-input');
+            if (input) input.value = '';
+            handleSearchExam('');
+            if (input) input.focus();
+        }
+
         function filterSubject(sub) {
             currentFilter = sub;
             const btns = document.querySelectorAll('.subject-tab-btn');
@@ -716,6 +1452,9 @@
             if (isCombineMode) { container.classList.add('combine-mode'); } 
             else { container.classList.remove('combine-mode'); }
 
+            let countRendered = 0;
+            const normQuery = normalizeStr(currentSearchQuery);
+
             for (const [key, data] of Object.entries(library)) {
                 let s = data.subject ? data.subject.toLowerCase() : '';
                 if (currentFilter === 'tsa' && !s.includes('tsa')) continue;
@@ -724,6 +1463,16 @@
                 if (currentFilter === 'hoa' && s !== 'hoa') continue;
                 if (currentFilter === 'other' && (s.includes('tsa') || s==='toan' || s==='ly' || s==='hoa')) continue;
 
+                // Lọc theo từ khóa tìm kiếm (so khớp title hoặc name, hỗ trợ có dấu và không dấu)
+                if (normQuery) {
+                    const titleRaw = (data.title || data.name || '') + '';
+                    const titleNorm = normalizeStr(titleRaw);
+                    if (!titleNorm.includes(normQuery) && !titleRaw.toLowerCase().includes(currentSearchQuery.toLowerCase())) {
+                        continue;
+                    }
+                }
+
+                countRendered++;
                 let historyCount = data.history ? data.history.length : 0;
                 
                 let tintClass = 'sc-other';
@@ -736,10 +1485,30 @@
                     <div class="subject-card ${tintClass}" onclick="handleCardClick('${key}', event)">
                         <input type="checkbox" class="card-checkbox combine-checkbox" data-key="${key}" onclick="updateCombineCount(event)">
                         <div>${getSubjectBadge(data.subject)}</div>
-                        <h3 style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title}</h3>
-                        <p style="font-size: 13px; color: #64748b; margin: 0; margin-top: auto;">${data.questions.length} câu | Đã làm: ${historyCount} lần</p>
+                        <h3 style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title || data.name || 'Chưa đặt tên'}</h3>
+                        <p style="font-size: 13px; color: #64748b; margin: 0; margin-top: auto;">${data.questions ? data.questions.length : 0} câu | Đã làm: ${historyCount} lần</p>
                     </div>`;
             }
+
+            if (countRendered === 0) {
+                if (currentSearchQuery) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; background: #fff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center; color: #64748b;">
+                            <div style="font-size: 38px; margin-bottom: 12px;">🔍</div>
+                            <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 6px; font-weight: 700;">Không tìm thấy đề thi phù hợp</h4>
+                            <p style="font-size: 14px; margin-bottom: 15px; color: #64748b;">Không có đề nào khớp với từ khóa "<strong>${escapeHtml(currentSearchQuery)}</strong>" trong danh mục này.</p>
+                            <button onclick="clearExamSearch()" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;">Xóa từ khóa tìm kiếm</button>
+                        </div>`;
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; background: #fff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center; color: #64748b;">
+                            <div style="font-size: 38px; margin-bottom: 12px;">📂</div>
+                            <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 6px; font-weight: 700;">Chưa có đề thi nào trong mục này</h4>
+                            <p style="font-size: 14px; color: #64748b;">Hãy nạp thêm đề thi mới để bắt đầu ôn luyện nhé!</p>
+                        </div>`;
+                }
+            }
+
             updateCombineCount();
         }
 
@@ -1349,6 +2118,7 @@
                 document.getElementById('cloud-sync-badge').style.background = "#f1f5f9";
                 document.getElementById('cloud-sync-badge').style.color = "#64748b";
             }
+            updateHeaderKeyStatus();
             navToHome();
         };
     </script>
