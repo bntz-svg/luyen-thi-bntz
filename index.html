@@ -55,41 +55,95 @@
         .neon-purple { background: linear-gradient(145deg, #6d28d9, #8b5cf6); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(139,92,246,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #a78bfa; }
         .neon-purple:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(139,92,246,0.9), 0 0 40px rgba(139,92,246,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
 
-        .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
-        .folder-card { padding: 20px; border-radius: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; border: 1px solid; }
-        .folder-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); }
+        /* VIEW TRANSITIONS */
+        .view-transition { animation: viewFadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        @keyframes viewFadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .sc-tsa { background: linear-gradient(135deg, #ffffff 30%, #fff1f2 100%); border-color: #fca5a5; }
-        .sc-tsa:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(225, 29, 72, 0.15); border-color: #f87171; }
-        .sc-toan { background: linear-gradient(135deg, #ffffff 30%, #eff6ff 100%); border-color: #93c5fd; }
-        .sc-toan:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.15); border-color: #60a5fa; }
-        .sc-ly { background: linear-gradient(135deg, #ffffff 30%, #f0f9ff 100%); border-color: #7dd3fc; }
-        .sc-ly:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(2, 132, 199, 0.15); border-color: #38bdf8; }
-        .sc-hoa { background: linear-gradient(135deg, #ffffff 30%, #ecfdf5 100%); border-color: #6ee7b7; }
-        .sc-hoa:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(5, 150, 105, 0.15); border-color: #34d399; }
-        .sc-other { background: linear-gradient(135deg, #ffffff 30%, #f8fafc 100%); border-color: #cbd5e1; }
-        .sc-other:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(71, 85, 105, 0.15); border-color: #94a3b8; }
+        /* MODERN SUBJECT PORTAL GRID */
+        .subject-portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .subject-portal-card { background: #ffffff; border-radius: 14px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; cursor: pointer; }
+        .subject-portal-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.12); }
+        
+        .portal-banner { padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .portal-banner h3 { font-size: 17px; font-weight: 800; margin: 0; color: white; display: flex; align-items: center; gap: 8px; }
+        .portal-banner-icon { font-size: 24px; }
+        .portal-badge { padding: 3px 9px; border-radius: 12px; font-size: 10.5px; font-weight: 800; background: rgba(255,255,255,0.25); color: white; backdrop-filter: blur(4px); }
+        
+        .portal-body { padding: 16px 20px; display: flex; flex-direction: column; flex: 1; }
+        .portal-desc { font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 14px; font-weight: 500; }
+        .portal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+        .portal-count { font-size: 13px; font-weight: 800; color: #334155; }
+        .portal-btn { background: #0f172a; color: white; border: none; padding: 7px 15px; border-radius: 6px; font-size: 12.5px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+        .subject-portal-card:hover .portal-btn { background: var(--tsa-blue); transform: translateX(2px); }
 
+        /* THEMES */
+        .theme-toan .portal-banner { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
+        .theme-toan:hover { border-color: #93c5fd; }
+        .theme-ly .portal-banner { background: linear-gradient(135deg, #991b1b, #dc2626); }
+        .theme-ly:hover { border-color: #fca5a5; }
+        .theme-hoa .portal-banner { background: linear-gradient(135deg, #064e3b, #059669); }
+        .theme-hoa:hover { border-color: #6ee7b7; }
+        .theme-sinh .portal-banner { background: linear-gradient(135deg, #0f766e, #0d9488); }
+        .theme-sinh:hover { border-color: #5eead4; }
+        .theme-anh .portal-banner { background: linear-gradient(135deg, #3730a3, #4f46e5); }
+        .theme-anh:hover { border-color: #a5b4fc; }
+        .theme-van .portal-banner { background: linear-gradient(135deg, #92400e, #d97706); }
+        .theme-van:hover { border-color: #fcd34d; }
+        .theme-su .portal-banner { background: linear-gradient(135deg, #9a3412, #ea580c); }
+        .theme-su:hover { border-color: #fdba74; }
+        .theme-dia .portal-banner { background: linear-gradient(135deg, #166534, #16a34a); }
+        .theme-dia:hover { border-color: #86efac; }
+        .theme-tsa .portal-banner { background: linear-gradient(135deg, #581c87, #7c3aed); }
+        .theme-tsa:hover { border-color: #c4b5fd; }
+        .theme-other .portal-banner { background: linear-gradient(135deg, #334155, #64748b); }
+        .theme-other:hover { border-color: #cbd5e1; }
+
+        /* AI ADVISOR WIDGET */
+        .ai-advisor-card { background: linear-gradient(135deg, #ffffff 65%, #faf5ff 100%); border: 1px solid #ddd6fe; border-radius: 12px; padding: 20px; margin-bottom: 22px; box-shadow: 0 4px 18px -4px rgba(124, 58, 237, 0.1); position: relative; }
+        .ai-advisor-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3e8ff; padding-bottom: 12px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+        .ai-advisor-title { font-size: 15.5px; font-weight: 800; color: #6d28d9; display: flex; align-items: center; gap: 8px; }
+        .ai-advisor-meta { font-size: 12px; color: #7c3aed; font-weight: 500; }
+        .ai-advisor-content { font-size: 13.5px; line-height: 1.7; color: #334155; }
+        .ai-advisor-content h4 { color: #581c87; font-size: 14px; margin: 12px 0 4px 0; font-weight: 700; }
+        .ai-advisor-content ul { margin-left: 20px; margin-bottom: 8px; }
+        .ai-advisor-content li { margin-bottom: 4px; }
+        .ai-advisor-content strong { color: #1e1b4b; }
+        .ai-advisor-empty { text-align: center; padding: 18px 10px; color: #64748b; font-size: 13.5px; }
+
+        /* BADGES */
         .badge-sub { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; display: inline-block; }
-        .sub-tsa { background: #fecaca; color: #991b1b; }
+        .sub-tsa { background: #f3e8ff; color: #6d28d9; }
         .sub-toan { background: #bfdbfe; color: #1e3a8a; }
-        .sub-ly { background: #bae6fd; color: #0369a1; }
+        .sub-ly { background: #fee2e2; color: #991b1b; }
         .sub-hoa { background: #a7f3d0; color: #064e3b; }
+        .sub-sinh { background: #ccfbf1; color: #115e59; }
+        .sub-anh { background: #e0e7ff; color: #3730a3; }
+        .sub-van { background: #fef3c7; color: #92400e; }
+        .sub-su { background: #ffedd5; color: #9a3412; }
+        .sub-dia { background: #dcfce7; color: #166534; }
         .sub-other { background: #e2e8f0; color: #334155; }
 
         /* DASHBOARD VIEW */
         #dashboard-view { display: none; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: 240px; background: #ffffff; border-right: 2px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; transition: all 0.3s ease; z-index: 5; }
+        .sidebar { width: 240px; background: #ffffff; border-right: 2px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 6px; transition: all 0.3s ease; z-index: 5; overflow-y: auto; }
         .sidebar.collapsed { margin-left: -240px; }
         .sidebar-title { font-size: 12px; font-weight: bold; color: #94a3b8; text-transform: uppercase; padding: 0 10px 5px 10px; border-bottom: 1px solid #f1f5f9; margin-bottom: 5px; }
         
-        .subject-tab-btn { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 6px; border: none; background: transparent; cursor: pointer; font-weight: bold; font-size: 14px; color: #475569; transition: 0.2s; text-align: left; }
+        .subject-tab-btn { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border-radius: 6px; border: none; background: transparent; cursor: pointer; font-weight: bold; font-size: 13.5px; color: #475569; transition: 0.2s; text-align: left; }
         .subject-tab-btn:hover { background: #f1f5f9; }
         #tab-all.active { background: #334155 !important; color: white !important; }
-        #tab-tsa.active { background: #991b1b !important; color: white !important; }
+        #tab-tsa.active { background: #6d28d9 !important; color: white !important; }
         #tab-toan.active { background: #1e3a8a !important; color: white !important; }
-        #tab-ly.active { background: #0369a1 !important; color: white !important; }
+        #tab-ly.active { background: #991b1b !important; color: white !important; }
         #tab-hoa.active { background: #064e3b !important; color: white !important; }
+        #tab-sinh.active { background: #0f766e !important; color: white !important; }
+        #tab-anh.active { background: #3730a3 !important; color: white !important; }
+        #tab-van.active { background: #92400e !important; color: white !important; }
+        #tab-su.active { background: #9a3412 !important; color: white !important; }
+        #tab-dia.active { background: #166534 !important; color: white !important; }
         #tab-other.active { background: #475569 !important; color: white !important; }
 
         .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
@@ -110,6 +164,17 @@
         .combine-mode .card-checkbox { display: block; }
         .combine-mode .subject-card { border-style: dashed; border-width: 2px; }
         .combine-mode .subject-card:hover { border-color: var(--tsa-blue); }
+        .sc-tsa { background: #faf5ff; border-color: #e9d5ff; }
+        .sc-toan { background: #eff6ff; border-color: #dbeafe; }
+        .sc-ly { background: #fef2f2; border-color: #fee2e2; }
+        .sc-hoa { background: #ecfdf5; border-color: #d1fae5; }
+        .sc-sinh { background: #f0fdfa; border-color: #ccfbf1; }
+        .sc-anh { background: #eef2ff; border-color: #e0e7ff; }
+        .sc-van { background: #fffbeb; border-color: #fef3c7; }
+        .sc-su { background: #fff7ed; border-color: #ffedd5; }
+        .sc-dia { background: #f0fdf4; border-color: #dcfce7; }
+        .sc-other { background: #ffffff; border-color: #e2e8f0; }
+        .subject-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 
         /* MAN HINH CHI TIET DE */
         #detail-view-panel { display: none; background: white; border-radius: 12px; border: 1px solid var(--border-color); padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
@@ -276,35 +341,160 @@
                 </button>
             </div>
 
-            <h3 style="font-size: 16px; color: #1e293b; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; font-weight: 700;">THƯ MỤC PHÂN MÔN</h3>
-            <div class="folder-grid">
-                <div class="folder-card sc-tsa" onclick="navToDashboard('tsa')">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span class="badge-sub sub-tsa">TSA</span>
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;" id="folder-count-tsa">0 đề</span>
+            <h3 style="font-size: 17px; color: #0f172a; margin-bottom: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; font-weight: 800; display:flex; justify-content:space-between; align-items:center;">
+                <span>📚 TỦ SÁCH CÁC MÔN HỌC (CHUẨN GDPT 2018 & TSA)</span>
+                <span style="font-size: 12px; color: #64748b; font-weight: 600;">Chọn môn để vào luyện đề & xem Cố vấn AI</span>
+            </h3>
+
+            <div class="subject-portal-grid">
+                <!-- 1. TOÁN -->
+                <div class="subject-portal-card theme-toan" onclick="navToDashboard('toan')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">📐</span> Môn Toán học</h3>
+                        <span class="portal-badge">GDPT 2018</span>
                     </div>
-                    <h3 style="font-size: 18px; color: #0f172a; font-weight: 700;">TSA Bách Khoa</h3>
+                    <div class="portal-body">
+                        <div class="portal-desc">Khảo sát hàm số, Vectơ & Oxyz, Thống kê ghép nhóm, Xác suất có điều kiện, Nguyên hàm & Tích phân.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-toan">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="folder-card sc-toan" onclick="navToDashboard('toan')">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span class="badge-sub sub-toan">TOÁN</span>
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;" id="folder-count-toan">0 đề</span>
+
+                <!-- 2. VẬT LÝ -->
+                <div class="subject-portal-card theme-ly" onclick="navToDashboard('ly')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">⚡</span> Môn Vật lý</h3>
+                        <span class="portal-badge">GDPT 2018</span>
                     </div>
-                    <h3 style="font-size: 18px; color: #0f172a; font-weight: 700;">Môn Toán</h3>
+                    <div class="portal-body">
+                        <div class="portal-desc">Vật lý nhiệt, Khí lý tưởng, Từ trường & Cảm ứng điện từ, Vật lý hạt nhân.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-ly">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="folder-card sc-ly" onclick="navToDashboard('ly')">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span class="badge-sub sub-ly">LÝ</span>
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;" id="folder-count-ly">0 đề</span>
+
+                <!-- 3. HÓA HỌC -->
+                <div class="subject-portal-card theme-hoa" onclick="navToDashboard('hoa')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🧪</span> Môn Hóa học</h3>
+                        <span class="portal-badge">GDPT 2018</span>
                     </div>
-                    <h3 style="font-size: 18px; color: #0f172a; font-weight: 700;">Môn Vật Lý</h3>
+                    <div class="portal-body">
+                        <div class="portal-desc">Ester - Lipid, Carbohydrate, Hợp chất chứa Nitrogen, Polymer, Pin điện & Phức chất.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-hoa">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="folder-card sc-hoa" onclick="navToDashboard('hoa')">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span class="badge-sub sub-hoa">HÓA</span>
-                        <span style="font-size: 12px; color: #64748b; font-weight: bold;" id="folder-count-hoa">0 đề</span>
+
+                <!-- 4. SINH HỌC -->
+                <div class="subject-portal-card theme-sinh" onclick="navToDashboard('sinh')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🧬</span> Môn Sinh học</h3>
+                        <span class="portal-badge">GDPT 2018</span>
                     </div>
-                    <h3 style="font-size: 18px; color: #0f172a; font-weight: 700;">Môn Hóa Học</h3>
+                    <div class="portal-body">
+                        <div class="portal-desc">Di truyền phân tử & tế bào, Quy luật di truyền, Tiến hóa & Sinh thái học môi trường.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-sinh">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. TIẾNG ANH -->
+                <div class="subject-portal-card theme-anh" onclick="navToDashboard('anh')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🌐</span> Môn Tiếng Anh</h3>
+                        <span class="portal-badge">GDPT 2018</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Ngữ âm, Trọng âm, Ngữ pháp cốt lõi, Từ vựng & Cụm từ, Điền từ & Đọc hiểu văn bản.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-anh">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. NGỮ VĂN -->
+                <div class="subject-portal-card theme-van" onclick="navToDashboard('van')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">📖</span> Môn Ngữ văn</h3>
+                        <span class="portal-badge">GDPT 2018</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Đọc hiểu văn bản (Nghệ thuật & Thông tin), Nghị luận xã hội và Nghị luận văn học.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-van">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. LỊCH SỬ -->
+                <div class="subject-portal-card theme-su" onclick="navToDashboard('su')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🏛️</span> Môn Lịch sử</h3>
+                        <span class="portal-badge">GDPT 2018</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Lịch sử thế giới hiện đại, ASEAN, Lịch sử Việt Nam hiện đại & Công cuộc Đổi mới.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-su">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. ĐỊA LÝ -->
+                <div class="subject-portal-card theme-dia" onclick="navToDashboard('dia')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🌍</span> Môn Địa lý</h3>
+                        <span class="portal-badge">GDPT 2018</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Địa lý tự nhiên Việt Nam, Dân cư, Các ngành kinh tế và Các vùng kinh tế trọng điểm.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-dia">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. TSA BÁCH KHOA -->
+                <div class="subject-portal-card theme-tsa" onclick="navToDashboard('tsa')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">🧠</span> TSA Bách Khoa</h3>
+                        <span class="portal-badge">ĐHBK Hà Nội</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Tư duy Toán học, Tư duy Đọc hiểu khoa học và Tư duy Khoa học / Giải quyết vấn đề thực nghiệm.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-tsa">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. MÔN KHÁC -->
+                <div class="subject-portal-card theme-other" onclick="navToDashboard('other')">
+                    <div class="portal-banner">
+                        <h3><span class="portal-banner-icon">📁</span> Môn học khác</h3>
+                        <span class="portal-badge">Tổng hợp</span>
+                    </div>
+                    <div class="portal-body">
+                        <div class="portal-desc">Các bộ đề tổng hợp liên môn, đề kiểm tra định kỳ và bài tập mở rộng khác.</div>
+                        <div class="portal-footer">
+                            <span class="portal-count" id="portal-count-other">0 đề thi</span>
+                            <button class="portal-btn">Xem bộ đề →</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -315,15 +505,27 @@
         <div class="sidebar" id="main-sidebar">
             <div class="sidebar-title">Danh Mục Phân Môn</div>
             <button class="subject-tab-btn active" id="tab-all" onclick="filterSubject('all')"><span>📚 Tất cả đề</span></button>
-            <button class="subject-tab-btn" id="tab-tsa" onclick="filterSubject('tsa')"><span>TSA Bách Khoa</span></button>
-            <button class="subject-tab-btn" id="tab-toan" onclick="filterSubject('toan')"><span>Môn Toán</span></button>
-            <button class="subject-tab-btn" id="tab-ly" onclick="filterSubject('ly')"><span>Môn Vật Lý</span></button>
-            <button class="subject-tab-btn" id="tab-hoa" onclick="filterSubject('hoa')"><span>Môn Hóa Học</span></button>
-            <button class="subject-tab-btn" id="tab-other" onclick="filterSubject('other')"><span>Môn Khác</span></button>
+            <button class="subject-tab-btn" id="tab-toan" onclick="filterSubject('toan')"><span>📐 Môn Toán</span></button>
+            <button class="subject-tab-btn" id="tab-ly" onclick="filterSubject('ly')"><span>⚡ Môn Vật Lý</span></button>
+            <button class="subject-tab-btn" id="tab-hoa" onclick="filterSubject('hoa')"><span>🧪 Môn Hóa Học</span></button>
+            <button class="subject-tab-btn" id="tab-sinh" onclick="filterSubject('sinh')"><span>🧬 Môn Sinh Học</span></button>
+            <button class="subject-tab-btn" id="tab-anh" onclick="filterSubject('anh')"><span>🌐 Môn Tiếng Anh</span></button>
+            <button class="subject-tab-btn" id="tab-van" onclick="filterSubject('van')"><span>📖 Môn Ngữ Văn</span></button>
+            <button class="subject-tab-btn" id="tab-su" onclick="filterSubject('su')"><span>🏛️ Môn Lịch Sử</span></button>
+            <button class="subject-tab-btn" id="tab-dia" onclick="filterSubject('dia')"><span>🌍 Môn Địa Lý</span></button>
+            <button class="subject-tab-btn" id="tab-tsa" onclick="filterSubject('tsa')"><span>🧠 TSA Bách Khoa</span></button>
+            <button class="subject-tab-btn" id="tab-other" onclick="filterSubject('other')"><span>📁 Môn Khác</span></button>
         </div>
 
         <div class="dashboard-content">
             <div class="dashboard-container" id="grid-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span>←</span> <span>Quay lại Tủ Sách</span>
+                    </button>
+                </div>
+                <!-- WIDGET CỐ VẤN AI THEO MÔN -->
+                <div id="ai-advisor-container"></div>
                 <div class="top-action-bar">
                     <div style="display: flex; align-items: center; gap: 15px; flex: 1; min-width: 280px; flex-wrap: wrap;">
                         <strong id="current-filter-title" style="color: #0f172a; font-size: 15px; white-space: nowrap;">Đang xem: Tất cả đề thi</strong>
@@ -580,6 +782,7 @@
                     <option value="su">Môn Lịch Sử</option>
                     <option value="dia">Môn Địa Lý</option>
                     <option value="anh">Môn Tiếng Anh</option>
+                    <option value="other">Môn Khác</option>
                 </select>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 10px;">
@@ -714,7 +917,130 @@
 
         const dbName = "TSA_Library_Database_V7"; 
         const storeName = "library";
-        const subjectMap = { "toan": "TOÁN", "ly": "LÝ", "hoa": "HÓA", "sinh": "SINH", "van": "VĂN", "su": "SỬ", "dia": "ĐỊA", "anh": "ANH" };
+        const subjectMap = { 
+            "toan": "TOÁN", 
+            "ly": "LÝ", 
+            "hoa": "HÓA", 
+            "sinh": "SINH", 
+            "anh": "ANH", 
+            "van": "VĂN", 
+            "su": "SỬ", 
+            "dia": "ĐỊA", 
+            "tsa": "TSA", 
+            "other": "KHÁC" 
+        };
+
+        // MA TRẬN CHUYÊN ĐỀ CHUẨN SGK MỚI (GDPT 2018) & TSA
+        const SUBJECT_CURRICULUM_MATRIX = {
+            toan: {
+                name: "Môn Toán học 12 (GDPT 2018)",
+                topics: [
+                    "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số (Tính đơn điệu, cực trị, giá trị lớn nhất - nhỏ nhất, đường tiệm cận, bảng biến thiên & tương giao đồ thị)",
+                    "Vectơ và hệ toạ độ trong không gian Oxyz (Tọa độ vectơ, toạ độ điểm, tích vô hướng, phương trình mặt phẳng, đường thẳng, mặt cầu)",
+                    "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm (Khoảng biến thiên, khoảng tứ phân vị, phương sai, độ lệch chuẩn)",
+                    "Xác suất có điều kiện và công thức xác suất toàn phần, công thức Bayes",
+                    "Nguyên hàm, tích phân và ứng dụng hình học (Diện tích hình phẳng, thể tích khối tròn xoay)"
+                ],
+                notes: "Chương trình mới GDPT 2018 tuyệt đối KHÔNG có Số phức."
+            },
+            ly: {
+                name: "Môn Vật lý 12 (GDPT 2018)",
+                topics: [
+                    "Vật lý nhiệt (Nội năng, định luật 1 nhiệt động lực học, thang nhiệt độ Kelvin, nhiệt dung riêng, nhiệt nóng chảy riêng, nhiệt hoá hơi riêng)",
+                    "Khí lý tưởng (Mô hình động học phân tử, phương trình trạng thái khí lý tưởng pV/T = const, định luật Boyle, định luật Charles, áp suất chất khí)",
+                    "Từ trường (Cảm ứng từ, lực từ tác dụng lên đoạn dây mang dòng điện, cảm ứng điện từ, từ thông, suất điện động cảm ứng, hiện tượng tự cảm)",
+                    "Vật lý hạt nhân (Cấu tạo hạt nhân, năng lượng liên kết, độ hụt khối, hiện tượng phóng xạ, phản ứng phân hạch và phản ứng nhiệt hạch)"
+                ],
+                notes: "Chương trình mới GDPT 2018 KHÔNG dùng Dao động cơ, Sóng cơ hay Điện xoay chiều của sách cũ."
+            },
+            hoa: {
+                name: "Môn Hóa học 12 (GDPT 2018)",
+                topics: [
+                    "Ester - Lipid (Cấu tạo, tính chất ester, chất béo, xà phòng và chất giặt rửa tổng hợp)",
+                    "Carbohydrate (Glucose, Fructose, Saccharose, Maltose, Tinh bột, Cellulose)",
+                    "Hợp chất chứa Nitrogen (Amine, Amino acid, Peptide, Protein và Enzyme)",
+                    "Polymer và vật liệu polymer (Chất dẻo, tơ sợi, cao su, keo dán tổng hợp)",
+                    "Pin điện và điện phân (Cặp oxi hoá - khử, thế điện cực chuẩn, pin Galvani, ăn mòn kim loại, phương pháp điện phân dung dịch & nóng chảy)",
+                    "Sơ lược về kim loại chuyển tiếp dãy thứ nhất và Phức chất (Cấu tạo phức chất, liên kết cho nhận, danh pháp, màu sắc và ứng dụng)"
+                ],
+                notes: "Chương trình mới GDPT 2018 chú trọng Kim loại chuyển tiếp, Phức chất, Pin điện & Hoá học hữu cơ cấu trúc."
+            },
+            sinh: {
+                name: "Môn Sinh học 12 (GDPT 2018)",
+                topics: [
+                    "Di truyền phân tử và di truyền tế bào (Cơ chế truyền thông tin di truyền DNA - RNA - Protein, đột biến gene, đột biến nhiễm sắc thể)",
+                    "Tính quy luật của hiện tượng di truyền (Di truyền Mendel, tương tác gene, liên kết gene, hoán vị gene, di truyền liên kết giới tính)",
+                    "Di truyền học quần thể và di truyền học người (Cấu trúc vốn gene quần thể, định luật Hardy - Weinberg, tư vấn di truyền và phả hệ)",
+                    "Tiến hóa và các nhân tố tiến hóa (Học thuyết tiến hóa hiện đại, chọn lọc tự nhiên, di - nhập gene, phiêu bạt di truyền, hình thành loài)",
+                    "Sinh thái học và môi trường (Sinh thái học cá thể, quần thể, quần xã, hệ sinh thái, chuỗi và lưới thức ăn, bảo vệ đa dạng sinh học)"
+                ]
+            },
+            anh: {
+                name: "Môn Tiếng Anh (GDPT 2018)",
+                topics: [
+                    "Ngữ âm (Pronunciation & Word Stress)",
+                    "Ngữ pháp trọng điểm (Thì động từ, câu bị động, câu điều kiện, mệnh đề quan hệ, đảo ngữ, câu gián tiếp)",
+                    "Từ vựng & Cụm từ cố định (Collocations, Phrasal verbs, Idioms, Word forms)",
+                    "Giao tiếp xã hội và Chức năng ngôn ngữ (Situational responses)",
+                    "Kỹ năng Đọc hiểu (Cloze text, Reading for main ideas, Inferences, Contextual vocabulary)"
+                ]
+            },
+            van: {
+                name: "Môn Ngữ văn (GDPT 2018)",
+                topics: [
+                    "Đọc hiểu văn bản văn học (Hình tượng thẩm mỹ, giá trị tư tưởng nghệ thuật, phong cách biểu đạt)",
+                    "Đọc hiểu văn bản nghị luận và thông tin (Luận điểm, lí lẽ, dẫn chứng, thao tác lập luận, quan điểm tác giả)",
+                    "Tiếng Việt thực hành (Biện pháp nghệ thuật, ngữ cảnh, nghĩa của từ, liên kết văn bản)",
+                    "Viết bài nghị luận xã hội (Bàn luận về hiện tượng đời sống hoặc tư tưởng đạo lý)",
+                    "Viết bài nghị luận văn học (Phân tích, so sánh, cảm thụ đoạn trích/tác phẩm)"
+                ]
+            },
+            su: {
+                name: "Môn Lịch sử 12 (GDPT 2018)",
+                topics: [
+                    "Thế giới trong và sau Chiến tranh Lạnh (Trật tự thế giới hai cực, xu thế đa cực, toàn cầu hóa)",
+                    "ASEAN: Những chặng đường lịch sử (Hình thành, phát triển, mục tiêu và vị thế)",
+                    "Cách mạng tháng Tám 1945, Chiến tranh giải phóng dân tộc và bảo vệ Tổ quốc (1945 - 1975)",
+                    "Công cuộc Đổi mới ở Việt Nam từ năm 1986 đến nay (Thành tựu kinh tế, chính trị, xã hội và bài học)",
+                    "Lịch sử đối ngoại của Việt Nam thời hiện đại"
+                ]
+            },
+            dia: {
+                name: "Môn Địa lý 12 (GDPT 2018)",
+                topics: [
+                    "Địa lý tự nhiên Việt Nam (Vị trí, địa hình, khí hậu nhiệt đới ẩm gió mùa, sinh vật, khoáng sản)",
+                    "Địa lý dân cư Việt Nam (Cơ cấu dân số vàng/già hóa, phân bố dân cư, đô thị hóa, lao động việc làm)",
+                    "Địa lý các ngành kinh tế (Nông nghiệp công nghệ cao, công nghiệp chế biến/chế tạo, dịch vụ, logistics)",
+                    "Địa lý các vùng kinh tế và Vùng kinh tế trọng điểm (Phát triển kinh tế biển, liên kết vùng)"
+                ]
+            },
+            tsa: {
+                name: "Đánh giá tư duy TSA Bách Khoa",
+                topics: [
+                    "Tư duy Toán học (Mô hình hóa toán học, giải quyết vấn đề toán học, diễn giải số liệu, xác suất thống kê)",
+                    "Tư duy Đọc hiểu (Đọc hiểu văn bản khoa học, kỹ thuật, công nghệ, bài báo nghiên cứu, suy luận logic)",
+                    "Tư duy Khoa học / Giải quyết vấn đề (Vật lý, Hóa học, Sinh học thực nghiệm, phân tích dữ liệu thí nghiệm đời sống)"
+                ]
+            },
+            other: {
+                name: "Môn học khác / Đề thi tổng hợp",
+                topics: [
+                    "Kiến thức nền tảng và phương pháp tư duy suy luận",
+                    "Vận dụng kỹ năng giải quyết bài tập trắc nghiệm tổng hợp"
+                ]
+            }
+        };
+
+        // Cache cho Cố vấn AI và Lịch sử thi
+        let cachedAiAdvisor = {};
+        let cachedExamHistory = {};
+
+        function applyViewTransition(el) {
+            if (!el) return;
+            el.classList.remove('view-transition');
+            void el.offsetWidth;
+            el.classList.add('view-transition');
+        }
 
         function openDB() {
             return new Promise((resolve, reject) => {
@@ -784,7 +1110,9 @@
 
         // --- NAVIGATION ---
         function navToHome() {
-            document.getElementById('home-view').style.display = 'block';
+            const homeView = document.getElementById('home-view');
+            homeView.style.display = 'block';
+            applyViewTransition(homeView);
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
@@ -796,7 +1124,9 @@
 
         function navToDashboard(sub = 'all') {
             document.getElementById('home-view').style.display = 'none';
-            document.getElementById('dashboard-view').style.display = 'flex';
+            const dashView = document.getElementById('dashboard-view');
+            dashView.style.display = 'flex';
+            applyViewTransition(dashView);
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'block';
             document.getElementById('header-logo-brand').innerText = "bntz";
@@ -813,7 +1143,10 @@
             let totalSub = Object.keys(library).length;
             let totalAttempts = 0;
             let highScoresCount = 0;
-            let counts = { tsa: 0, toan: 0, ly: 0, hoa: 0 };
+            let counts = {
+                toan: 0, ly: 0, hoa: 0, sinh: 0, anh: 0,
+                van: 0, su: 0, dia: 0, tsa: 0, other: 0
+            };
 
             for (const [key, data] of Object.entries(library)) {
                 if (data.history) {
@@ -828,15 +1161,25 @@
                 else if (s === 'toan') counts.toan++;
                 else if (s === 'ly') counts.ly++;
                 else if (s === 'hoa') counts.hoa++;
+                else if (s === 'sinh') counts.sinh++;
+                else if (s === 'anh') counts.anh++;
+                else if (s === 'van') counts.van++;
+                else if (s === 'su') counts.su++;
+                else if (s === 'dia') counts.dia++;
+                else counts.other++;
             }
 
-            document.getElementById('stat-subjects').innerText = totalSub;
-            document.getElementById('stat-attempts').innerText = totalAttempts;
-            document.getElementById('stat-high-scores').innerText = highScoresCount;
-            document.getElementById('folder-count-tsa').innerText = `${counts.tsa} đề`;
-            document.getElementById('folder-count-toan').innerText = `${counts.toan} đề`;
-            document.getElementById('folder-count-ly').innerText = `${counts.ly} đề`;
-            document.getElementById('folder-count-hoa').innerText = `${counts.hoa} đề`;
+            const statSub = document.getElementById('stat-subjects');
+            const statAtt = document.getElementById('stat-attempts');
+            const statHigh = document.getElementById('stat-high-scores');
+            if (statSub) statSub.innerText = totalSub;
+            if (statAtt) statAtt.innerText = totalAttempts;
+            if (statHigh) statHigh.innerText = highScoresCount;
+
+            for (const [subKey, countVal] of Object.entries(counts)) {
+                const el = document.getElementById(`portal-count-${subKey}`);
+                if (el) el.innerText = `${countVal} đề thi`;
+            }
         }
 
         function toggleSidebar() { document.getElementById('main-sidebar').classList.toggle('collapsed'); }
@@ -1420,6 +1763,307 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
             if (input) input.focus();
         }
 
+        // --- CỐ VẤN HỌC TẬP AI (AI ADVISOR) ---
+        function formatAiMarkdown(text) {
+            if (!text) return '';
+            let out = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            
+            // Bold
+            out = out.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Italic
+            out = out.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Headers
+            out = out.replace(/^### (.*?)$/gm, '<h4 style="margin:12px 0 6px; color:#581c87; font-size:14.5px; font-weight:700;">$1</h4>');
+            out = out.replace(/^## (.*?)$/gm, '<h3 style="margin:14px 0 8px; color:#3b0764; font-size:16px; font-weight:800;">$1</h3>');
+            out = out.replace(/^# (.*?)$/gm, '<h2 style="margin:16px 0 10px; color:#1e1b4b; font-size:17px; font-weight:800;">$1</h2>');
+            // Bullet points
+            out = out.replace(/^[*-] (.*?)$/gm, '<li style="margin-bottom:4px;">$1</li>');
+            out = out.replace(/(<li.*<\/li>\s*)+/g, '<ul style="margin:6px 0 10px 18px; padding-left:4px;">$&</ul>');
+            // Paragraph breaks
+            out = out.replace(/\n\n/g, '<div style="margin-bottom:8px;"></div>');
+            out = out.replace(/\n/g, '<br>');
+            return out;
+        }
+
+        function renderAiAdvisorWidget(subject) {
+            const container = document.getElementById('ai-advisor-container');
+            if (!container) return;
+
+            if (!subject || subject === 'all') {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            container.style.display = 'block';
+            const sCode = subject.toLowerCase();
+            const advisor = cachedAiAdvisor[sCode];
+            const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || { name: subjectMap[sCode] || sCode.toUpperCase() };
+
+            if (advisor && advisor.adviceText) {
+                container.innerHTML = `
+                    <div class="ai-advisor-card">
+                        <div class="ai-advisor-header">
+                            <div class="ai-advisor-title">
+                                <span>📌 Đánh giá tiến độ từ Cố vấn AI (${matrix.name})</span>
+                                <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
+                                    <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
+                                </span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <span class="ai-advisor-meta">🕒 Cập nhật: ${advisor.updatedTimeStr || 'Vừa xong'} (${advisor.analyzedAttemptsCount || 1} bài làm gần nhất)</span>
+                                <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
+                                    <span>🔄</span> Phân tích lại
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ai-advisor-content" id="ai-advisor-body">
+                            ${formatAiMarkdown(advisor.adviceText)}
+                        </div>
+                    </div>`;
+            } else {
+                container.innerHTML = `
+                    <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
+                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
+                            <div class="ai-advisor-title">
+                                <span>📌 Cố vấn học tập AI - ${matrix.name}</span>
+                                <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
+                                    <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ai-advisor-empty">
+                            <div style="font-size: 28px; margin-bottom: 8px;">💡</div>
+                            <p style="margin-bottom: 12px; color: #475569; font-size: 14px; line-height: 1.5;">
+                                Bạn chưa có báo cáo cố vấn cho môn này. Hãy hoàn thành ít nhất 1 đề thi (tối thiểu 20% số câu) hoặc bấm nút <strong>Phân tích ngay</strong> bên dưới để AI đánh giá năng lực của bạn!
+                            </p>
+                            <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:8px 18px; border-radius:6px; font-size:13px; font-weight:bold; cursor:pointer; box-shadow:0 2px 4px rgba(124,58,237,0.25); display:inline-flex; align-items:center; gap:6px;">
+                                <span>⚡</span> Phân tích ngay
+                            </button>
+                        </div>
+                    </div>`;
+            }
+
+            if (window.MathJax) {
+                MathJax.typesetPromise([container]).catch(err => console.log('MathJax advisor render error', err));
+            }
+        }
+
+        async function triggerManualAiAdvisor(subject) {
+            const key = getGeminiApiKey();
+            if (!key) {
+                alert("Vui lòng cài đặt Gemini API Key để kích hoạt Cố vấn AI!");
+                openApiKeyModal();
+                return;
+            }
+            const indicator = document.getElementById('ai-advisor-loading-indicator');
+            if (indicator) indicator.style.display = 'inline-flex';
+            try {
+                await runBackgroundAiAdvisor(subject, true);
+            } catch (err) {
+                console.error("Manual AI advisor error:", err);
+                alert("Lỗi khi Cố vấn AI phân tích:\n" + err.message);
+            } finally {
+                if (indicator) indicator.style.display = 'none';
+            }
+        }
+
+        async function runBackgroundAiAdvisor(subject, isManual = false) {
+            const sCode = (subject || '').toLowerCase();
+            if (!sCode || sCode === 'all') return;
+
+            const apiKey = getGeminiApiKey();
+            if (!apiKey) {
+                if (isManual) {
+                    alert("Vui lòng cài đặt Gemini API Key để kích hoạt Cố vấn AI!");
+                    openApiKeyModal();
+                }
+                return;
+            }
+
+            // 1. Thu thập các lần làm bài gần nhất của môn học
+            let attempts = [];
+            if (cachedExamHistory && cachedExamHistory[sCode]) {
+                attempts = Object.values(cachedExamHistory[sCode]);
+            }
+
+            if (attempts.length === 0 && isCloudActive && cloudDB) {
+                try {
+                    const snap = await cloudDB.ref(`exam_history/${sCode}`).limitToLast(10).once('value');
+                    const val = snap.val();
+                    if (val) attempts = Object.values(val);
+                } catch (e) {
+                    console.warn("Read exam_history error:", e);
+                }
+            }
+
+            // Fallback: Quét lịch sử từ các đề trong thư viện hiện có nếu node exam_history chưa có
+            if (attempts.length === 0) {
+                for (const [key, exam] of Object.entries(library)) {
+                    const sub = exam.subject ? exam.subject.toLowerCase() : '';
+                    const match = (sCode === 'tsa') ? sub.includes('tsa') : (sub === sCode);
+                    if (match && exam.history && exam.history.length > 0) {
+                        exam.history.forEach(h => {
+                            const ansCount = h.answers ? Object.keys(h.answers).length : (h.correctCount || 0);
+                            const tot = h.totalQ || (h.questions ? h.questions.length : 0);
+                            let wrongList = [];
+                            if (h.wrongQs && h.questions) {
+                                wrongList = h.wrongQs.map(qIdx => {
+                                    const q = h.questions[qIdx] || {};
+                                    return {
+                                        qIndex: qIdx + 1,
+                                        question: (q.text || '').substring(0, 300),
+                                        selected: h.answers ? h.answers[qIdx] : null,
+                                        correct: q.correct_answer,
+                                        type: q.type || 'multiple_choice'
+                                    };
+                                });
+                            }
+                            attempts.push({
+                                timestamp: h.timestamp || Date.now(),
+                                dateStr: h.date || '',
+                                examTitle: exam.title || 'Đề thi',
+                                subject: sCode,
+                                score: parseFloat(h.score) || 0,
+                                correctCount: h.correctCount || 0,
+                                total: tot,
+                                answeredCount: ansCount,
+                                isEligibleForAi: tot > 0 && (ansCount / tot) >= 0.2,
+                                wrongQuestions: wrongList
+                            });
+                        });
+                    }
+                }
+            }
+
+            // 2. Chống spam: Lọc chỉ những lần làm bài hoàn thành >= 20% số câu
+            const validAttempts = attempts.filter(a => {
+                const tot = a.total || 0;
+                const ans = a.answeredCount !== undefined ? a.answeredCount : (a.correctCount || 0);
+                return tot > 0 && (ans / tot) >= 0.2;
+            });
+
+            if (validAttempts.length === 0) {
+                if (isManual) {
+                    alert("Chưa có đủ dữ liệu bài thi hợp lệ của môn này!\nBạn cần làm ít nhất 1 bài thi (hoàn thành tối thiểu 20% số câu) để Cố vấn AI có cơ sở đánh giá.");
+                }
+                return;
+            }
+
+            // Lấy 3 đến 5 lần làm bài gần nhất (sắp xếp tăng dần theo thời gian)
+            validAttempts.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            const recentAttempts = validAttempts.slice(-5);
+
+            // 3. Tóm tắt các lần thi và các câu hỏi làm sai để đưa vào Prompt
+            let attemptsSummary = "";
+            recentAttempts.forEach((att, idx) => {
+                attemptsSummary += `\n=== LẦN THI ${idx + 1} (${att.dateStr || 'Gần đây'}) ===\n`;
+                attemptsSummary += `Đề thi: "${att.examTitle}" | Điểm số: ${att.score}đ | Làm đúng: ${att.correctCount}/${att.total} câu\n`;
+                if (att.wrongQuestions && att.wrongQuestions.length > 0) {
+                    attemptsSummary += `Các câu hỏi làm sai hoặc chưa làm (${att.wrongQuestions.length} câu):\n`;
+                    att.wrongQuestions.slice(0, 12).forEach(w => {
+                        const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
+                        attemptsSummary += `- Câu ${w.qIndex}: "${qSnippet}"\n  + Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
+                    });
+                    if (att.wrongQuestions.length > 12) {
+                        attemptsSummary += `- ... và còn ${att.wrongQuestions.length - 12} câu sai khác.\n`;
+                    }
+                } else {
+                    attemptsSummary += `Kết quả hoàn hảo: Không có câu nào làm sai.\n`;
+                }
+            });
+
+            // 4. Lấy Ma trận GDPT 2018 chuẩn
+            const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || {
+                name: subjectMap[sCode] || sCode.toUpperCase(),
+                topics: ["Kiến thức nền tảng và bài tập thực hành"],
+                notes: ""
+            };
+
+            const advisorPrompt = `Bạn là một Cố Vấn Học Tập AI chuyên sâu về chương trình GDPT 2018 (và Đánh giá tư duy TSA Bách Khoa).
+Nhiệm vụ của bạn là phân tích tiến trình học tập của học sinh môn: ${matrix.name}.
+
+DANH MỤC CHUYÊN ĐỀ CHUẨN SGK MỚI (GDPT 2018):
+${matrix.topics.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+${matrix.notes ? `\nLƯU Ý QUAN TRỌNG: ${matrix.notes}\n` : ''}
+
+DỮ LIỆU LỊCH SỬ LÀM BÀI GẦN NHẤT CỦA HỌC SINH (Theo trình tự thời gian từ cũ đến mới):
+${attemptsSummary}
+
+YÊU CẦU ĐÁNH GIÁ CHUYÊN MÔN:
+1. ĐỌC NỘI DUNG CÁC CÂU LÀM SAI VÀ PHÂN LOẠI CHUYÊN ĐỀ: Tự động phân tích nội dung từng câu hỏi làm sai của học sinh và phân loại chính xác câu đó thuộc chuyên đề / bài học nào trong danh mục chuyên đề chuẩn GDPT 2018 ở trên. Tuyệt đối không dùng các chuyên đề của sách cũ.
+2. ĐÁNH GIÁ TIẾN ĐỘ & PHONG ĐỘ: Nhận xét sự thay đổi về điểm số và độ chính xác qua chuỗi các lần làm bài (tiến bộ, chững lại, hay thụt lùi).
+3. CHỈ RÕ 1-3 LỖ HỔNG KIẾN THỨC / DẠNG BÀI HAY SAI: Nêu rõ học sinh đang hổng kiến thức ở phần nào, dẫn chứng cụ thể từ câu hỏi làm sai.
+4. LỘ TRÌNH & HÀNH ĐỘNG CẢI THIỆN: Đưa ra 2-3 gợi ý hành động cụ thể để cải thiện điểm số ở lần làm bài tiếp theo.
+
+ĐỊNH DẠNG TRẢ LỜI (MARKDOWN GỌN GÀNG, KHOA HỌC):
+### 📈 1. Đánh Giá Tiến Bộ & Phong Độ
+(Nhận xét ngắn gọn 2-3 câu về điểm số và phong độ)
+
+### 🎯 2. Chuyên Đề Bị Hổng & Dạng Bài Thường Mắc Lỗi (Chuẩn GDPT 2018)
+(Liệt kê các chuyên đề cụ thể học sinh hay sai kèm dẫn chứng)
+
+### 💡 3. Chiến Lược Hành Động Cho Lần Luyện Tập Tiếp Theo
+(Lời khuyên súc tích, mang tính hành động cao)
+
+Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích và mạch lạc.`;
+
+            const model = getGeminiModel();
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: advisorPrompt }] }],
+                    generationConfig: {
+                        temperature: 0.4
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                let errMsg = response.statusText;
+                try {
+                    const errJson = await response.json();
+                    errMsg = errJson.error?.message || errMsg;
+                } catch {}
+                throw new Error(`Gemini API (${response.status}): ${errMsg}`);
+            }
+
+            const resData = await response.json();
+            const adviceText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!adviceText) throw new Error("Không nhận được nội dung phân tích từ Gemini AI.");
+
+            const latestAtt = recentAttempts[recentAttempts.length - 1];
+            const advisorRecord = {
+                subject: sCode,
+                subjectName: matrix.name,
+                updatedAt: Date.now(),
+                updatedTimeStr: new Date().toLocaleString('vi-VN'),
+                adviceText: adviceText,
+                analyzedAttemptsCount: recentAttempts.length,
+                latestScore: latestAtt.score
+            };
+
+            cachedAiAdvisor[sCode] = advisorRecord;
+
+            if (isCloudActive && cloudDB) {
+                try {
+                    await cloudDB.ref(`ai_advisor/${sCode}`).set(advisorRecord);
+                } catch (e) {
+                    console.error("Lỗi lưu ai_advisor lên Firebase:", e);
+                }
+            }
+
+            if (currentFilter === sCode) {
+                renderAiAdvisorWidget(sCode);
+            }
+        }
+
         function filterSubject(sub) {
             currentFilter = sub;
             const btns = document.querySelectorAll('.subject-tab-btn');
@@ -1427,12 +2071,25 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
             let activeBtn = document.getElementById(`tab-${sub}`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            const titleMap = { 'all': 'Tất cả đề thi', 'tsa': 'Môn TSA Bách Khoa', 'toan': 'Môn Toán', 'ly': 'Môn Vật Lý', 'hoa': 'Môn Hóa Học', 'other': 'Các Môn Khác' };
+            const titleMap = { 
+                'all': 'Tất cả đề thi', 
+                'toan': 'Môn Toán', 
+                'ly': 'Môn Vật Lý', 
+                'hoa': 'Môn Hóa Học',
+                'sinh': 'Môn Sinh Học',
+                'anh': 'Môn Tiếng Anh',
+                'van': 'Môn Ngữ Văn',
+                'su': 'Môn Lịch Sử',
+                'dia': 'Môn Địa Lý',
+                'tsa': 'Môn TSA Bách Khoa', 
+                'other': 'Các Môn Khác' 
+            };
             document.getElementById('current-filter-title').innerText = "Đang xem: " + (titleMap[sub] || 'Tất cả đề thi');
             
             document.getElementById('grid-container').style.display = 'block';
             document.getElementById('detail-view-panel').style.display = 'none';
 
+            renderAiAdvisorWidget(sub);
             renderDashboardGrid();
         }
 
@@ -1442,6 +2099,11 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
             if (s === 'toan') return `<span class="badge-sub sub-toan">TOÁN</span>`;
             if (s === 'ly') return `<span class="badge-sub sub-ly">LÝ</span>`;
             if (s === 'hoa') return `<span class="badge-sub sub-hoa">HÓA</span>`;
+            if (s === 'sinh') return `<span class="badge-sub sub-sinh">SINH</span>`;
+            if (s === 'anh') return `<span class="badge-sub sub-anh">ANH</span>`;
+            if (s === 'van') return `<span class="badge-sub sub-van">VĂN</span>`;
+            if (s === 'su') return `<span class="badge-sub sub-su">SỬ</span>`;
+            if (s === 'dia') return `<span class="badge-sub sub-dia">ĐỊA</span>`;
             return `<span class="badge-sub sub-other">${s.toUpperCase() || 'KHÁC'}</span>`;
         }
 
@@ -1457,11 +2119,16 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
 
             for (const [key, data] of Object.entries(library)) {
                 let s = data.subject ? data.subject.toLowerCase() : '';
-                if (currentFilter === 'tsa' && !s.includes('tsa')) continue;
-                if (currentFilter === 'toan' && s !== 'toan') continue;
-                if (currentFilter === 'ly' && s !== 'ly') continue;
-                if (currentFilter === 'hoa' && s !== 'hoa') continue;
-                if (currentFilter === 'other' && (s.includes('tsa') || s==='toan' || s==='ly' || s==='hoa')) continue;
+                
+                // Lọc theo phân môn
+                if (currentFilter !== 'all') {
+                    if (currentFilter === 'tsa' && !s.includes('tsa')) continue;
+                    else if (currentFilter === 'other') {
+                        const standardSubs = ['tsa', 'toan', 'ly', 'hoa', 'sinh', 'anh', 'van', 'su', 'dia'];
+                        if (standardSubs.some(std => std === 'tsa' ? s.includes('tsa') : s === std)) continue;
+                    }
+                    else if (currentFilter !== 'tsa' && s !== currentFilter) continue;
+                }
 
                 // Lọc theo từ khóa tìm kiếm (so khớp title hoặc name, hỗ trợ có dấu và không dấu)
                 if (normQuery) {
@@ -1480,6 +2147,11 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                 else if (s === 'toan') tintClass = 'sc-toan';
                 else if (s === 'ly') tintClass = 'sc-ly';
                 else if (s === 'hoa') tintClass = 'sc-hoa';
+                else if (s === 'sinh') tintClass = 'sc-sinh';
+                else if (s === 'anh') tintClass = 'sc-anh';
+                else if (s === 'van') tintClass = 'sc-van';
+                else if (s === 'su') tintClass = 'sc-su';
+                else if (s === 'dia') tintClass = 'sc-dia';
 
                 grid.innerHTML += `
                     <div class="subject-card ${tintClass}" onclick="handleCardClick('${key}', event)">
@@ -1595,7 +2267,9 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
             if (!data) return closeDetailView();
             
             document.getElementById('grid-container').style.display = 'none';
-            document.getElementById('detail-view-panel').style.display = 'block';
+            const detailPanel = document.getElementById('detail-view-panel');
+            detailPanel.style.display = 'block';
+            applyViewTransition(detailPanel);
             
             document.getElementById('detail-badge').innerHTML = getSubjectBadge(data.subject);
             document.getElementById('detail-title').innerText = data.title;
@@ -1633,7 +2307,9 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
         }
 
         function closeDetailView() {
-            document.getElementById('grid-container').style.display = 'block';
+            const gridContainer = document.getElementById('grid-container');
+            gridContainer.style.display = 'block';
+            applyViewTransition(gridContainer);
             document.getElementById('detail-view-panel').style.display = 'none';
             renderDashboardGrid();
         }
@@ -1689,7 +2365,9 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
         function launchQuizView(subCode) {
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('dashboard-view').style.display = 'none'; 
-            document.getElementById('quiz-view').style.display = 'flex';
+            const quizView = document.getElementById('quiz-view');
+            quizView.style.display = 'flex';
+            applyViewTransition(quizView);
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
             
             let sCode = subCode ? subCode.toLowerCase() : '';
@@ -1997,17 +2675,65 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                     </div>`;
             }
 
-            if (currentSession.mode !== 'review' && library[currentSession.subjectKey]) {
-                const subData = library[currentSession.subjectKey];
-                subData.history = subData.history || [];
+            if (currentSession.mode !== 'review') {
                 const now = new Date();
                 const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
                 
-                subData.history.unshift({
-                    date: timeStr, score: finalScoreVal, correctCount: correctCount, totalQ: totalQ, wrongQs: wrongQs, bookmarks: {...currentSession.bookmarks},
-                    questions: [...currentSession.questions], answers: {...currentSession.answers}, scoreCard: {...currentSession.scoreCard}
+                // 1. Lưu vào thư viện đề thi cục bộ & Cloud như cũ
+                if (library[currentSession.subjectKey]) {
+                    const subData = library[currentSession.subjectKey];
+                    subData.history = subData.history || [];
+                    subData.history.unshift({
+                        date: timeStr, score: finalScoreVal, correctCount: correctCount, totalQ: totalQ, wrongQs: wrongQs, bookmarks: {...currentSession.bookmarks},
+                        questions: [...currentSession.questions], answers: {...currentSession.answers}, scoreCard: {...currentSession.scoreCard}
+                    });
+                    await saveToDB(currentSession.subjectKey, subData);
+                }
+
+                // 2. Lưu vào node exam_history theo cấu trúc mới
+                const answeredCount = Object.keys(currentSession.answers || {}).length;
+                const isEligibleForAi = (totalQ > 0 && (answeredCount / totalQ) >= 0.2);
+                const examSub = (currentSession.subject ? currentSession.subject.toLowerCase() : 'other');
+
+                const wrongQuestionsList = wrongQs.map(qIdx => {
+                    const q = currentSession.questions[qIdx] || {};
+                    return {
+                        qIndex: qIdx + 1,
+                        question: (q.text || '').substring(0, 300),
+                        selected: currentSession.answers[qIdx] !== undefined ? currentSession.answers[qIdx] : null,
+                        correct: q.correct_answer !== undefined ? q.correct_answer : null,
+                        type: q.type || 'multiple_choice'
+                    };
                 });
-                await saveToDB(currentSession.subjectKey, subData);
+
+                const historyRecord = {
+                    timestamp: Date.now(),
+                    dateStr: timeStr,
+                    examId: currentSession.subjectKey || '',
+                    examTitle: currentSession.title || 'Đề thi',
+                    subject: examSub,
+                    score: parseFloat(finalScoreVal),
+                    correctCount: correctCount,
+                    total: totalQ,
+                    answeredCount: answeredCount,
+                    isEligibleForAi: isEligibleForAi,
+                    wrongQuestions: wrongQuestionsList
+                };
+
+                if (isCloudActive && cloudDB && examSub) {
+                    try {
+                        await cloudDB.ref(`exam_history/${examSub}`).push(historyRecord);
+                    } catch (err) {
+                        console.error("Lỗi khi lưu exam_history:", err);
+                    }
+                }
+
+                // 3. Tự động kích hoạt Cố vấn AI ngầm nếu thỏa mãn điều kiện chống spam >= 20% và có API Key
+                if (isEligibleForAi && getGeminiApiKey() && examSub && examSub !== 'all') {
+                    runBackgroundAiAdvisor(examSub, false).catch(err => {
+                        console.warn("Background AI Advisor notification:", err);
+                    });
+                }
             }
 
             scoreHtml += `<div class="wrong-list-container">
@@ -2112,6 +2838,19 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                     if (document.getElementById('home-view').style.display !== 'none') renderHomeStats();
                     if (document.getElementById('dashboard-view').style.display !== 'none') renderDashboardGrid();
                     if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel').style.display !== 'none') openDetailView(activeDetailKey);
+                });
+
+                // Lắng nghe realtime dữ liệu Cố vấn AI
+                cloudDB.ref('ai_advisor').on('value', (snapshot) => {
+                    cachedAiAdvisor = snapshot.val() || {};
+                    if (currentFilter && currentFilter !== 'all' && document.getElementById('dashboard-view').style.display !== 'none') {
+                        renderAiAdvisorWidget(currentFilter);
+                    }
+                });
+
+                // Lắng nghe realtime dữ liệu Lịch sử làm bài
+                cloudDB.ref('exam_history').on('value', (snapshot) => {
+                    cachedExamHistory = snapshot.val() || {};
                 });
             } else {
                 document.getElementById('cloud-sync-badge').innerText = "💻 Bộ nhớ máy (Offline)";
