@@ -384,6 +384,99 @@
             border-color: #fde68a;
         }
 
+        /* TẦNG 2 & TẦNG 3: BÁO CÁO CHIẾN THUẬT & CHẨN ĐOÁN LỖI SAI */
+        .exam-tactics-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 1.5px solid #a7f3d0;
+            border-left: 5px solid #10b981;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.08);
+            margin-bottom: 20px;
+        }
+        .exam-tactics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(16, 185, 129, 0.3);
+        }
+        .exam-tactics-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #065f46;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .exam-tactics-badge {
+            font-size: 11px;
+            background: #d1fae5;
+            color: #047857;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+        .exam-tactics-body {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #064e3b;
+        }
+        .exam-tactics-body strong { color: #047857; }
+        .exam-tactics-body p { margin-bottom: 6px; }
+        .exam-tactics-body ul, .exam-tactics-body ol { margin-left: 18px; margin-bottom: 6px; }
+
+        .ai-diagnostics-card {
+            margin-top: 18px;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border: 1.5px solid #ddd6fe;
+            border-left: 5px solid #7c3aed;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+            animation: fadeIn 0.3s ease;
+        }
+        .ai-diagnostics-card.loading {
+            background: #faf5ff;
+            border-color: #e9d5ff;
+            border-left-color: #a855f7;
+        }
+        .ai-diagnostics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(124, 58, 237, 0.25);
+        }
+        .ai-diagnostics-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #6b21a8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-diagnostics-badge {
+            font-size: 10.5px;
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .ai-diagnostics-body {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #3b0764;
+        }
+        .ai-diagnostics-body strong { color: #581c87; }
+        .ai-diagnostics-body p { margin-bottom: 6px; }
+        .ai-diagnostics-body ul, .ai-diagnostics-body ol { margin-left: 18px; margin-bottom: 6px; }
+
         .nav-panel { width: 340px; background: var(--panel-bg); border-left: 2px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; overflow-y: auto; }
         .timer-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .time-text { font-size: 24px; font-weight: bold; color: var(--tsa-blue); }
@@ -886,6 +979,8 @@
                     <button class="d-btn btn-practice" onclick="openSessionConfig('practice')">Luyện Tập</button>
                     <button class="d-btn btn-exam" onclick="openSessionConfig('exam')">Thi Thử</button>
                 </div>
+                <!-- TẦNG 2: BÁO CÁO CHIẾN THUẬT BÀI THI GẦN NHẤT -->
+                <div id="detail-exam-tactics-widget" style="display: none;"></div>
                 <h4 style="margin-bottom: 15px; color: #475569;">📊 Lịch sử làm bài</h4>
                 <div class="history-list" id="detail-history-list"></div>
             </div>
@@ -2396,6 +2491,57 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             return out;
         }
 
+        let isBackgroundAdvisorRunning = false;
+
+        function getQuestionAiDiagnosis(qBreakdown, idx) {
+            if (!qBreakdown || typeof qBreakdown !== 'object') return null;
+            return qBreakdown[idx] 
+                || qBreakdown[idx.toString()] 
+                || qBreakdown[idx + 1] 
+                || qBreakdown[(idx + 1).toString()] 
+                || qBreakdown[`câu_${idx}`] 
+                || qBreakdown[`câu_${idx + 1}`] 
+                || qBreakdown[`câu_${idx}`.toLowerCase()] 
+                || qBreakdown[`câu_${idx + 1}`.toLowerCase()] 
+                || qBreakdown[`Câu ${idx + 1}`]
+                || qBreakdown[`câu ${idx + 1}`]
+                || qBreakdown[`Câu_${idx + 1}`]
+                || null;
+        }
+
+        function renderDetailExamTacticsWidget(key) {
+            const widget = document.getElementById('detail-exam-tactics-widget');
+            if (!widget) return;
+            const data = library[key];
+            if (!data || !data.history || data.history.length === 0) {
+                widget.style.display = 'none';
+                widget.innerHTML = '';
+                return;
+            }
+            const latestHistory = data.history[0];
+            if (latestHistory && latestHistory.exam_tactics) {
+                widget.style.display = 'block';
+                widget.innerHTML = `
+                    <div class="exam-tactics-card">
+                        <div class="exam-tactics-header">
+                            <div class="exam-tactics-title">
+                                <span>⏱️ Báo Cáo Chiến Thuật Bài Thi Gần Nhất</span>
+                            </div>
+                            <span class="exam-tactics-badge">Lần ${data.history.length} • ${latestHistory.date || ''}</span>
+                        </div>
+                        <div class="exam-tactics-body">
+                            ${formatAiMarkdown(latestHistory.exam_tactics)}
+                        </div>
+                    </div>`;
+                if (window.MathJax) {
+                    MathJax.typesetPromise([widget]).catch(err => console.log('MathJax tactics render error', err));
+                }
+            } else {
+                widget.style.display = 'none';
+                widget.innerHTML = '';
+            }
+        }
+
         function renderAiAdvisorWidget(subject) {
             const container = document.getElementById('ai-advisor-container');
             if (!container) return;
@@ -2410,13 +2556,14 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             const sCode = subject.toLowerCase();
             const advisor = cachedAiAdvisor[sCode];
             const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || { name: subjectMap[sCode] || sCode.toUpperCase() };
+            const overviewText = advisor ? (advisor.subject_overview || advisor.adviceText) : null;
 
-            if (advisor && advisor.adviceText) {
+            if (overviewText) {
                 container.innerHTML = `
                     <div class="ai-advisor-card">
                         <div class="ai-advisor-header">
                             <div class="ai-advisor-title">
-                                <span>📌 Đánh giá tiến độ từ Cố vấn AI (${matrix.name})</span>
+                                <span>🎯 Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
@@ -2429,7 +2576,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             </div>
                         </div>
                         <div class="ai-advisor-content" id="ai-advisor-body">
-                            ${formatAiMarkdown(advisor.adviceText)}
+                            ${formatAiMarkdown(overviewText)}
                         </div>
                     </div>`;
             } else {
@@ -2437,7 +2584,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
                         <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
                             <div class="ai-advisor-title">
-                                <span>📌 Cố vấn học tập AI - ${matrix.name}</span>
+                                <span>🎯 Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
@@ -2479,7 +2626,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             }
         }
 
-        async function runBackgroundAiAdvisor(subject, isManual = false) {
+        async function runBackgroundAiAdvisor(subject, isManual = false, targetExamId = null, historyPushKey = null) {
             const sCode = (subject || '').toLowerCase();
             if (!sCode || sCode === 'all') return;
 
@@ -2525,7 +2672,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                                     if (q.type === 'true_false' && Array.isArray(q.options)) {
                                         subDetails = q.options.map((opt, oIdx) => {
                                             const userChoice = (h.answers && h.answers[qIdx] && h.answers[qIdx][oIdx]) || 'Bỏ trống';
-                                            const rightChoice = (q.correct_answer && q.correct_answer[oIdx]) || 'Chưa rõ';
+                                            const rightChoice = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) || 'Chưa rõ';
                                             const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
                                             return {
                                                 item: String.fromCharCode(97 + oIdx),
@@ -2538,6 +2685,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                                     }
                                     return {
                                         qIndex: qIdx + 1,
+                                        qZeroIndex: qIdx,
                                         question: (q.text || '').substring(0, 300),
                                         selected: h.answers ? h.answers[qIdx] : null,
                                         correct: q.correct_answer,
@@ -2552,6 +2700,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             attempts.push({
                                 timestamp: h.timestamp || Date.now(),
                                 dateStr: h.date || '',
+                                examId: key,
                                 examTitle: exam.title || 'Đề thi',
                                 subject: sCode,
                                 score: parseFloat(h.score) || 0,
@@ -2586,6 +2735,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             // Lấy 3 đến 5 lần làm bài gần nhất (sắp xếp tăng dần theo thời gian)
             validAttempts.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
             const recentAttempts = validAttempts.slice(-5);
+            const latestAtt = recentAttempts[recentAttempts.length - 1];
 
             // 3. Tóm tắt các lần thi và các câu hỏi làm sai để đưa vào Prompt (kèm bản đồ thời gian và chi tiết Đúng/Sai, Điền số)
             let attemptsSummary = "";
@@ -2621,34 +2771,35 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 if (trapList.length > 0) {
                     attemptsSummary += `⏳ BÁO ĐỘNG BẪY SA LẦY THỜI GIAN (Ngồi quá 3 phút nhưng vẫn SAI): ${trapList.join(', ')}\n`;
                 }
-
-                if (att.wrongQuestions && att.wrongQuestions.length > 0) {
-                    attemptsSummary += `Chi tiết các câu hỏi làm sai hoặc bỏ trống (${att.wrongQuestions.length} câu):\n`;
-                    att.wrongQuestions.slice(0, 15).forEach(w => {
-                        const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
-                        const sec = (w.timeSpent !== undefined) ? w.timeSpent : (timeMap[w.qIndex - 1] || 0);
-                        const timeTag = sec > 0 ? ` [Dừng ${sec}s]` : '';
-
-                        attemptsSummary += `- Câu ${w.qIndex} (${w.type || 'multiple_choice'})${timeTag}: "${qSnippet}"\n`;
-
-                        if (w.type === 'true_false' && w.subDetails && Array.isArray(w.subDetails)) {
-                            attemptsSummary += `  -> Dạng Đúng/Sai 4 ý:\n`;
-                            w.subDetails.forEach(sd => {
-                                attemptsSummary += `     + Ý (${sd.item}) "${sd.text}": Học sinh chọn [${sd.selected}] | Đáp án đúng [${sd.correct}] => ${sd.isCorrect ? 'ĐÚNG' : 'SAI (Nhầm lẫn)'}\n`;
-                            });
-                        } else if (w.type === 'short_answer' || w.type === 'fill_in_the_blanks') {
-                            attemptsSummary += `  -> Dạng Điền số ngắn: Học sinh nhập: [${JSON.stringify(w.selected ?? 'Bỏ trống')}] | Đáp án đúng: [${JSON.stringify(w.correct)}]\n`;
-                        } else {
-                            attemptsSummary += `  -> Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
-                        }
-                    });
-                    if (att.wrongQuestions.length > 15) {
-                        attemptsSummary += `- ... và còn ${att.wrongQuestions.length - 15} câu sai khác.\n`;
-                    }
-                } else {
-                    attemptsSummary += `Kết quả hoàn hảo: Không có câu nào làm sai.\n`;
-                }
             });
+
+            // Chi tiết danh sách câu sai của đề thi mới nhất để AI lập question_breakdown
+            let latestWrongQsSummary = "";
+            if (latestAtt.wrongQuestions && latestAtt.wrongQuestions.length > 0) {
+                latestWrongQsSummary = `DANH SÁCH CÁC CÂU LÀM SAI / BỎ TRỐNG CẦN CHẨN ĐOÁN TRONG ĐỀ THI GẦN NHẤT ("${latestAtt.examTitle}"):\n`;
+                latestAtt.wrongQuestions.forEach(w => {
+                    const qZero = (w.qZeroIndex !== undefined) ? w.qZeroIndex : (w.qIndex - 1);
+                    const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
+                    const sec = (w.timeSpent !== undefined) ? w.timeSpent : 0;
+                    const timeTag = sec > 0 ? ` [Dừng ${sec}s]` : '';
+                    
+                    latestWrongQsSummary += `\n* Index ${qZero} (Câu ${w.qIndex} trên đề - dạng ${w.type || 'multiple_choice'})${timeTag}:\n`;
+                    latestWrongQsSummary += `  Nội dung câu: "${qSnippet}"\n`;
+
+                    if (w.type === 'true_false' && w.subDetails && Array.isArray(w.subDetails)) {
+                        latestWrongQsSummary += `  Các ý Đúng/Sai 4 ý:\n`;
+                        w.subDetails.forEach(sd => {
+                            latestWrongQsSummary += `    - Ý (${sd.item}) "${sd.text}": Học sinh chọn [${sd.selected}] | Đáp án đúng [${sd.correct}] => ${sd.isCorrect ? 'ĐÚNG' : 'SAI (Nhầm lẫn)'}\n`;
+                        });
+                    } else if (w.type === 'short_answer' || w.type === 'fill_in_the_blanks') {
+                        latestWrongQsSummary += `  Học sinh nhập: [${JSON.stringify(w.selected ?? 'Bỏ trống')}] | Đáp án đúng: [${JSON.stringify(w.correct)}]\n`;
+                    } else {
+                        latestWrongQsSummary += `  Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
+                    }
+                });
+            } else {
+                latestWrongQsSummary = `Đề thi gần nhất hoàn hảo: Không có câu nào làm sai.`;
+            }
 
             // 4. Lấy Ma trận GDPT 2018 chuẩn
             const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || {
@@ -2664,40 +2815,38 @@ DANH MỤC CHUYÊN ĐỀ CHUẨN SGK MỚI (GDPT 2018):
 ${matrix.topics.map((t, i) => `${i + 1}. ${t}`).join('\n')}
 ${matrix.notes ? `\nLƯU Ý NGHIÊM NGẶT VỀ CHƯƠNG TRÌNH: ${matrix.notes}\n` : ''}
 
-DỮ LIỆU BÀI THI & BẢN ĐỒ THỜI GIAN LÀM BÀI (Từ cũ đến mới nhất):
+DỮ LIỆU CÁC LẦN LÀM BÀI GẦN NHẤT:
 ${attemptsSummary}
 
-YÊU CẦU PHÂN TÍCH CHUYÊN SÂU (BẮT BUỘC ĐÁP ỨNG ĐỦ 4 TRỌNG TÂM):
-1. PHÂN TÍCH CHIẾN THUẬT THỜI GIAN & TÂM LÝ PHÒNG THI (TIME & PSYCHOLOGY):
-   - BẮT LỖI ẨU (Careless Error): Phân tích cụ thể các câu học sinh làm dưới 20 giây nhưng bị sai. Chỉ rõ học sinh đã chủ quan đọc lướt, bỏ sót từ phủ định hay vội vàng chọn phương án bẫy trực giác.
-   - BẮT BẪY SA LẦY THỜI GIAN (Time Trap): Cảnh báo nếu học sinh ngồi chết dí ở 1 câu quá 3 - 4 phút mà vẫn sai. Giải thích nguy cơ mất điểm dây chuyền ở các câu dễ phía sau do tâm lý hoảng loạn vì thiếu thời gian.
-   - ĐÁNH GIÁ TỐC ĐỘ TRUNG BÌNH: So sánh tốc độ làm bài trung bình của học sinh với chuẩn áp lực phòng thi (Toán THPT ~1.8 phút/câu; Lý/Hóa ~1.25 phút/câu; TSA Bách Khoa ~1.5 phút/câu).
+${latestWrongQsSummary}
 
-2. CHẨN ĐOÁN SÂU CÁC DẠNG CÂU HỎI ĐẶC THÙ (TSA & GDPT 2018):
-   - TRẮC NGHIỆM ĐÚNG/SAI 4 Ý: Phân tích học sinh sai cụ thể ở ý con nào (a, b, c hay d). Chỉ rõ học sinh bị nhầm lẫn ở giả thiết, bước biến đổi toán học hay hiểu sai bản chất mệnh đề logic.
-   - TRẮC NGHIỆM ĐIỀN SỐ NGẮN: Phân tích nguyên nhân ra số sai (do lỗi làm tròn số theo yêu cầu đề bài, nhầm lẫn đơn vị tính, hay sai hoàn toàn phương pháp lập mô hình toán).
+YÊU CẦU ĐẦU RA:
+BẮT BUỘC TRẢ VỀ DUY NHẤT MỘT ĐỐI TƯỢNG JSON (KHÔNG KÈM BẤT KỲ VĂN BẢN NGOÀI NÀO KHÁC) GỒM ĐÚNG 3 TRƯỜNG:
+{
+  "subject_overview": "Đoạn văn ngắn gọn (tối đa 4-5 gạch đầu dòng) tổng hợp các chuyên đề SGK GDPT 2018 học sinh đang hổng nhiều nhất môn này dựa trên các lần làm bài và định hướng ôn tập vĩ mô. Tuyệt đối KHÔNG phân tích chi tiết từng câu lẻ tẻ ở mục này.",
+  "exam_tactics": "Phân tích chiến thuật của riêng đề thi gần nhất: tốc độ trung bình, cảnh báo cụ thể các câu lỗi ẩu (<20s), các câu bẫy sa lầy (>3p) và khuyến nghị phân bổ áp lực phòng thi.",
+  "question_breakdown": {
+    "0": "Phân tích chi tiết câu sai index 0: học sinh bị lừa ở điểm nào, gãy ở mệnh đề con nào (nếu là Đúng/Sai: chỉ rõ ý a, b, c hay d), hoặc nhầm lẫn đơn vị / công thức / làm tròn gì (nếu là Điền số)."
+  }
+}
 
-3. ĐỐI CHIẾU LỖ HỔNG KIẾN THỨC VÀO CHUYÊN ĐỀ CHUẨN GDPT 2018:
-   - Tự động phân loại các câu sai vào đúng danh mục chuyên đề SGK mới ở trên.
-   - Tuyệt đối không dùng chuyên đề cũ (Toán 12 không có Số phức; Vật lý 12 không dùng Dao động/Sóng/Điện xoay chiều cũ; Hóa học 12 chú trọng Pin điện & Phức chất; TSA chia rõ Tư duy Toán học, Đọc hiểu, Khoa học).
-
-4. KẾ HOẠCH TÁC CHIẾN CHO LẦN THI TIẾP THEO:
-   - Đưa ra 2-3 quy tắc hành động thực tế (kỷ luật thời gian: nguyên tắc cắt lỗ 2 phút, quy tắc kiểm tra lại các câu làm nhanh trước khi nộp, và bài tập trọng tâm cần cày lại).
-
-ĐỊNH DẠNG BẢN BÁO CÁO (MARKDOWN KHOA HỌC, THẲNG THẮN, SƯ PHẠM CAO):
-### ⏱️ 1. Phân Tích Chiến Thuật Thời Gian & Tâm Lý Phòng Thi
-(Chỉ rõ các câu lỗi ẩu < 20s, bẫy sa lầy > 3 phút và nhận xét tốc độ trung bình)
-
-### 🔬 2. Chẩn Đoán Sâu Dạng Câu Đặc Thù (Đúng/Sai 4 Ý & Điền Số)
-(Mổ xẻ chi tiết ý con bị gãy ở câu Đúng/Sai và nguyên nhân sai số ở câu Điền số ngắn)
-
-### 🎯 3. Lỗ Hổng Kiến Thức Chuyên Đề (Chuẩn GDPT 2018 & TSA)
-(Chỉ ra các chuyên đề học sinh bị hổng kiến thức kèm dẫn chứng)
-
-### 💡 4. Kế Hoạch Tác Chiến Cho Lần Thi Kế Tiếp
-(Quy tắc kỷ luật phòng thi và lộ trình cải thiện điểm số)
-
-Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang tính định hướng cao.`;
+HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
+1. "subject_overview":
+   - Tối đa 4-5 gạch đầu dòng (* hoặc -).
+   - Chỉ ra các chuyên đề chuẩn SGK 2018 học sinh bị hổng kiến thức nhiều nhất.
+   - Tuyệt đối KHÔNG liệt kê số thứ tự câu hỏi ở mục này để giữ giao diện tủ sách gọn gàng.
+2. "exam_tactics":
+   - Nhận xét nhịp độ và tốc độ làm bài trung bình so với chuẩn phòng thi (Toán ~1.8p/câu, Lý/Hóa ~1.25p/câu, TSA ~1.5p/câu).
+   - Chỉ rõ danh sách các câu lỗi ẩu (<20s) và cảnh báo tâm lý đọc lướt chủ quan.
+   - Chỉ rõ danh sách các câu bị bẫy sa lầy (>3p) và cảnh báo nguy cơ mất điểm dây chuyền.
+   - Đưa ra lời khuyên phân bổ áp lực phòng thi (nguyên tắc cắt lỗ 2 phút).
+3. "question_breakdown":
+   - Khóa (key) là chuỗi string biểu diễn chỉ số index (0-based) của các câu sai trong danh sách câu sai của đề gần nhất ở trên (ví dụ: "0", "1", "4", "12"...).
+   - Nếu đề thi không có câu nào sai, trả về object rỗng: {}.
+   - Giá trị (value) là phân tích sư phạm sâu sắc:
+     + Trắc nghiệm 1 đáp án / Nhiều đáp án: Chỉ rõ học sinh bị bẫy ở giả thiết nào, nhầm lẫn công thức nào hoặc nhầm dấu / tính toán chỗ nào.
+     + Trắc nghiệm Đúng/Sai 4 ý: Chỉ đích danh ý con nào (a, b, c hay d) học sinh bị sai, sai do đâu (hiểu sai bản chất hiện tượng, biến đổi toán sai, hay ngộ nhận mệnh đề đảo).
+     + Điền số ngắn: Chỉ rõ sai số do làm tròn, sai đơn vị đo hay sai phương pháp lập phương trình.`;
 
             const model = getGeminiModel();
             const currentThinkingLevel = getGeminiThinkingLevel();
@@ -2706,42 +2855,129 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
             const requestBody = {
                 contents: [{ parts: [{ text: advisorPrompt }] }],
                 generationConfig: {
-                    temperature: 0.4,
+                    temperature: 0.3,
+                    responseMimeType: "application/json",
                     thinkingConfig: {
                         thinkingLevel: currentThinkingLevel
                     }
                 }
             };
 
-            const response = await callGeminiGenerateContent(apiUrl, requestBody);
-
-            const resData = await response.json();
-            const adviceText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!adviceText) throw new Error("Không nhận được nội dung phân tích từ Gemini AI.");
-
-            const latestAtt = recentAttempts[recentAttempts.length - 1];
-            const advisorRecord = {
-                subject: sCode,
-                subjectName: matrix.name,
-                updatedAt: Date.now(),
-                updatedTimeStr: new Date().toLocaleString('vi-VN'),
-                adviceText: adviceText,
-                analyzedAttemptsCount: recentAttempts.length,
-                latestScore: latestAtt.score
-            };
-
-            cachedAiAdvisor[sCode] = advisorRecord;
-
-            if (isCloudActive && cloudDB) {
+            isBackgroundAdvisorRunning = true;
+            try {
+                let response;
                 try {
-                    await cloudDB.ref(`ai_advisor/${sCode}`).set(advisorRecord);
-                } catch (e) {
-                    console.error("Lỗi lưu ai_advisor lên Firebase:", e);
+                    response = await callGeminiGenerateContent(apiUrl, requestBody);
+                } catch (apiErr) {
+                    if (requestBody.generationConfig && requestBody.generationConfig.responseMimeType) {
+                        delete requestBody.generationConfig.responseMimeType;
+                        response = await callGeminiGenerateContent(apiUrl, requestBody);
+                    } else {
+                        throw apiErr;
+                    }
                 }
-            }
 
-            if (currentFilter === sCode) {
-                renderAiAdvisorWidget(sCode);
+                const resData = await response.json();
+                const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Không nhận được nội dung phân tích từ Gemini AI.");
+
+                let parsed = null;
+                try {
+                    parsed = JSON.parse(rawText.trim());
+                } catch (e) {
+                    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        try {
+                            parsed = JSON.parse(jsonMatch[0]);
+                        } catch (e2) {
+                            console.warn("Lỗi parse JSON bằng Regex:", e2);
+                        }
+                    }
+                }
+
+                if (!parsed || typeof parsed !== 'object') {
+                    parsed = {
+                        subject_overview: rawText,
+                        exam_tactics: "Không phân tách được chiến thuật chi tiết từ phản hồi AI.",
+                        question_breakdown: {}
+                    };
+                }
+
+                const targetKey = targetExamId || (activeDetailKey && library[activeDetailKey] && library[activeDetailKey].subject && library[activeDetailKey].subject.toLowerCase() === sCode ? activeDetailKey : null) || (latestAtt && latestAtt.examId ? latestAtt.examId : null);
+
+                // --- TẦNG 1: LƯU VÀ HIỂN THỊ TỔNG QUAN CHUYÊN ĐỀ (TỦ SÁCH MÔN HỌC) ---
+                const advisorRecord = {
+                    subject: sCode,
+                    subjectName: matrix.name,
+                    updatedAt: Date.now(),
+                    updatedTimeStr: new Date().toLocaleString('vi-VN'),
+                    subject_overview: parsed.subject_overview || "",
+                    adviceText: parsed.subject_overview || "", // Giữ tương thích ngược
+                    analyzedAttemptsCount: recentAttempts.length,
+                    latestScore: latestAtt.score
+                };
+                cachedAiAdvisor[sCode] = advisorRecord;
+
+                if (isCloudActive && cloudDB) {
+                    try {
+                        await cloudDB.ref(`ai_advisor/${sCode}`).set(advisorRecord);
+                    } catch (e) {
+                        console.error("Lỗi lưu ai_advisor lên Firebase:", e);
+                    }
+                }
+
+                if (currentFilter === sCode) {
+                    renderAiAdvisorWidget(sCode);
+                }
+
+                // --- TẦNG 2 & 3: LƯU VÀO LỊCH SỬ ĐỀ THI TRONG LIBRARY VÀ FIREBASE ---
+                if (targetKey && library[targetKey] && library[targetKey].history && library[targetKey].history.length > 0) {
+                    library[targetKey].history[0].exam_tactics = parsed.exam_tactics || "";
+                    library[targetKey].history[0].question_breakdown = parsed.question_breakdown || {};
+                    await saveToDB(targetKey, library[targetKey]);
+                }
+
+                if (isCloudActive && cloudDB) {
+                    try {
+                        if (historyPushKey) {
+                            await cloudDB.ref(`exam_history/${sCode}/${historyPushKey}`).update({
+                                exam_tactics: parsed.exam_tactics || "",
+                                question_breakdown: parsed.question_breakdown || {}
+                            });
+                        } else if (targetKey) {
+                            const snap = await cloudDB.ref(`exam_history/${sCode}`).orderByChild('examId').equalTo(targetKey).limitToLast(1).once('value');
+                            if (snap.exists()) {
+                                snap.forEach(child => {
+                                    child.ref.update({
+                                        exam_tactics: parsed.exam_tactics || "",
+                                        question_breakdown: parsed.question_breakdown || {}
+                                    });
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Lỗi cập nhật exam_history với AI breakdown:", e);
+                    }
+                }
+
+                // Cập nhật phiên làm bài hiện tại (nếu đang ở màn hình chấm thi hoặc xem lại)
+                if (currentSession && currentSession.isSubmitted) {
+                    currentSession.questionBreakdown = parsed.question_breakdown || {};
+                    currentSession.examTactics = parsed.exam_tactics || "";
+                    saveActiveExamSession();
+                    const quizView = document.getElementById('quiz-view');
+                    if (quizView && quizView.style.display !== 'none') {
+                        renderQuestion();
+                    }
+                }
+
+                // Cập nhật màn hình chi tiết đề thi nếu đang mở đề này
+                const detailPanel = document.getElementById('detail-view-panel');
+                if (detailPanel && detailPanel.style.display !== 'none' && activeDetailKey === targetKey) {
+                    renderDetailExamTacticsWidget(targetKey);
+                }
+            } finally {
+                isBackgroundAdvisorRunning = false;
             }
         }
 
@@ -2965,6 +3201,9 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
                 document.getElementById('detail-best-score').style.display = 'none';
             }
 
+            // TẦNG 2: Hiển thị Báo cáo chiến thuật bài thi gần nhất
+            renderDetailExamTacticsWidget(key);
+
             const hContainer = document.getElementById('detail-history-list');
             hContainer.innerHTML = '';
             if (!data.history || data.history.length === 0) {
@@ -3117,6 +3356,8 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
                 score: h.score,
                 scoreCard: h.scoreCard || {},
                 questionTimeSpent: h.timeSpent || {},
+                questionBreakdown: h.question_breakdown || {},
+                examTactics: h.exam_tactics || "",
                 hintsOpened: {}
             };
             saveActiveExamSession();
@@ -3382,6 +3623,39 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
             else if (q.type === 'short_answer') {
                 const disabledStr = currentSession.isSubmitted ? 'disabled' : '';
                 html += `<div class="short-ans-wrapper"><input type="text" ${disabledStr} class="short-ans-input" placeholder="Nhập đáp án..." value="${currentSession.answers[idx] || ''}" oninput="updateSA(this.value)" autocomplete="off"></div>`;
+            }
+
+            // TẦNG 3: Chẩn đoán lỗi sai AI (AI Diagnostics) khi bài thi đã nộp và câu này làm sai / bỏ trống
+            if (currentSession.isSubmitted) {
+                const isRight = currentSession.scoreCard && currentSession.scoreCard[idx];
+                if (!isRight) {
+                    const qDiag = getQuestionAiDiagnosis(currentSession.questionBreakdown, idx);
+                    if (qDiag) {
+                        html += `
+                        <div class="ai-diagnostics-card">
+                            <div class="ai-diagnostics-header">
+                                <div class="ai-diagnostics-title">
+                                    <span>🔬 Giải Phẫu Chi Tiết Lỗi Sai (AI Diagnostics)</span>
+                                </div>
+                                <span class="ai-diagnostics-badge">Chẩn đoán tự động</span>
+                            </div>
+                            <div class="ai-diagnostics-body">
+                                ${formatAiMarkdown(qDiag)}
+                            </div>
+                        </div>`;
+                    } else if (isBackgroundAdvisorRunning) {
+                        html += `
+                        <div class="ai-diagnostics-card loading">
+                            <div class="ai-diagnostics-header">
+                                <div class="ai-diagnostics-title">
+                                    <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:6px;"></span>
+                                    <span>Cố vấn AI đang phân tích mổ xẻ nguyên nhân sai ở câu này...</span>
+                                </div>
+                                <span class="ai-diagnostics-badge" style="background:#ede9fe; color:#6b21a8;">Đang chạy ngầm</span>
+                            </div>
+                        </div>`;
+                    }
+                }
             }
 
             area.innerHTML = html;
@@ -3775,7 +4049,9 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
                         scoreCard: { ...currentSession.scoreCard },
                         timeSpent: timeSpentMap,
                         totalActiveSeconds: totalActiveSeconds,
-                        avgSecondsPerQ: avgSecondsPerQ
+                        avgSecondsPerQ: avgSecondsPerQ,
+                        exam_tactics: "",
+                        question_breakdown: {}
                     });
                     await saveToDB(currentSession.subjectKey, subData);
                 }
@@ -3804,6 +4080,7 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
                     }
                     return {
                         qIndex: qIdx + 1,
+                        qZeroIndex: qIdx,
                         question: (q.text || '').substring(0, 300),
                         selected: currentSession.answers[qIdx] !== undefined ? currentSession.answers[qIdx] : null,
                         correct: q.correct_answer !== undefined ? q.correct_answer : null,
@@ -3841,7 +4118,7 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
 
                 // 3. Tự động kích hoạt Cố vấn AI ngầm nếu thỏa mãn điều kiện chống spam >= 20% và có API Key
                 if (isEligibleForAi && getGeminiApiKey() && examSub && examSub !== 'all') {
-                    runBackgroundAiAdvisor(examSub, false).catch(err => {
+                    runBackgroundAiAdvisor(examSub, false, currentSession.subjectKey, currentSession.lastHistoryPushKey).catch(err => {
                         console.warn("Background AI Advisor notification:", err);
                     });
                 }
