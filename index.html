@@ -429,6 +429,145 @@
         .ai-preview-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .ai-preview-badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: #ede9fe; color: #6d28d9; }
         .ai-preview-explanation { margin-top: 10px; padding: 10px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; color: #1e3a8a; line-height: 1.5; }
+
+        /* AI THINKING LEVEL SLIDER STYLES */
+        .badge-thinking-level {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-thinking-low {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+        .badge-thinking-medium {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+        .badge-thinking-high {
+            background: #fdf2f8;
+            color: #be185d;
+            border: 1px solid #fbcfe8;
+        }
+
+        .thinking-slider-wrap {
+            position: relative;
+            margin: 14px 6px 16px 6px;
+        }
+        #thinking-slider {
+            width: 100%;
+            height: 7px;
+            border-radius: 999px;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            background: linear-gradient(to right, #7c3aed 0%, #7c3aed 50%, #e2e8f0 50%, #e2e8f0 100%);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        #thinking-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--thumb-color, #7c3aed);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+        #thinking-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        #thinking-slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--thumb-color, #7c3aed);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+        #thinking-slider::-moz-range-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .thinking-track-notches {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+        }
+        .thinking-track-notches .notch {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #94a3b8;
+            opacity: 0.6;
+        }
+
+        .thinking-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .thinking-step-card {
+            padding: 9px 10px;
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .thinking-step-card:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .thinking-step-card.active.step-1 {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
+        }
+        .thinking-step-card.active.step-2 {
+            border-color: #7c3aed;
+            background: #f5f3ff;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.15);
+        }
+        .thinking-step-card.active.step-3 {
+            border-color: #db2777;
+            background: #fdf2f8;
+            box-shadow: 0 2px 6px rgba(219, 39, 119, 0.15);
+        }
+        .thinking-step-card .step-card-header {
+            font-size: 12px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .thinking-step-card .step-card-desc {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.35;
+        }
     </style>
 </head>
 <body>
@@ -778,7 +917,7 @@
 
     <!-- MODAL CÀI ĐẶT GEMINI API KEY -->
     <div id="api-key-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 480px;">
+        <div class="modal-content" style="width: 530px; max-width: 95vw;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="color: #7c3aed; margin: 0; font-size: 18px; display:flex; align-items:center; gap:8px;">
                     🔑 Cài Đặt Gemini API Key
@@ -787,7 +926,7 @@
             </div>
             
             <p style="font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.5;">
-                API Key được lưu an toàn trong <strong>localStorage</strong> của trình duyệt, không lưu lên server và không bị lộ ra mã nguồn công khai.
+                API Key và cấu hình được lưu an toàn trong <strong>localStorage</strong> của trình duyệt, không lưu lên server và không bị lộ ra mã nguồn công khai.
             </p>
 
             <div class="cfg-row">
@@ -818,7 +957,50 @@
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <!-- MỨC ĐỘ TƯ DUY CỦA AI (THINKING LEVEL SLIDER) -->
+            <div class="cfg-row" style="margin-top: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label for="thinking-slider" style="margin-bottom: 0; display: flex; align-items: center; gap: 6px;">
+                        <span>🧠</span> Mức độ tư duy của AI:
+                    </label>
+                    <span id="thinking-badge" class="badge-thinking-level badge-thinking-medium">⚖️ MEDIUM (Cân bằng)</span>
+                </div>
+
+                <div class="thinking-slider-wrap">
+                    <input type="range" min="1" max="3" step="1" id="thinking-slider" value="2" oninput="onThinkingSliderInput(this.value)">
+                    <div class="thinking-track-notches">
+                        <span class="notch"></span>
+                        <span class="notch"></span>
+                        <span class="notch"></span>
+                    </div>
+                </div>
+
+                <div class="thinking-steps-grid">
+                    <div class="thinking-step-card step-1" id="step-card-1" onclick="setThinkingLevelStep(1)">
+                        <div class="step-card-header">
+                            <span>⚡</span>
+                            <strong>Nấc 1: Nhanh (Low)</strong>
+                        </div>
+                        <div class="step-card-desc">Phản hồi siêu tốc, tiết kiệm token, phù hợp bóc tách đề cơ bản và gợi ý nhanh.</div>
+                    </div>
+                    <div class="thinking-step-card step-2 active" id="step-card-2" onclick="setThinkingLevelStep(2)">
+                        <div class="step-card-header">
+                            <span>⚖️</span>
+                            <strong>Nấc 2: Cân bằng (Medium)</strong>
+                        </div>
+                        <div class="step-card-desc">Mặc định: Cân bằng hài hòa giữa tốc độ xử lý và độ sâu lập luận.</div>
+                    </div>
+                    <div class="thinking-step-card step-3" id="step-card-3" onclick="setThinkingLevelStep(3)">
+                        <div class="step-card-header">
+                            <span>🧠</span>
+                            <strong>Nấc 3: Sâu sắc (High)</strong>
+                        </div>
+                        <div class="step-card-desc">Suy luận nhiều bước, bẻ bẫy logic phức tạp và xử lý toán vận dụng cao / TSA.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px;">
                 <button onclick="closeApiKeyModal()" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
                 <button onclick="saveApiKeySettings()" style="padding: 8px 18px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">💾 Lưu Cài Đặt</button>
             </div>
@@ -1461,6 +1643,104 @@
             return localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
         }
 
+        // --- GEMINI THINKING LEVEL CONFIG ---
+        const THINKING_LEVEL_MAP = {
+            1: 'LOW',
+            2: 'MEDIUM',
+            3: 'HIGH'
+        };
+        const THINKING_STEP_MAP = {
+            'LOW': 1,
+            'MEDIUM': 2,
+            'HIGH': 3
+        };
+
+        function getGeminiThinkingLevel() {
+            const raw = (localStorage.getItem('gemini_thinking_level') || 'MEDIUM').toUpperCase();
+            if (['LOW', 'MEDIUM', 'HIGH'].includes(raw)) return raw;
+            return 'MEDIUM';
+        }
+
+        function updateThinkingSliderUI(step) {
+            step = parseInt(step) || 2;
+            const slider = document.getElementById('thinking-slider');
+            if (slider) slider.value = step;
+
+            const badge = document.getElementById('thinking-badge');
+            const cards = [1, 2, 3].map(s => document.getElementById(`step-card-${s}`));
+
+            cards.forEach((card, idx) => {
+                if (!card) return;
+                if (idx + 1 === step) card.classList.add('active');
+                else card.classList.remove('active');
+            });
+
+            const level = THINKING_LEVEL_MAP[step] || 'MEDIUM';
+
+            if (badge) {
+                badge.className = 'badge-thinking-level';
+                if (step === 1) {
+                    badge.classList.add('badge-thinking-low');
+                    badge.innerHTML = '⚡ LOW (Nhanh)';
+                } else if (step === 2) {
+                    badge.classList.add('badge-thinking-medium');
+                    badge.innerHTML = '⚖️ MEDIUM (Cân bằng)';
+                } else if (step === 3) {
+                    badge.classList.add('badge-thinking-high');
+                    badge.innerHTML = '🧠 HIGH (Sâu sắc)';
+                }
+            }
+
+            if (slider) {
+                let percent = ((step - 1) / 2) * 100;
+                let color = step === 1 ? '#3b82f6' : (step === 2 ? '#7c3aed' : '#db2777');
+                slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${percent}%, #e2e8f0 ${percent}%, #e2e8f0 100%)`;
+                slider.style.setProperty('--thumb-color', color);
+            }
+        }
+
+        function onThinkingSliderInput(val) {
+            const step = parseInt(val) || 2;
+            const level = THINKING_LEVEL_MAP[step] || 'MEDIUM';
+            localStorage.setItem('gemini_thinking_level', level);
+            updateThinkingSliderUI(step);
+            updateAiKeyStatusBar();
+        }
+
+        function setThinkingLevelStep(step) {
+            onThinkingSliderInput(step);
+        }
+
+        async function callGeminiGenerateContent(apiUrl, requestBody) {
+            let res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!res.ok) {
+                let errMsg = res.statusText;
+                try {
+                    const errJson = await res.json();
+                    errMsg = errJson.error?.message || errMsg;
+                    // Fallback tự động nếu model không hỗ trợ thinkingConfig (ví dụ model 1.5):
+                    if (errMsg && errMsg.toLowerCase().includes('thinking') && requestBody.generationConfig?.thinkingConfig) {
+                        console.warn("Model không hỗ trợ thinkingConfig, đang tự động gửi lại không kèm thinking...", errMsg);
+                        const fallbackBody = JSON.parse(JSON.stringify(requestBody));
+                        delete fallbackBody.generationConfig.thinkingConfig;
+                        const fallbackRes = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(fallbackBody)
+                        });
+                        if (fallbackRes.ok) return fallbackRes;
+                    }
+                } catch {}
+                throw new Error(`Gemini API (${res.status}): ${errMsg}`);
+            }
+            return res;
+        }
+
         function updateHeaderKeyStatus() {
             const key = getGeminiApiKey();
             const label = document.getElementById('header-key-label');
@@ -1473,9 +1753,14 @@
         function openApiKeyModal() {
             const key = getGeminiApiKey();
             const model = getGeminiModel();
+            const thinkingLevel = getGeminiThinkingLevel();
             document.getElementById('gemini-key-input').value = key;
             const modelEl = document.getElementById('gemini-model-input') || document.getElementById('gemini-model-select');
             if (modelEl) modelEl.value = model;
+
+            const step = THINKING_STEP_MAP[thinkingLevel] || 2;
+            updateThinkingSliderUI(step);
+
             document.getElementById('api-key-modal').style.display = 'flex';
         }
 
@@ -1492,22 +1777,30 @@
             const key = document.getElementById('gemini-key-input').value.trim();
             const modelEl = document.getElementById('gemini-model-input') || document.getElementById('gemini-model-select');
             let model = (modelEl ? modelEl.value.trim() : '') || 'gemini-3.8-flash';
+
+            const slider = document.getElementById('thinking-slider');
+            const step = slider ? parseInt(slider.value) || 2 : 2;
+            const thinkingLevel = THINKING_LEVEL_MAP[step] || 'MEDIUM';
+
             localStorage.setItem('gemini_api_key', key);
             localStorage.setItem('gemini_model', model);
+            localStorage.setItem('gemini_thinking_level', thinkingLevel);
+
             updateHeaderKeyStatus();
             updateAiKeyStatusBar();
             closeApiKeyModal();
-            alert(`Đã lưu cấu hình thành công!\nModel kích hoạt: ${model}`);
+            alert(`Đã lưu cấu hình AI thành công!\n- Model: ${model}\n- Mức độ tư duy: ${thinkingLevel}`);
         }
 
         function updateAiKeyStatusBar() {
             const key = getGeminiApiKey();
             const model = getGeminiModel();
+            const thinkingLevel = getGeminiThinkingLevel();
             const textEl = document.getElementById('ai-key-status-text');
             if (!textEl) return;
             if (key) {
                 const masked = key.length > 8 ? key.substring(0, 6) + '...' + key.substring(key.length - 4) : '******';
-                textEl.innerHTML = `🔑 Đang dùng: <strong style="color:#7c3aed;">${masked}</strong> | Model: <strong>${model}</strong>`;
+                textEl.innerHTML = `🔑 Đang dùng: <strong style="color:#7c3aed;">${masked}</strong> | Model: <strong>${model}</strong> | Tư duy: <strong style="color:#7c3aed;">${thinkingLevel}</strong>`;
             } else {
                 textEl.innerHTML = `<span style="color:#dc2626;">⚠️ Chưa có Gemini API Key! Bấm Cài đặt để nhập key.</span>`;
             }
@@ -1747,6 +2040,7 @@ CẤU TRÚC JSON MẪU BẮT BUỘC TRẢ VỀ:
 
 CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
 
+                const currentThinkingLevel = getGeminiThinkingLevel();
                 const requestBody = {
                     contents: [
                         {
@@ -1758,36 +2052,18 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                     ],
                     generationConfig: {
                         temperature: 0.2,
-                        responseMimeType: "application/json"
+                        responseMimeType: "application/json",
+                        thinkingConfig: {
+                            thinkingLevel: currentThinkingLevel
+                        }
                     }
                 };
 
                 stepEl.innerText = "Gemini AI đang bóc tách và giải đề...";
-                hintEl.innerText = "Đang nhận diện các câu hỏi trắc nghiệm và tính toán đáp án...";
+                hintEl.innerText = `Đang nhận diện các câu hỏi trắc nghiệm và tính toán đáp án (Tư duy: ${currentThinkingLevel})...`;
 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) {
-                    let errDetail = "";
-                    try {
-                        const errJson = await response.json();
-                        errDetail = errJson.error?.message || response.statusText;
-                    } catch {
-                        errDetail = response.statusText;
-                    }
-                    if (response.status === 400 && errDetail.includes("API key")) {
-                        throw new Error("Gemini API Key không hợp lệ hoặc không có quyền truy cập. Vui lòng kiểm tra lại API Key.");
-                    } else if (response.status === 429) {
-                        throw new Error("Đã vượt quá giới hạn lượt gọi Gemini API (Rate Limit / Quota). Vui lòng thử lại sau giây lát.");
-                    } else {
-                        throw new Error(`Lỗi từ Gemini API (${response.status}): ${errDetail}`);
-                    }
-                }
+                const response = await callGeminiGenerateContent(apiUrl, requestBody);
 
                 const resData = await response.json();
                 const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -2364,27 +2640,20 @@ YÊU CẦU PHÂN TÍCH CHUYÊN SÂU (BẮT BUỘC ĐÁP ỨNG ĐỦ 4 TRỌNG T�
 Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang tính định hướng cao.`;
 
             const model = getGeminiModel();
+            const currentThinkingLevel = getGeminiThinkingLevel();
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: advisorPrompt }] }],
-                    generationConfig: {
-                        temperature: 0.4
+            const requestBody = {
+                contents: [{ parts: [{ text: advisorPrompt }] }],
+                generationConfig: {
+                    temperature: 0.4,
+                    thinkingConfig: {
+                        thinkingLevel: currentThinkingLevel
                     }
-                })
-            });
+                }
+            };
 
-            if (!response.ok) {
-                let errMsg = response.statusText;
-                try {
-                    const errJson = await response.json();
-                    errMsg = errJson.error?.message || errMsg;
-                } catch {}
-                throw new Error(`Gemini API (${response.status}): ${errMsg}`);
-            }
+            const response = await callGeminiGenerateContent(apiUrl, requestBody);
 
             const resData = await response.json();
             const adviceText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -3165,6 +3434,7 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
         async function fetchSocraticHintFromGemini(q) {
             const apiKey = getGeminiApiKey();
             const model = getGeminiModel();
+            const currentThinkingLevel = getGeminiThinkingLevel();
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
             const systemPrompt = `Bạn là gia sư Socratic định hướng tư duy. Hãy đưa ra DUY NHẤT 1-2 câu gợi mở mấu chốt (công thức cần dùng, điều kiện biên hoặc hướng suy luận logic). TUYỆT ĐỐI KHÔNG giải bài, KHÔNG đưa ra đáp án cuối cùng hay loại trừ phương án giúp học sinh. Mục tiêu là kích thích học sinh tự nghĩ ra bước tiếp theo.`;
@@ -3183,27 +3453,18 @@ Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang t�
 
             const userPrompt = `${systemPrompt}\n\nĐỀ BÀI CÂU HỎI (${typeLabels[q.type] || 'Trắc nghiệm'}):\n${contextStr}${q.text}${optionsStr}`;
 
-            const res = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: userPrompt }] }],
-                    generationConfig: {
-                        temperature: 0.3,
-                        maxOutputTokens: 250
+            const requestBody = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 1000,
+                    thinkingConfig: {
+                        thinkingLevel: currentThinkingLevel
                     }
-                })
-            });
+                }
+            };
 
-            if (!res.ok) {
-                let msg = res.statusText;
-                try {
-                    const errJson = await res.json();
-                    msg = errJson.error?.message || msg;
-                } catch {}
-                throw new Error(`Gemini API (${res.status}): ${msg}`);
-            }
-
+            const res = await callGeminiGenerateContent(apiUrl, requestBody);
             const resData = await res.json();
             const hint = resData.candidates?.[0]?.content?.parts?.[0]?.text;
             if (!hint) throw new Error("AI không trả về gợi ý nào.");
