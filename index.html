@@ -242,6 +242,148 @@
         .btn-edit { background: none; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; color: #555; }
         .btn-bookmark { background: #f0f0f0; border: 1px solid #ccc; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; color: #555; font-size: 13px; }
         
+        /* SOCRATIC HINT & TIME TRACKER STYLES */
+        .btn-socratic-hint {
+            background: #fefce8;
+            color: #854d0e;
+            border: 1px solid #fef08a;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .btn-socratic-hint:hover {
+            background: #fef08a;
+            border-color: #facc15;
+            color: #713f12;
+            transform: translateY(-1px);
+        }
+        .btn-socratic-hint.has-cached {
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+        .btn-socratic-hint.has-cached:hover {
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
+
+        .socratic-hint-wrapper {
+            margin: 12px 0 16px 0;
+            animation: viewFadeInUp 0.25s ease forwards;
+        }
+
+        .socratic-hint-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1.5px solid #fde68a;
+            border-left: 4.5px solid #d97706;
+            border-radius: 9px;
+            padding: 12px 16px;
+            box-shadow: 0 3px 8px rgba(217, 119, 6, 0.08);
+        }
+        .socratic-hint-box.loading {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            border-left-color: #64748b;
+        }
+        .socratic-hint-box.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            border-left-color: #ef4444;
+        }
+
+        .socratic-hint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(217, 119, 6, 0.25);
+        }
+        .socratic-hint-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .socratic-hint-badge {
+            font-size: 10.5px;
+            background: #fef08a;
+            color: #854d0e;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .socratic-close-btn {
+            background: none;
+            border: none;
+            font-size: 15px;
+            color: #92400e;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1;
+            transition: 0.2s;
+        }
+        .socratic-close-btn:hover {
+            background: rgba(0,0,0,0.06);
+            color: #713f12;
+        }
+
+        .socratic-hint-body {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #451a03;
+        }
+        .socratic-hint-body strong {
+            color: #78350f;
+        }
+        .socratic-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #cbd5e1;
+            border-top-color: #d97706;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        .q-time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.2px;
+        }
+        .q-time-badge.careless-warning {
+            color: #dc2626;
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+        .q-time-badge.trap-warning {
+            color: #d97706;
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
         .nav-panel { width: 340px; background: var(--panel-bg); border-left: 2px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; overflow-y: auto; }
         .timer-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .time-text { font-size: 24px; font-weight: bold; color: var(--tsa-blue); }
@@ -660,12 +802,20 @@
             </div>
 
             <div class="cfg-row">
-                <label>Mô hình Gemini (Model):</label>
-                <select id="gemini-model-select" class="cfg-input">
-                    <option value="gemini-2.5-flash">gemini-2.5-flash (Khuyên dùng - Nhanh & chính xác nhất)</option>
-                    <option value="gemini-1.5-flash">gemini-1.5-flash (Bản tiêu chuẩn)</option>
-                    <option value="gemini-2.0-flash">gemini-2.0-flash (Tốc độ cao)</option>
-                </select>
+                <label for="gemini-model-input">Tên Model AI (gemini_model):</label>
+                <div style="position: relative;">
+                    <input type="text" id="gemini-model-input" class="cfg-input" list="gemini-model-options" placeholder="gemini-3.8-flash">
+                    <datalist id="gemini-model-options">
+                        <option value="gemini-3.8-flash">gemini-3.8-flash (Mặc định)</option>
+                        <option value="gemini-2.5-flash">gemini-2.5-flash (Khuyên dùng - Nhanh & ổn định)</option>
+                        <option value="gemini-1.5-flash">gemini-1.5-flash (Bản tiêu chuẩn)</option>
+                        <option value="gemini-2.0-flash">gemini-2.0-flash (Tốc độ cao)</option>
+                        <option value="gemini-2.5-pro">gemini-2.5-pro (Mô hình tư duy sâu)</option>
+                    </datalist>
+                </div>
+                <div style="font-size: 11.5px; color: #64748b; margin-top: 5px;">
+                    💡 Chọn nhanh từ danh sách gợi ý hoặc tự do nhập bất kỳ tên model nào (mặc định: <code>gemini-3.8-flash</code>).
+                </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
@@ -1142,8 +1292,44 @@
         let aiSelectedFiles = [];
         let currentAiExtractedData = null;
         
-        let currentSession = { mode: '', subjectKey: '', subject: '', questions: [], answers: {}, bookmarks: {}, currentIndex: 0, totalSeconds: 0, intervalTotal: null, isSubmitted: false, scoreCard: {} };
+        let currentSession = { mode: '', subjectKey: '', subject: '', questions: [], answers: {}, bookmarks: {}, currentIndex: 0, totalSeconds: 0, intervalTotal: null, isSubmitted: false, scoreCard: {}, questionTimeSpent: {}, hintsOpened: {} };
         let cfgMode = '';
+        
+        // --- SOCRATIC HINT CACHE & TIME HELPERS ---
+        const socraticHintCache = {};
+
+        function getCachedSocraticHint(key) {
+            if (socraticHintCache[key]) return socraticHintCache[key];
+            try {
+                const stored = sessionStorage.getItem('socratic_' + key);
+                if (stored) {
+                    socraticHintCache[key] = stored;
+                    return stored;
+                }
+            } catch {}
+            return null;
+        }
+
+        function setCachedSocraticHint(key, text) {
+            socraticHintCache[key] = text;
+            try {
+                sessionStorage.setItem('socratic_' + key, text);
+            } catch {}
+        }
+
+        function getSocraticHintKey(q, idx) {
+            const examKey = currentSession.subjectKey || 'exam';
+            const textSnippet = (q && q.text) ? q.text.replace(/\s+/g, ' ').trim().substring(0, 35) : ('q' + idx);
+            return `${examKey}_${idx}_${textSnippet}`;
+        }
+
+        function formatSeconds(sec) {
+            if (!sec || isNaN(sec) || sec <= 0) return '0s';
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            if (m === 0) return `${s}s`;
+            return `${m}p ${s.toString().padStart(2, '0')}s`;
+        }
         
         let pasteTarget = 'question'; 
         let tempQuestionImage = null;
@@ -1272,7 +1458,7 @@
         }
 
         function getGeminiModel() {
-            return localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+            return localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
         }
 
         function updateHeaderKeyStatus() {
@@ -1288,7 +1474,8 @@
             const key = getGeminiApiKey();
             const model = getGeminiModel();
             document.getElementById('gemini-key-input').value = key;
-            document.getElementById('gemini-model-select').value = model;
+            const modelEl = document.getElementById('gemini-model-input') || document.getElementById('gemini-model-select');
+            if (modelEl) modelEl.value = model;
             document.getElementById('api-key-modal').style.display = 'flex';
         }
 
@@ -1303,13 +1490,14 @@
 
         function saveApiKeySettings() {
             const key = document.getElementById('gemini-key-input').value.trim();
-            const model = document.getElementById('gemini-model-select').value;
+            const modelEl = document.getElementById('gemini-model-input') || document.getElementById('gemini-model-select');
+            let model = (modelEl ? modelEl.value.trim() : '') || 'gemini-3.8-flash';
             localStorage.setItem('gemini_api_key', key);
             localStorage.setItem('gemini_model', model);
             updateHeaderKeyStatus();
             updateAiKeyStatusBar();
             closeApiKeyModal();
-            alert("Đã lưu cấu hình Gemini API Key thành công!");
+            alert(`Đã lưu cấu hình thành công!\nModel kích hoạt: ${model}`);
         }
 
         function updateAiKeyStatusBar() {
@@ -1853,14 +2041,16 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
+            // Inline code
+            out = out.replace(/`([^`]+)`/g, '<code style="background:#f1f5f9; color:#0f172a; padding:1px 5px; border-radius:4px; font-size:12px; font-family:monospace; border:1px solid #e2e8f0;">$1</code>');
             // Bold
             out = out.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             // Italic
             out = out.replace(/\*(.*?)\*/g, '<em>$1</em>');
             // Headers
-            out = out.replace(/^### (.*?)$/gm, '<h4 style="margin:12px 0 6px; color:#581c87; font-size:14.5px; font-weight:700;">$1</h4>');
-            out = out.replace(/^## (.*?)$/gm, '<h3 style="margin:14px 0 8px; color:#3b0764; font-size:16px; font-weight:800;">$1</h3>');
-            out = out.replace(/^# (.*?)$/gm, '<h2 style="margin:16px 0 10px; color:#1e1b4b; font-size:17px; font-weight:800;">$1</h2>');
+            out = out.replace(/^### (.*?)$/gm, '<h4 style="margin:16px 0 8px; color:#581c87; font-size:14.5px; font-weight:800; border-bottom:1px solid #f3e8ff; padding-bottom:4px; display:flex; align-items:center; gap:6px;">$1</h4>');
+            out = out.replace(/^## (.*?)$/gm, '<h3 style="margin:18px 0 8px; color:#3b0764; font-size:16px; font-weight:800;">$1</h3>');
+            out = out.replace(/^# (.*?)$/gm, '<h2 style="margin:20px 0 10px; color:#1e1b4b; font-size:17px; font-weight:800;">$1</h2>');
             // Bullet points
             out = out.replace(/^[*-] (.*?)$/gm, '<li style="margin-bottom:4px;">$1</li>');
             out = out.replace(/(<li.*<\/li>\s*)+/g, '<ul style="margin:6px 0 10px 18px; padding-left:4px;">$&</ul>');
@@ -1995,15 +2185,34 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                             if (h.wrongQs && h.questions) {
                                 wrongList = h.wrongQs.map(qIdx => {
                                     const q = h.questions[qIdx] || {};
+                                    let subDetails = null;
+                                    if (q.type === 'true_false' && Array.isArray(q.options)) {
+                                        subDetails = q.options.map((opt, oIdx) => {
+                                            const userChoice = (h.answers && h.answers[qIdx] && h.answers[qIdx][oIdx]) || 'Bỏ trống';
+                                            const rightChoice = (q.correct_answer && q.correct_answer[oIdx]) || 'Chưa rõ';
+                                            const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
+                                            return {
+                                                item: String.fromCharCode(97 + oIdx),
+                                                text: (opt || '').substring(0, 150),
+                                                selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
+                                                correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
+                                                isCorrect: isMatched
+                                            };
+                                        });
+                                    }
                                     return {
                                         qIndex: qIdx + 1,
                                         question: (q.text || '').substring(0, 300),
                                         selected: h.answers ? h.answers[qIdx] : null,
                                         correct: q.correct_answer,
-                                        type: q.type || 'multiple_choice'
+                                        type: q.type || 'multiple_choice',
+                                        timeSpent: (h.timeSpent && h.timeSpent[qIdx]) || 0,
+                                        subDetails: subDetails
                                     };
                                 });
                             }
+                            const tSpent = h.timeSpent || {};
+                            const totSec = h.totalActiveSeconds || Object.values(tSpent).reduce((a, b) => a + b, 0);
                             attempts.push({
                                 timestamp: h.timestamp || Date.now(),
                                 dateStr: h.date || '',
@@ -2014,6 +2223,9 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                                 total: tot,
                                 answeredCount: ansCount,
                                 isEligibleForAi: tot > 0 && (ansCount / tot) >= 0.2,
+                                timeSpent: tSpent,
+                                totalActiveSeconds: totSec,
+                                avgSecondsPerQ: tot > 0 && totSec > 0 ? Math.round(totSec / tot) : 0,
                                 wrongQuestions: wrongList
                             });
                         });
@@ -2039,19 +2251,63 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
             validAttempts.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
             const recentAttempts = validAttempts.slice(-5);
 
-            // 3. Tóm tắt các lần thi và các câu hỏi làm sai để đưa vào Prompt
+            // 3. Tóm tắt các lần thi và các câu hỏi làm sai để đưa vào Prompt (kèm bản đồ thời gian và chi tiết Đúng/Sai, Điền số)
             let attemptsSummary = "";
             recentAttempts.forEach((att, idx) => {
                 attemptsSummary += `\n=== LẦN THI ${idx + 1} (${att.dateStr || 'Gần đây'}) ===\n`;
                 attemptsSummary += `Đề thi: "${att.examTitle}" | Điểm số: ${att.score}đ | Làm đúng: ${att.correctCount}/${att.total} câu\n`;
+                
+                const timeMap = att.timeSpent || {};
+                const totSec = att.totalActiveSeconds || Object.values(timeMap).reduce((a, b) => a + b, 0);
+                const avgSec = att.avgSecondsPerQ || (att.total > 0 && totSec > 0 ? Math.round(totSec / att.total) : 0);
+                
+                if (totSec > 0) {
+                    attemptsSummary += `Thời gian làm bài: ${Math.floor(totSec / 60)} phút ${totSec % 60} giây (Tốc độ trung bình: ~${avgSec} giây/câu)\n`;
+                }
+
+                // Bắt lỗi ẩu (< 20s mà sai) & bẫy sa lầy (> 180s mà sai)
+                const carelessList = [];
+                const trapList = [];
                 if (att.wrongQuestions && att.wrongQuestions.length > 0) {
-                    attemptsSummary += `Các câu hỏi làm sai hoặc chưa làm (${att.wrongQuestions.length} câu):\n`;
-                    att.wrongQuestions.slice(0, 12).forEach(w => {
-                        const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
-                        attemptsSummary += `- Câu ${w.qIndex}: "${qSnippet}"\n  + Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
+                    att.wrongQuestions.forEach(w => {
+                        const sec = (w.timeSpent !== undefined) ? w.timeSpent : (timeMap[w.qIndex - 1] || 0);
+                        if (sec > 0 && sec < 20) {
+                            carelessList.push(`Câu ${w.qIndex} (${sec}s)`);
+                        } else if (sec >= 180) {
+                            trapList.push(`Câu ${w.qIndex} (${Math.floor(sec / 60)}p ${sec % 60}s)`);
+                        }
                     });
-                    if (att.wrongQuestions.length > 12) {
-                        attemptsSummary += `- ... và còn ${att.wrongQuestions.length - 12} câu sai khác.\n`;
+                }
+
+                if (carelessList.length > 0) {
+                    attemptsSummary += `⚡ BÁO ĐỘNG LỖI ẨU (Làm < 20 giây nhưng trả lời SAI): ${carelessList.join(', ')}\n`;
+                }
+                if (trapList.length > 0) {
+                    attemptsSummary += `⏳ BÁO ĐỘNG BẪY SA LẦY THỜI GIAN (Ngồi quá 3 phút nhưng vẫn SAI): ${trapList.join(', ')}\n`;
+                }
+
+                if (att.wrongQuestions && att.wrongQuestions.length > 0) {
+                    attemptsSummary += `Chi tiết các câu hỏi làm sai hoặc bỏ trống (${att.wrongQuestions.length} câu):\n`;
+                    att.wrongQuestions.slice(0, 15).forEach(w => {
+                        const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
+                        const sec = (w.timeSpent !== undefined) ? w.timeSpent : (timeMap[w.qIndex - 1] || 0);
+                        const timeTag = sec > 0 ? ` [Dừng ${sec}s]` : '';
+
+                        attemptsSummary += `- Câu ${w.qIndex} (${w.type || 'multiple_choice'})${timeTag}: "${qSnippet}"\n`;
+
+                        if (w.type === 'true_false' && w.subDetails && Array.isArray(w.subDetails)) {
+                            attemptsSummary += `  -> Dạng Đúng/Sai 4 ý:\n`;
+                            w.subDetails.forEach(sd => {
+                                attemptsSummary += `     + Ý (${sd.item}) "${sd.text}": Học sinh chọn [${sd.selected}] | Đáp án đúng [${sd.correct}] => ${sd.isCorrect ? 'ĐÚNG' : 'SAI (Nhầm lẫn)'}\n`;
+                            });
+                        } else if (w.type === 'short_answer' || w.type === 'fill_in_the_blanks') {
+                            attemptsSummary += `  -> Dạng Điền số ngắn: Học sinh nhập: [${JSON.stringify(w.selected ?? 'Bỏ trống')}] | Đáp án đúng: [${JSON.stringify(w.correct)}]\n`;
+                        } else {
+                            attemptsSummary += `  -> Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
+                        }
+                    });
+                    if (att.wrongQuestions.length > 15) {
+                        attemptsSummary += `- ... và còn ${att.wrongQuestions.length - 15} câu sai khác.\n`;
                     }
                 } else {
                     attemptsSummary += `Kết quả hoàn hảo: Không có câu nào làm sai.\n`;
@@ -2065,33 +2321,47 @@ CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON HỢP LỆ, KHÔNG CÓ BẤT KỲ VĂN 
                 notes: ""
             };
 
-            const advisorPrompt = `Bạn là một Cố Vấn Học Tập AI chuyên sâu về chương trình GDPT 2018 (và Đánh giá tư duy TSA Bách Khoa).
-Nhiệm vụ của bạn là phân tích tiến trình học tập của học sinh môn: ${matrix.name}.
+            const advisorPrompt = `Bạn là một Cố Vấn Học Tập & Chiến Thuật Thi Cử AI cấp cao, chuyên sâu về chương trình GDPT 2018 và Đề thi Đánh giá tư duy TSA Bách Khoa.
+Nhiệm vụ của bạn là phân tích toàn diện tiến trình luyện thi của học sinh đối với môn: ${matrix.name}.
 
 DANH MỤC CHUYÊN ĐỀ CHUẨN SGK MỚI (GDPT 2018):
 ${matrix.topics.map((t, i) => `${i + 1}. ${t}`).join('\n')}
-${matrix.notes ? `\nLƯU Ý QUAN TRỌNG: ${matrix.notes}\n` : ''}
+${matrix.notes ? `\nLƯU Ý NGHIÊM NGẶT VỀ CHƯƠNG TRÌNH: ${matrix.notes}\n` : ''}
 
-DỮ LIỆU LỊCH SỬ LÀM BÀI GẦN NHẤT CỦA HỌC SINH (Theo trình tự thời gian từ cũ đến mới):
+DỮ LIỆU BÀI THI & BẢN ĐỒ THỜI GIAN LÀM BÀI (Từ cũ đến mới nhất):
 ${attemptsSummary}
 
-YÊU CẦU ĐÁNH GIÁ CHUYÊN MÔN:
-1. ĐỌC NỘI DUNG CÁC CÂU LÀM SAI VÀ PHÂN LOẠI CHUYÊN ĐỀ: Tự động phân tích nội dung từng câu hỏi làm sai của học sinh và phân loại chính xác câu đó thuộc chuyên đề / bài học nào trong danh mục chuyên đề chuẩn GDPT 2018 ở trên. Tuyệt đối không dùng các chuyên đề của sách cũ.
-2. ĐÁNH GIÁ TIẾN ĐỘ & PHONG ĐỘ: Nhận xét sự thay đổi về điểm số và độ chính xác qua chuỗi các lần làm bài (tiến bộ, chững lại, hay thụt lùi).
-3. CHỈ RÕ 1-3 LỖ HỔNG KIẾN THỨC / DẠNG BÀI HAY SAI: Nêu rõ học sinh đang hổng kiến thức ở phần nào, dẫn chứng cụ thể từ câu hỏi làm sai.
-4. LỘ TRÌNH & HÀNH ĐỘNG CẢI THIỆN: Đưa ra 2-3 gợi ý hành động cụ thể để cải thiện điểm số ở lần làm bài tiếp theo.
+YÊU CẦU PHÂN TÍCH CHUYÊN SÂU (BẮT BUỘC ĐÁP ỨNG ĐỦ 4 TRỌNG TÂM):
+1. PHÂN TÍCH CHIẾN THUẬT THỜI GIAN & TÂM LÝ PHÒNG THI (TIME & PSYCHOLOGY):
+   - BẮT LỖI ẨU (Careless Error): Phân tích cụ thể các câu học sinh làm dưới 20 giây nhưng bị sai. Chỉ rõ học sinh đã chủ quan đọc lướt, bỏ sót từ phủ định hay vội vàng chọn phương án bẫy trực giác.
+   - BẮT BẪY SA LẦY THỜI GIAN (Time Trap): Cảnh báo nếu học sinh ngồi chết dí ở 1 câu quá 3 - 4 phút mà vẫn sai. Giải thích nguy cơ mất điểm dây chuyền ở các câu dễ phía sau do tâm lý hoảng loạn vì thiếu thời gian.
+   - ĐÁNH GIÁ TỐC ĐỘ TRUNG BÌNH: So sánh tốc độ làm bài trung bình của học sinh với chuẩn áp lực phòng thi (Toán THPT ~1.8 phút/câu; Lý/Hóa ~1.25 phút/câu; TSA Bách Khoa ~1.5 phút/câu).
 
-ĐỊNH DẠNG TRẢ LỜI (MARKDOWN GỌN GÀNG, KHOA HỌC):
-### 📈 1. Đánh Giá Tiến Bộ & Phong Độ
-(Nhận xét ngắn gọn 2-3 câu về điểm số và phong độ)
+2. CHẨN ĐOÁN SÂU CÁC DẠNG CÂU HỎI ĐẶC THÙ (TSA & GDPT 2018):
+   - TRẮC NGHIỆM ĐÚNG/SAI 4 Ý: Phân tích học sinh sai cụ thể ở ý con nào (a, b, c hay d). Chỉ rõ học sinh bị nhầm lẫn ở giả thiết, bước biến đổi toán học hay hiểu sai bản chất mệnh đề logic.
+   - TRẮC NGHIỆM ĐIỀN SỐ NGẮN: Phân tích nguyên nhân ra số sai (do lỗi làm tròn số theo yêu cầu đề bài, nhầm lẫn đơn vị tính, hay sai hoàn toàn phương pháp lập mô hình toán).
 
-### 🎯 2. Chuyên Đề Bị Hổng & Dạng Bài Thường Mắc Lỗi (Chuẩn GDPT 2018)
-(Liệt kê các chuyên đề cụ thể học sinh hay sai kèm dẫn chứng)
+3. ĐỐI CHIẾU LỖ HỔNG KIẾN THỨC VÀO CHUYÊN ĐỀ CHUẨN GDPT 2018:
+   - Tự động phân loại các câu sai vào đúng danh mục chuyên đề SGK mới ở trên.
+   - Tuyệt đối không dùng chuyên đề cũ (Toán 12 không có Số phức; Vật lý 12 không dùng Dao động/Sóng/Điện xoay chiều cũ; Hóa học 12 chú trọng Pin điện & Phức chất; TSA chia rõ Tư duy Toán học, Đọc hiểu, Khoa học).
 
-### 💡 3. Chiến Lược Hành Động Cho Lần Luyện Tập Tiếp Theo
-(Lời khuyên súc tích, mang tính hành động cao)
+4. KẾ HOẠCH TÁC CHIẾN CHO LẦN THI TIẾP THEO:
+   - Đưa ra 2-3 quy tắc hành động thực tế (kỷ luật thời gian: nguyên tắc cắt lỗ 2 phút, quy tắc kiểm tra lại các câu làm nhanh trước khi nộp, và bài tập trọng tâm cần cày lại).
 
-Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích và mạch lạc.`;
+ĐỊNH DẠNG BẢN BÁO CÁO (MARKDOWN KHOA HỌC, THẲNG THẮN, SƯ PHẠM CAO):
+### ⏱️ 1. Phân Tích Chiến Thuật Thời Gian & Tâm Lý Phòng Thi
+(Chỉ rõ các câu lỗi ẩu < 20s, bẫy sa lầy > 3 phút và nhận xét tốc độ trung bình)
+
+### 🔬 2. Chẩn Đoán Sâu Dạng Câu Đặc Thù (Đúng/Sai 4 Ý & Điền Số)
+(Mổ xẻ chi tiết ý con bị gãy ở câu Đúng/Sai và nguyên nhân sai số ở câu Điền số ngắn)
+
+### 🎯 3. Lỗ Hổng Kiến Thức Chuyên Đề (Chuẩn GDPT 2018 & TSA)
+(Chỉ ra các chuyên đề học sinh bị hổng kiến thức kèm dẫn chứng)
+
+### 💡 4. Kế Hoạch Tác Chiến Cho Lần Thi Kế Tiếp
+(Quy tắc kỷ luật phòng thi và lộ trình cải thiện điểm số)
+
+Lưu ý: Viết súc tích, chuyên môn sâu, lời lẽ thẳng thắn mang tính định hướng cao.`;
 
             const model = getGeminiModel();
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -2377,7 +2647,7 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
                         <div class="history-item">
                             <div>
                                 <strong style="color: var(--tsa-blue); font-size:15px;">Lần ${data.history.length - idx}</strong> - <span style="font-size: 13px; color: #64748b;">${h.date}</span>
-                                <div style="font-size: 13px; margin-top: 5px;">Điểm: <strong style="color: #be123c; font-size:16px;">${h.score}</strong> | Đúng: ${h.correctCount}/${h.totalQ}</div>
+                                <div style="font-size: 13px; margin-top: 5px;">Điểm: <strong style="color: #be123c; font-size:16px;">${h.score}</strong> | Đúng: ${h.correctCount}/${h.totalQ} ${h.totalActiveSeconds ? `| ⏱️ ${formatSeconds(h.totalActiveSeconds)}` : ''}</div>
                             </div>
                             <div style="display:flex; gap:10px; align-items:center;">
                                 ${canReview ? `<button class="btn-review-exam" onclick="reviewPastExam('${key}', ${idx})">🔍 Xem lại bài</button>` : `<span style="font-size:11px; color:#94a3b8; font-style:italic;">Bản cũ k xem đc</span>`}
@@ -2438,7 +2708,22 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
 
             closeSessionConfig();
             
-            currentSession = { mode: cfgMode, subjectKey: activeDetailKey, subject: data.subject, title: data.title, questions: qList, answers: {}, bookmarks: {}, currentIndex: 0, totalSeconds: timeSeconds, intervalTotal: null, isSubmitted: false, scoreCard: {} };
+            currentSession = { 
+                mode: cfgMode, 
+                subjectKey: activeDetailKey, 
+                subject: data.subject, 
+                title: data.title, 
+                questions: qList, 
+                answers: {}, 
+                bookmarks: {}, 
+                currentIndex: 0, 
+                totalSeconds: timeSeconds, 
+                intervalTotal: null, 
+                isSubmitted: false, 
+                scoreCard: {},
+                questionTimeSpent: {},
+                hintsOpened: {}
+            };
             
             launchQuizView(data.subject);
             startTimers(); renderNavGrid(); renderQuestion();
@@ -2470,7 +2755,22 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
             let h = data.history[idx];
             if (!h.questions || !h.answers) return alert("Lịch sử cũ đéo lưu chi tiết, từ nay nộp bài mới xem lại được m nhé!");
             
-            currentSession = { mode: 'review', subjectKey: key, subject: data.subject, title: data.title, questions: h.questions, answers: h.answers, bookmarks: h.bookmarks || {}, currentIndex: 0, totalSeconds: 0, intervalTotal: null, isSubmitted: true, scoreCard: h.scoreCard || {} };
+            currentSession = { 
+                mode: 'review', 
+                subjectKey: key, 
+                subject: data.subject, 
+                title: data.title, 
+                questions: h.questions, 
+                answers: h.answers, 
+                bookmarks: h.bookmarks || {}, 
+                currentIndex: 0, 
+                totalSeconds: 0, 
+                intervalTotal: null, 
+                isSubmitted: true, 
+                scoreCard: h.scoreCard || {},
+                questionTimeSpent: h.timeSpent || {},
+                hintsOpened: {}
+            };
             
             launchQuizView(data.subject);
             
@@ -2526,11 +2826,29 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
             clearInterval(currentSession.intervalTotal);
             currentSession.intervalTotal = setInterval(() => {
                 if (currentSession.isSubmitted) return;
-                if (currentSession.mode === 'exam') { currentSession.totalSeconds--; if (currentSession.totalSeconds <= 0) submitExam(true); } 
-                else { currentSession.totalSeconds++; }
+                if (currentSession.mode === 'exam') { 
+                    currentSession.totalSeconds--; 
+                    if (currentSession.totalSeconds <= 0) submitExam(true); 
+                } else { 
+                    currentSession.totalSeconds++; 
+                }
                 let label = currentSession.mode === 'exam' ? "Thời gian còn lại" : "Thời gian làm bài";
-                document.getElementById('timer-label').innerText = label;
-                document.getElementById('total-timer').innerText = `${Math.floor(currentSession.totalSeconds / 60)}:${(currentSession.totalSeconds % 60).toString().padStart(2, '0')}`;
+                const timerLbl = document.getElementById('timer-label');
+                if (timerLbl) timerLbl.innerText = label;
+                const totTimer = document.getElementById('total-timer');
+                if (totTimer) totTimer.innerText = `${Math.floor(currentSession.totalSeconds / 60)}:${(currentSession.totalSeconds % 60).toString().padStart(2, '0')}`;
+
+                // Đếm thời gian cho câu hỏi hiện tại
+                if (currentSession.currentIndex !== undefined && currentSession.currentIndex !== null) {
+                    const curIdx = currentSession.currentIndex;
+                    currentSession.questionTimeSpent = currentSession.questionTimeSpent || {};
+                    currentSession.questionTimeSpent[curIdx] = (currentSession.questionTimeSpent[curIdx] || 0) + 1;
+                    
+                    const qBadge = document.getElementById('q-time-spent-badge');
+                    if (qBadge) {
+                        qBadge.innerText = `⏱️ ${formatSeconds(currentSession.questionTimeSpent[curIdx])}`;
+                    }
+                }
             }, 1000);
         }
 
@@ -2576,8 +2894,48 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
             } else { contextArea.style.display = 'none'; }
 
             const typeLabels = { 'multiple_choice': 'Trắc nghiệm 1 đáp án', 'true_false': 'Đúng/Sai', 'short_answer': 'Điền đáp án ngắn', 'multiple_response': 'Chọn nhiều đáp án', 'fill_in_the_blanks': 'Điền khuyết' };
-            let html = `<div class="q-number"><span>Câu ${idx + 1} (${typeLabels[q.type]}):</span><button class="btn-edit" onclick="openEditModal()">Sửa đề & Đ.án</button></div>`;
+            
+            // Xử lý huy hiệu thời gian làm bài của câu này
+            const secSpent = (currentSession.questionTimeSpent && currentSession.questionTimeSpent[idx]) || 0;
+            let timeBadgeClass = "q-time-badge";
+            let timeBadgeExtra = "";
+            if (currentSession.isSubmitted) {
+                const isRight = currentSession.scoreCard[idx];
+                if (!isRight) {
+                    if (secSpent > 0 && secSpent < 20) {
+                        timeBadgeClass += " careless-warning";
+                        timeBadgeExtra = " (Làm vội / ẩu)";
+                    } else if (secSpent >= 180) {
+                        timeBadgeClass += " trap-warning";
+                        timeBadgeExtra = " (Sa lầy > 3p)";
+                    }
+                }
+            }
+            const timeBadgeHtml = `<span class="${timeBadgeClass}" id="q-time-spent-badge" title="Thời gian dừng lại ở câu này">⏱️ ${formatSeconds(secSpent)}${timeBadgeExtra}</span>`;
+            
+            // Xử lý gợi ý tư duy Socratic
+            const cacheKey = getSocraticHintKey(q, idx);
+            const hasCachedHint = !!getCachedSocraticHint(cacheKey);
+            const isHintOpen = !!(currentSession.hintsOpened && currentSession.hintsOpened[idx]);
+
+            let html = `
+            <div class="q-number">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span>Câu ${idx + 1} (${typeLabels[q.type] || 'Trắc nghiệm'}):</span>
+                    ${timeBadgeHtml}
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <button class="btn-socratic-hint ${hasCachedHint ? 'has-cached' : ''}" id="btn-hint-${idx}" onclick="toggleSocraticHint(${idx})" title="Nhận gợi mở định hướng tư duy Socratic (không mớm đáp án)">
+                        💡 Gợi ý tư duy ${hasCachedHint ? '✓' : ''}
+                    </button>
+                    <button class="btn-edit" onclick="openEditModal()">Sửa đề & Đ.án</button>
+                </div>
+            </div>`;
+
             if (q.image) html += `<img src="${q.image}" class="q-image" style="display:block;">`;
+
+            // Khung chứa Gợi ý tư duy Socratic
+            html += `<div id="socratic-hint-container-${idx}" class="socratic-hint-wrapper" style="display: ${isHintOpen ? 'block' : 'none'};"></div>`;
 
             let formattedText = q.text.replace(/\n/g, '<br>');
 
@@ -2665,9 +3023,191 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
 
             area.innerHTML = html;
             
+            // Nếu khung gợi ý đang ở trạng thái mở và có nội dung trong cache -> Render ngay
+            if (isHintOpen && hasCachedHint) {
+                renderSocraticHintHtml(idx, getCachedSocraticHint(cacheKey));
+            }
+            
             const bmBtn = document.getElementById('btn-bookmark');
-            bmBtn.style.background = currentSession.bookmarks[idx] ? '#faad14' : '#f0f0f0'; bmBtn.style.color = currentSession.bookmarks[idx] ? 'white' : '#555';
+            if (bmBtn) {
+                bmBtn.style.background = currentSession.bookmarks[idx] ? '#faad14' : '#f0f0f0';
+                bmBtn.style.color = currentSession.bookmarks[idx] ? 'white' : '#555';
+            }
             if (window.MathJax) MathJax.typesetPromise([contextArea, area]);
+        }
+
+        // --- TÍNH NĂNG GỢI Ý TƯ DUY SOCRATIC ---
+        async function toggleSocraticHint(idx) {
+            const q = currentSession.questions[idx];
+            if (!q) return;
+
+            currentSession.hintsOpened = currentSession.hintsOpened || {};
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (!container) return;
+
+            const cacheKey = getSocraticHintKey(q, idx);
+
+            // Nếu đang mở và có nội dung -> Thu gọn
+            if (container.style.display !== 'none' && container.innerHTML.trim() !== '') {
+                container.style.display = 'none';
+                currentSession.hintsOpened[idx] = false;
+                return;
+            }
+
+            // Mở khung gợi ý
+            container.style.display = 'block';
+            currentSession.hintsOpened[idx] = true;
+
+            // Kiểm tra cache (sessionStorage / RAM)
+            const cached = getCachedSocraticHint(cacheKey);
+            if (cached) {
+                renderSocraticHintHtml(idx, cached);
+                return;
+            }
+
+            // Nếu chưa có trong cache -> Gọi Gemini API
+            const apiKey = getGeminiApiKey();
+            if (!apiKey) {
+                alert("Vui lòng cài đặt Gemini API Key để nhận Gợi ý tư duy Socratic!");
+                openApiKeyModal();
+                container.style.display = 'none';
+                currentSession.hintsOpened[idx] = false;
+                return;
+            }
+
+            renderSocraticHintLoading(idx);
+
+            try {
+                const hintText = await fetchSocraticHintFromGemini(q);
+                setCachedSocraticHint(cacheKey, hintText);
+                renderSocraticHintHtml(idx, hintText);
+
+                const btn = document.getElementById(`btn-hint-${idx}`);
+                if (btn) {
+                    btn.classList.add('has-cached');
+                    btn.innerHTML = '💡 Gợi ý tư duy ✓';
+                }
+            } catch (err) {
+                console.error("Socratic hint error:", err);
+                renderSocraticHintError(idx, err.message);
+            }
+        }
+
+        function closeSocraticHint(idx) {
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (container) container.style.display = 'none';
+            if (currentSession.hintsOpened) currentSession.hintsOpened[idx] = false;
+        }
+
+        function renderSocraticHintHtml(idx, hintText) {
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (!container) return;
+            container.innerHTML = `
+                <div class="socratic-hint-box">
+                    <div class="socratic-hint-header">
+                        <div class="socratic-hint-title">
+                            <span>💡 Gợi Mở Tư Duy Socratic</span>
+                            <span class="socratic-hint-badge">Định hướng</span>
+                        </div>
+                        <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Thu gọn">✕</button>
+                    </div>
+                    <div class="socratic-hint-body" id="socratic-body-${idx}">
+                        ${formatAiMarkdown(hintText)}
+                    </div>
+                </div>
+            `;
+            const bodyEl = document.getElementById(`socratic-body-${idx}`);
+            if (bodyEl && window.MathJax) {
+                MathJax.typesetPromise([bodyEl]).catch(e => console.log('MathJax hint error:', e));
+            }
+        }
+
+        function renderSocraticHintLoading(idx) {
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (!container) return;
+            container.innerHTML = `
+                <div class="socratic-hint-box loading">
+                    <div class="socratic-hint-header">
+                        <div class="socratic-hint-title">
+                            <span>💡 Gợi Mở Tư Duy Socratic</span>
+                        </div>
+                        <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Đóng">✕</button>
+                    </div>
+                    <div class="socratic-hint-body" style="display:flex; align-items:center; gap:8px; color:#475569;">
+                        <span class="socratic-spinner"></span>
+                        <span>Gia sư Socratic đang phân tích định hướng tư duy...</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSocraticHintError(idx, errorMsg) {
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (!container) return;
+            container.innerHTML = `
+                <div class="socratic-hint-box error">
+                    <div class="socratic-hint-header">
+                        <div class="socratic-hint-title" style="color:#b91c1c;">
+                            <span>⚠️ Không thể lấy gợi ý</span>
+                        </div>
+                        <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Đóng">✕</button>
+                    </div>
+                    <div class="socratic-hint-body" style="color:#991b1b;">
+                        <div style="margin-bottom:8px;">${errorMsg}</div>
+                        <button onclick="toggleSocraticHint(${idx})" class="btn-socratic-hint" style="font-size:12px; padding:4px 8px;">
+                            🔄 Thử lại
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function fetchSocraticHintFromGemini(q) {
+            const apiKey = getGeminiApiKey();
+            const model = getGeminiModel();
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+            const systemPrompt = `Bạn là gia sư Socratic định hướng tư duy. Hãy đưa ra DUY NHẤT 1-2 câu gợi mở mấu chốt (công thức cần dùng, điều kiện biên hoặc hướng suy luận logic). TUYỆT ĐỐI KHÔNG giải bài, KHÔNG đưa ra đáp án cuối cùng hay loại trừ phương án giúp học sinh. Mục tiêu là kích thích học sinh tự nghĩ ra bước tiếp theo.`;
+
+            const typeLabels = { 'multiple_choice': 'Trắc nghiệm 1 đáp án', 'true_false': 'Đúng/Sai', 'short_answer': 'Điền đáp án ngắn', 'multiple_response': 'Chọn nhiều đáp án', 'fill_in_the_blanks': 'Điền khuyết' };
+
+            let contextStr = (q.context && q.context.trim() !== '') ? `Ngữ liệu đọc hiểu:\n${q.context}\n\n` : '';
+            let optionsStr = '';
+            if (q.type === 'multiple_choice' && Array.isArray(q.options)) {
+                optionsStr = '\nPhương án lựa chọn:\n' + q.options.map((opt, oIdx) => `${labels[oIdx] || oIdx}. ${opt}`).join('\n');
+            } else if (q.type === 'true_false' && Array.isArray(q.options)) {
+                optionsStr = '\nCác mệnh đề:\n' + q.options.map((opt, oIdx) => `${String.fromCharCode(97 + oIdx)}) ${opt}`).join('\n');
+            } else if (Array.isArray(q.options) && q.options.length > 0) {
+                optionsStr = '\nLựa chọn:\n' + q.options.join('\n');
+            }
+
+            const userPrompt = `${systemPrompt}\n\nĐỀ BÀI CÂU HỎI (${typeLabels[q.type] || 'Trắc nghiệm'}):\n${contextStr}${q.text}${optionsStr}`;
+
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    generationConfig: {
+                        temperature: 0.3,
+                        maxOutputTokens: 250
+                    }
+                })
+            });
+
+            if (!res.ok) {
+                let msg = res.statusText;
+                try {
+                    const errJson = await res.json();
+                    msg = errJson.error?.message || msg;
+                } catch {}
+                throw new Error(`Gemini API (${res.status}): ${msg}`);
+            }
+
+            const resData = await res.json();
+            const hint = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!hint) throw new Error("AI không trả về gợi ý nào.");
+            return hint.trim();
         }
 
         function selectMC(oIdx) { currentSession.answers[currentSession.currentIndex] = oIdx; renderQuestion(); renderNavGrid(); }
@@ -2682,6 +3222,7 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
         async function submitExam(auto = false) {
             if (!auto && !confirm("Chắc chắn nộp bài chứ m?")) return;
             
+            clearInterval(currentSession.intervalTotal);
             currentSession.isSubmitted = true;
             let correctCount = 0; let wrongQs = [];
             let thptScores = { p1: { maxQ: 0, rightQ: 0, pts: 0 }, p2: { maxQ: 0, fullRightQ: 0, pts: 0 }, p3: { maxQ: 0, rightQ: 0, pts: 0 } };
@@ -2759,17 +3300,31 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
                     </div>`;
             }
 
+            const timeSpentMap = {...(currentSession.questionTimeSpent || {})};
+            const totalActiveSeconds = Object.values(timeSpentMap).reduce((a, b) => a + b, 0);
+            const avgSecondsPerQ = totalQ > 0 ? Math.round(totalActiveSeconds / totalQ) : 0;
+
             if (currentSession.mode !== 'review') {
                 const now = new Date();
                 const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
                 
-                // 1. Lưu vào thư viện đề thi cục bộ & Cloud như cũ
+                // 1. Lưu vào thư viện đề thi cục bộ & Cloud như cũ (kèm telemetry timeSpent)
                 if (library[currentSession.subjectKey]) {
                     const subData = library[currentSession.subjectKey];
                     subData.history = subData.history || [];
                     subData.history.unshift({
-                        date: timeStr, score: finalScoreVal, correctCount: correctCount, totalQ: totalQ, wrongQs: wrongQs, bookmarks: {...currentSession.bookmarks},
-                        questions: [...currentSession.questions], answers: {...currentSession.answers}, scoreCard: {...currentSession.scoreCard}
+                        date: timeStr, 
+                        score: finalScoreVal, 
+                        correctCount: correctCount, 
+                        totalQ: totalQ, 
+                        wrongQs: wrongQs, 
+                        bookmarks: {...currentSession.bookmarks},
+                        questions: [...currentSession.questions], 
+                        answers: {...currentSession.answers}, 
+                        scoreCard: {...currentSession.scoreCard},
+                        timeSpent: timeSpentMap,
+                        totalActiveSeconds: totalActiveSeconds,
+                        avgSecondsPerQ: avgSecondsPerQ
                     });
                     await saveToDB(currentSession.subjectKey, subData);
                 }
@@ -2781,12 +3336,29 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
 
                 const wrongQuestionsList = wrongQs.map(qIdx => {
                     const q = currentSession.questions[qIdx] || {};
+                    let subDetails = null;
+                    if (q.type === 'true_false' && Array.isArray(q.options)) {
+                        subDetails = q.options.map((opt, oIdx) => {
+                            const userChoice = (currentSession.answers[qIdx] && currentSession.answers[qIdx][oIdx]) || 'Bỏ trống';
+                            const rightChoice = (q.correct_answer && q.correct_answer[oIdx]) || 'Chưa rõ';
+                            const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
+                            return {
+                                item: String.fromCharCode(97 + oIdx),
+                                text: (opt || '').substring(0, 150),
+                                selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
+                                correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
+                                isCorrect: isMatched
+                            };
+                        });
+                    }
                     return {
                         qIndex: qIdx + 1,
                         question: (q.text || '').substring(0, 300),
                         selected: currentSession.answers[qIdx] !== undefined ? currentSession.answers[qIdx] : null,
                         correct: q.correct_answer !== undefined ? q.correct_answer : null,
-                        type: q.type || 'multiple_choice'
+                        type: q.type || 'multiple_choice',
+                        timeSpent: timeSpentMap[qIdx] || 0,
+                        subDetails: subDetails
                     };
                 });
 
@@ -2801,6 +3373,9 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
                     total: totalQ,
                     answeredCount: answeredCount,
                     isEligibleForAi: isEligibleForAi,
+                    timeSpent: timeSpentMap,
+                    totalActiveSeconds: totalActiveSeconds,
+                    avgSecondsPerQ: avgSecondsPerQ,
                     wrongQuestions: wrongQuestionsList
                 };
 
@@ -2820,9 +3395,26 @@ Lưu ý: Giữ văn phong khích lệ, chuyên môn sư phạm cao, súc tích v
                 }
             }
 
+            // Chẩn đoán nhanh lỗi ẩu và sa lầy thời gian hiển thị trên scorecard
+            let diagnosticBadges = [];
+            const carelessCount = wrongQs.filter(q => (timeSpentMap[q] || 0) > 0 && (timeSpentMap[q] || 0) < 20).length;
+            const trapCount = wrongQs.filter(q => (timeSpentMap[q] || 0) >= 180).length;
+            if (carelessCount > 0) diagnosticBadges.push(`<span style="color:#dc2626; font-size:12px; font-weight:700;">⚡ ${carelessCount} câu làm vội (<20s)</span>`);
+            if (trapCount > 0) diagnosticBadges.push(`<span style="color:#d97706; font-size:12px; font-weight:700;">⏳ ${trapCount} câu sa lầy (>3p)</span>`);
+
             scoreHtml += `<div class="wrong-list-container">
-                    <div class="wrong-title"><span>⚠️ CÂU SAI / BỎ TRỐNG</span><button class="btn-review-all" onclick="reviewAll()">🔍 Xem lại từ đầu</button></div>
-                    <div>${wrongQs.length === 0 ? '<span style="color:#10b981; font-size: 13px;">Quá đỉnh xịn, không trượt phát nào!</span>' : wrongQs.map(q => `<div class="w-tag" onclick="jumpToQuestion(${q})">Câu ${q+1}</div>`).join('')}</div>
+                    <div class="wrong-title">
+                        <span>⚠️ CÂU SAI / BỎ TRỐNG (${wrongQs.length} câu)</span>
+                        <button class="btn-review-all" onclick="reviewAll()">🔍 Xem lại từ đầu</button>
+                    </div>
+                    ${diagnosticBadges.length > 0 ? `<div style="display:flex; gap:12px; margin-bottom:10px; flex-wrap:wrap; background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">${diagnosticBadges.join(' | ')}</div>` : ''}
+                    <div>${wrongQs.length === 0 ? '<span style="color:#10b981; font-size: 13px;">Quá đỉnh xịn, không trượt phát nào!</span>' : wrongQs.map(q => {
+                        const sec = timeSpentMap[q] || 0;
+                        let badge = '';
+                        if (sec > 0 && sec < 20) badge = ' ⚡';
+                        else if (sec >= 180) badge = ' ⏳';
+                        return `<div class="w-tag" onclick="jumpToQuestion(${q})" title="Thời gian dừng: ${formatSeconds(sec)}">Câu ${q+1}${badge}</div>`;
+                    }).join('')}</div>
                 </div>`;
 
             document.getElementById('timer-submit-area').style.display = 'none';
