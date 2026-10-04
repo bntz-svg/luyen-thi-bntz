@@ -709,6 +709,238 @@
             border-color: #ef4444;
             background: #fef2f2;
         }
+
+        /* --- MÀN HÌNH KHÓA PIN BẢO MẬT (FROSTED GLASS & TONE ĐỎ HỒNG) --- */
+        .pin-lock-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 241, 242, 0.72);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+        }
+        .pin-lock-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .pin-lock-card {
+            border-radius: 24px;
+            padding: 36px 30px;
+            width: 360px;
+            max-width: 90vw;
+            background: #ffffff;
+            border: 1.5px solid #fecdd3;
+            box-shadow: 0 20px 40px -10px rgba(225, 29, 72, 0.15);
+            text-align: center;
+            animation: pinCardEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes pinCardEnter {
+            from { opacity: 0; transform: scale(0.92) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .pin-lock-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 8px rgba(225, 29, 72, 0.2));
+            user-select: none;
+        }
+        .pin-lock-title {
+            font-size: 21px;
+            font-weight: 800;
+            color: #e11d48;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+        }
+        .pin-lock-subtitle {
+            font-size: 13.5px;
+            color: #9f1239;
+            opacity: 0.85;
+            margin: 0 0 20px 0;
+        }
+        .pin-input {
+            border-radius: 12px;
+            border: 2px solid #fda4af;
+            background: #fff1f2;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 3px;
+            color: #9f1239;
+            outline: none;
+            padding: 12px;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .pin-input:focus {
+            border-color: #e11d48;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+        }
+        .pin-input.shake {
+            animation: pinShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+            border-color: #be123c;
+        }
+        @keyframes pinShake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+        .pin-error-msg {
+            color: #be123c;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-top: 8px;
+            min-height: 18px;
+        }
+        .btn-pin-unlock {
+            margin-top: 14px;
+            background: linear-gradient(135deg, #e11d48, #f43f5e);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-pin-unlock:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(225, 29, 72, 0.4);
+        }
+        .btn-pin-unlock:active {
+            transform: translateY(0);
+        }
+
+        /* --- NÚT & KHUNG AI GIẢI CHI TIẾT THEO YÊU CẦU --- */
+        .btn-ai-solve {
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 13.5px;
+            margin-top: 10px;
+        }
+        .btn-ai-solve.wrong-solve {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 10px 18px;
+            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.25);
+        }
+        .btn-ai-solve.wrong-solve:hover {
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(124, 58, 237, 0.35);
+        }
+        .btn-ai-solve.correct-solve {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1.5px solid #bfdbfe;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        .btn-ai-solve.correct-solve:hover {
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+        .detailed-solution-wrapper {
+            margin-top: 14px;
+        }
+        .detailed-solution-card {
+            background: #ffffff;
+            border: 1.5px solid #c4b5fd;
+            border-left: 5px solid #7c3aed;
+            border-radius: 10px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+            animation: fadeIn 0.3s ease;
+        }
+        .detailed-solution-card.loading {
+            background: #faf5ff;
+            border-color: #e9d5ff;
+            border-left-color: #a855f7;
+        }
+        .detailed-solution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #ddd6fe;
+        }
+        .detailed-solution-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #5b21b6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-ai-resolute {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+            border-radius: 6px;
+            padding: 5px 11px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-ai-resolute:hover {
+            background: #ede9fe;
+            color: #4c1d95;
+            border-color: #c4b5fd;
+        }
+        .btn-ai-sol-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            line-height: 1;
+        }
+        .btn-ai-sol-close:hover {
+            color: #4b5563;
+            background: #f3f4f6;
+        }
+        .detailed-solution-body {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #1e1b4b;
+        }
+        .detailed-solution-body h4 {
+            color: #6d28d9;
+            font-size: 14.5px;
+            margin: 12px 0 6px 0;
+        }
+        .detailed-solution-body p {
+            margin-bottom: 8px;
+        }
+        .detailed-solution-body ul, .detailed-solution-body ol {
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
         .timer-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .time-text { font-size: 24px; font-weight: bold; color: var(--tsa-blue); }
         .btn-submit { background: var(--tsa-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
@@ -895,6 +1127,29 @@
     </style>
 </head>
 <body>
+
+    <!-- MÀN HÌNH KHÓA PIN BẢO MẬT (FROSTED GLASS & HỒNG/ĐỎ) -->
+    <div id="pin-lock-screen" class="pin-lock-screen" style="display: none;">
+        <div class="pin-lock-card">
+            <div class="pin-lock-icon">🔐</div>
+            <h2 class="pin-lock-title">Phòng Luyện Thi bntz</h2>
+            <p class="pin-lock-subtitle">Nhập mã PIN để tiếp tục truy cập</p>
+            <form onsubmit="handlePinSubmit(event)" autocomplete="off">
+                <input type="password" id="pin-input" class="pin-input" placeholder="••••••••" maxlength="32" autofocus>
+                <div id="pin-error-msg" class="pin-error-msg"></div>
+                <button type="submit" id="btn-pin-unlock" class="btn-pin-unlock">Mở Khóa Phòng Luyện</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Khóa tức thì ngay từ đầu nếu chưa xác thực, chống chớp hình
+        try {
+            if (localStorage.getItem('bntz_pin_authorized') !== 'true') {
+                var lockEl = document.getElementById('pin-lock-screen');
+                if (lockEl) lockEl.style.display = 'flex';
+            }
+        } catch(e) {}
+    </script>
 
     <header>
         <div class="logo-area">
@@ -1622,6 +1877,64 @@
             messagingSenderId: "569066957296",
             appId: "1:569066957296:web:123456789"
         };
+
+        // --- 1. MÀN HÌNH KHÓA PIN BẢO MẬT (SHA-256) ---
+        const PIN_HASH = "52318c9727c3ff0f883bb50b7a5f694d5ff878ae9695e01d21812ad4fa9d2c6e";
+
+        async function computeSha256(str) {
+            const buffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function handlePinSubmit(e) {
+            if (e) e.preventDefault();
+            const inputEl = document.getElementById('pin-input');
+            const errEl = document.getElementById('pin-error-msg');
+            const lockScreen = document.getElementById('pin-lock-screen');
+            if (!inputEl) return;
+            const entered = inputEl.value;
+            if (!entered) {
+                if (errEl) errEl.innerText = 'Vui lòng nhập mã PIN!';
+                return;
+            }
+            try {
+                const hash = await computeSha256(entered);
+                if (hash === PIN_HASH) {
+                    localStorage.setItem('bntz_pin_authorized', 'true');
+                    if (errEl) errEl.innerText = '';
+                    if (lockScreen) {
+                        lockScreen.classList.add('fade-out');
+                        setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
+                    }
+                } else {
+                    if (errEl) errEl.innerText = 'Mã PIN không chính xác!';
+                    inputEl.classList.remove('shake');
+                    void inputEl.offsetWidth;
+                    inputEl.classList.add('shake');
+                    inputEl.value = '';
+                    inputEl.focus();
+                }
+            } catch (err) {
+                console.error("Lỗi xác thực PIN:", err);
+                if (errEl) errEl.innerText = 'Lỗi hệ thống khi băm mật khẩu!';
+            }
+        }
+
+        function checkPinLockStatus() {
+            const lockScreen = document.getElementById('pin-lock-screen');
+            if (!lockScreen) return;
+            const isAuthorized = localStorage.getItem('bntz_pin_authorized') === 'true';
+            if (isAuthorized) {
+                lockScreen.style.display = 'none';
+            } else {
+                lockScreen.style.display = 'flex';
+                lockScreen.classList.remove('fade-out');
+                const pinInput = document.getElementById('pin-input');
+                if (pinInput) setTimeout(() => pinInput.focus(), 120);
+            }
+        }
+        checkPinLockStatus();
 
         // Khởi tạo Firebase Cloud Sync
         let cloudDB = null;
@@ -4016,7 +4329,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 html += `<div class="short-ans-wrapper"><input type="text" ${disabledStr} class="short-ans-input" placeholder="Nhập đáp án..." value="${currentSession.answers[idx] || ''}" oninput="updateSA(this.value)" autocomplete="off"></div>`;
             }
 
-            // TẦNG 3: Chẩn đoán lỗi sai AI (AI Diagnostics) khi bài thi đã nộp và câu này làm sai / bỏ trống
+            // TẦNG 3: Chẩn đoán lỗi sai AI (AI Diagnostics) & AI Giải Chi Tiết Theo Yêu Cầu
             if (currentSession.isSubmitted) {
                 const isRight = currentSession.scoreCard && currentSession.scoreCard[idx];
                 if (!isRight) {
@@ -4047,6 +4360,31 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                         </div>`;
                     }
                 }
+
+                // AI GIẢI CHI TIẾT THEO YÊU CẦU (ON-DEMAND DETAILED SOLUTION)
+                const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
+                let cachedSol = null;
+                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                const hasCachedSol = !!cachedSol;
+                const isSolOpen = !!(currentSession.solutionsOpened && currentSession.solutionsOpened[idx]);
+
+                if (!isRight) {
+                    html += `
+                    <div style="margin-top: 14px;">
+                        <button class="btn-ai-solve wrong-solve" id="btn-ai-solve-${idx}" onclick="fetchDetailedSolution(${idx})" title="Xem AI phân tích và giải tường tận toàn diện câu này">
+                            📖 Xem AI Giải Toàn Diện Câu Này ${hasCachedSol ? '✓' : ''}
+                        </button>
+                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div style="margin-top: 14px;">
+                        <button class="btn-ai-solve correct-solve" id="btn-ai-solve-${idx}" onclick="fetchDetailedSolution(${idx})" title="Xem giải thích chi tiết phương pháp làm chuẩn">
+                            💡 AI Giải Thích Chi Tiết ${hasCachedSol ? '✓' : ''}
+                        </button>
+                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
+                    </div>`;
+                }
             }
 
             area.innerHTML = html;
@@ -4054,6 +4392,17 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             // Nếu khung gợi ý đang ở trạng thái mở và có nội dung trong cache -> Render ngay (chỉ khi đang làm bài)
             if (!currentSession.isSubmitted && isHintOpen && hasCachedHint) {
                 renderSocraticHintHtml(idx, getCachedSocraticHint(cacheKey));
+            }
+
+            // Nếu khung giải chi tiết đang mở và đã có trong cache -> Render ngay lập tức (0.05s)
+            if (currentSession.isSubmitted) {
+                const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
+                let cachedSol = null;
+                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                const isSolOpen = !!(currentSession.solutionsOpened && currentSession.solutionsOpened[idx]);
+                if (isSolOpen && cachedSol) {
+                    renderDetailedSolutionHtml(idx, cachedSol);
+                }
             }
 
             // KHÓA TƯƠNG TÁC KHI ĐÃ NỘP BÀI (REVIEW MODE)
@@ -4346,6 +4695,190 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const hint = resData.candidates?.[0]?.content?.parts?.[0]?.text;
             if (!hint) throw new Error("AI không trả về gợi ý nào.");
             return hint.trim();
+        }
+
+        // --- TÍNH NĂNG AI GIẢI CHI TIẾT THEO YÊU CẦU (ON-DEMAND DETAILED SOLUTION) ---
+        async function fetchDetailedSolution(idx, forceRegen = false) {
+            const q = currentSession.questions[idx];
+            if (!q) return;
+
+            currentSession.solutionsOpened = currentSession.solutionsOpened || {};
+            currentSession.solutionsOpened[idx] = true;
+
+            const container = document.getElementById(`detailed-solution-container-${idx}`);
+            if (!container) return;
+            container.style.display = 'block';
+
+            const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
+            let cachedSol = null;
+            try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+
+            // 1. Nếu đã có trong cache và không yêu cầu giải lại -> Hiển thị ngay lập tức (0.05s)
+            if (cachedSol && !forceRegen) {
+                renderDetailedSolutionHtml(idx, cachedSol);
+                return;
+            }
+
+            // 2. Kiểm tra API Key
+            const apiKey = getGeminiApiKey();
+            if (!apiKey) {
+                alert("Vui lòng cài đặt Gemini API Key để sử dụng tính năng AI Giải Chi Tiết!");
+                openApiKeyModal();
+                container.style.display = 'none';
+                currentSession.solutionsOpened[idx] = false;
+                return;
+            }
+
+            // 3. Hiển thị trạng thái đang phân tích
+            const model = getGeminiModel();
+            container.innerHTML = `
+                <div class="detailed-solution-card loading">
+                    <div class="detailed-solution-header">
+                        <div class="detailed-solution-title">
+                            <span class="ai-spinner" style="display:inline-block; width:15px; height:15px; border-width:2px; vertical-align:middle; margin-right:6px;"></span>
+                            <span>Gemini AI đang phân tích và giải chi tiết toàn diện câu hỏi này...</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: #6d28d9; padding: 10px 0;">
+                        Đang đối chiếu dữ kiện, giải từng bước và thiết lập mẹo phản xạ (Mô hình: ${model})...
+                    </div>
+                </div>`;
+
+            try {
+                const solutionText = await callGeminiForDetailedSolution(q, idx);
+                try { sessionStorage.setItem(solKey, solutionText); } catch(e) {}
+                renderDetailedSolutionHtml(idx, solutionText);
+                
+                // Cập nhật lại nút hiển thị dấu check đã có lời giải
+                const btn = document.getElementById(`btn-ai-solve-${idx}`);
+                if (btn && !btn.innerText.includes('✓')) {
+                    btn.innerHTML += ' ✓';
+                }
+            } catch (err) {
+                console.error("Lỗi AI giải chi tiết:", err);
+                container.innerHTML = `
+                    <div class="detailed-solution-card" style="border-color:#fca5a5; border-left-color:#ef4444; background:#fef2f2;">
+                        <div class="detailed-solution-header">
+                            <span style="font-weight:bold; color:#b91c1c;">⚠️ Không thể tạo lời giải chi tiết</span>
+                            <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)">Thử lại</button>
+                        </div>
+                        <div style="font-size:13px; color:#991b1b; padding-top:6px;">
+                            ${escapeHtml(err.message || 'Lỗi không xác định khi gọi Gemini API.')}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        async function callGeminiForDetailedSolution(q, idx) {
+            const apiKey = getGeminiApiKey();
+            const model = getGeminiModel();
+            const thinkingLevel = getGeminiThinkingLevel();
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+            let optsStr = "";
+            if (Array.isArray(q.options) && q.options.length > 0) {
+                if (q.type === 'true_false') {
+                    optsStr = q.options.map((o, i) => `${String.fromCharCode(97 + i)}) ${o}`).join('\n');
+                } else {
+                    optsStr = q.options.map((o, i) => `${labels[i] || i}. ${o}`).join('\n');
+                }
+            }
+
+            const formatAns = (val) => {
+                if (val === undefined || val === null || val === '') return 'Bỏ trống';
+                if (typeof val === 'object') return JSON.stringify(val);
+                const i = parseInt(val);
+                return (!isNaN(i) && labels[i]) ? `${labels[i]} (${val})` : String(val);
+            };
+
+            const userChoiceStr = formatAns(currentSession.answers ? currentSession.answers[idx] : null);
+            const rightAnsStr = formatCorrectAnswerDisplay(q);
+
+            const promptText = `Bạn là một chuyên gia khảo thí, giáo viên luyện thi THPT Quốc Gia và TSA Bách Khoa hàng đầu.
+Nhiệm vụ của bạn là giải chi tiết toàn diện câu hỏi sau đây cho học sinh.
+
+THÔNG TIN CÂU HỎI:
+- Môn thi: ${currentSession.subject || 'Tổng hợp'}
+- Dạng câu: ${q.type || 'multiple_choice'}
+${q.context ? `- Ngữ liệu / Đoạn văn chung:\n"""\n${q.context}\n"""\n` : ''}
+- Đề bài:
+"""
+${q.text}
+"""
+${optsStr ? `- Các phương án / mệnh đề:\n${optsStr}\n` : ''}
+- Học sinh đã chọn: ${userChoiceStr}
+- Đáp án lưu trong đề thi (correct_answer): ${rightAnsStr}
+
+QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC):
+1. TỰ GIẢI ĐỘC LẬP: Trước hết, hãy TỰ GIẢI câu hỏi từ đầu bằng tư duy của bạn, chỉ dựa trên đề bài và ngữ liệu. Không được suy ngược từ đáp án lưu trong đề.
+2. ĐỐI CHIẾU: Sau khi có kết quả riêng, mới so sánh với "Đáp án lưu trong đề".
+3. XỬ LÝ:
+   - Nếu kết quả tự giải KHỚP đáp án trong đề: Trình bày lời giải bình thường.
+   - Nếu kết quả tự giải KHÁC đáp án trong đề: BẮT BUỘC mở đầu bằng đúng cờ cảnh báo trung lập sau (thay X là kết quả AI tự tính, Y là đáp án đề đang chọn):
+     [⚠️ Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
+
+CẤU TRÚC LỜI GIẢI GỒM ĐÚNG 3 PHẦN SƯ PHẠM RÕ RÀNG:
+1. 🎯 Bản chất & Công thức then chốt: Nêu ngắn gọn bản chất hiện tượng, định lý, công thức mấu chốt hoặc điều kiện biên cần dùng.
+2. 📝 Các bước giải chi tiết: Trình bày logic từng bước một cách mạch lạc, dễ hiểu. Nếu là câu Đúng/Sai 4 ý (a, b, c, d) hãy phân tích chi tiết từng mệnh đề con vì sao đúng hay sai. Công thức toán học hãy để trong định dạng LaTeX $...$ hoặc $$...$$.
+3. 💡 Mẹo phản xạ & Cảnh báo bẫy: Chỉ ra lỗi sai phổ biến học sinh hay mắc phải, điểm gây nhiễu, cách loại trừ nhanh hoặc mẹo nhớ lâu.
+
+Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và chuẩn xác.`;
+
+            const requestBody = {
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    temperature: 0.2,
+                    maxOutputTokens: 8192,
+                    thinkingConfig: {
+                        thinkingLevel: thinkingLevel
+                    }
+                }
+            };
+
+            const res = await callGeminiGenerateContent(apiUrl, requestBody);
+            const resData = await res.json();
+            const text = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!text) {
+                if (resData.error) throw new Error(resData.error.message || "Lỗi gọi API Gemini");
+                throw new Error("Không nhận được nội dung lời giải từ Gemini AI.");
+            }
+            return text.trim();
+        }
+
+        function renderDetailedSolutionHtml(idx, solText) {
+            const container = document.getElementById(`detailed-solution-container-${idx}`);
+            if (!container) return;
+            container.style.display = 'block';
+
+            const formattedHtml = formatAiDiagnosisHtml(solText);
+
+            container.innerHTML = `
+                <div class="detailed-solution-card">
+                    <div class="detailed-solution-header">
+                        <div class="detailed-solution-title">
+                            <span>📖 Lời Giải Chi Tiết Toàn Diện (AI Solution)</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)" title="Bỏ qua cache và phân tích lại từ đầu">🔄 Giải lại câu này</button>
+                            <button class="btn-ai-sol-close" onclick="closeDetailedSolution(${idx})" title="Thu gọn">✕</button>
+                        </div>
+                    </div>
+                    <div class="detailed-solution-body">
+                        ${formattedHtml}
+                    </div>
+                </div>`;
+
+            if (window.MathJax) {
+                MathJax.typesetPromise([container]);
+            }
+        }
+
+        function closeDetailedSolution(idx) {
+            if (currentSession && currentSession.solutionsOpened) {
+                currentSession.solutionsOpened[idx] = false;
+            }
+            const container = document.getElementById(`detailed-solution-container-${idx}`);
+            if (container) container.style.display = 'none';
         }
 
         function selectMC(oIdx) { if (currentSession.isSubmitted) return; currentSession.answers[currentSession.currentIndex] = oIdx; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
@@ -4753,6 +5286,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 }
             }
 
+            // Xóa cache lời giải chi tiết của câu này (để tránh lưu lời giải theo đề/đáp án cũ)
+            const solKey = `sol_${currentSession.subjectKey || 'exam'}_${currentSession.currentIndex}`;
+            try { sessionStorage.removeItem(solKey); } catch(e) {}
+
             closeEditModal(); 
             renderQuestion(); 
             renderNavGrid();
@@ -4760,6 +5297,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         window.onload = async () => {
+            checkPinLockStatus();
             try { library = await getAllFromDB(); } catch {}
 
             // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở
