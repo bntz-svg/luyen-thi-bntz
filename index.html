@@ -1144,7 +1144,8 @@
     <script>
         // Khóa tức thì ngay từ đầu nếu chưa xác thực, chống chớp hình
         try {
-            if (localStorage.getItem('bntz_pin_authorized') !== 'true') {
+            localStorage.removeItem('bntz_pin_authorized');
+            if (sessionStorage.getItem('bntz_pin_authorized') !== 'true') {
                 var lockEl = document.getElementById('pin-lock-screen');
                 if (lockEl) lockEl.style.display = 'flex';
             }
@@ -1901,7 +1902,7 @@
             try {
                 const hash = await computeSha256(entered);
                 if (hash === PIN_HASH) {
-                    localStorage.setItem('bntz_pin_authorized', 'true');
+                    sessionStorage.setItem('bntz_pin_authorized', 'true');
                     if (errEl) errEl.innerText = '';
                     if (lockScreen) {
                         lockScreen.classList.add('fade-out');
@@ -1922,9 +1923,10 @@
         }
 
         function checkPinLockStatus() {
+            try { localStorage.removeItem('bntz_pin_authorized'); } catch (e) {}
             const lockScreen = document.getElementById('pin-lock-screen');
             if (!lockScreen) return;
-            const isAuthorized = localStorage.getItem('bntz_pin_authorized') === 'true';
+            const isAuthorized = sessionStorage.getItem('bntz_pin_authorized') === 'true';
             if (isAuthorized) {
                 lockScreen.style.display = 'none';
             } else {
