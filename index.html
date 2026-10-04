@@ -197,15 +197,15 @@
         .btn-review-exam:hover { background: #f0f7ff; border-color: var(--tsa-blue); }
 
         /* QUIZ VIEW */
-        #quiz-view { display: none; flex: 1; overflow: hidden; flex-direction: column; }
-        .main-workspace { display: flex; flex: 1; overflow: hidden; }
+        #quiz-view { display: none; flex: 1; overflow: hidden; flex-direction: column; position: relative; }
+        .main-workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        .question-panel { flex: 1; display: flex; overflow: hidden; background: var(--panel-bg); }
-        .reading-context { flex: 1; padding: 30px; overflow-y: auto; border-right: 2px solid var(--border-color); background: #fafafa; display: none; }
+        .question-panel { flex: 1; display: flex; overflow: hidden; background: var(--panel-bg); min-width: 0; }
+        .reading-context { flex: 1; min-width: 0; padding: 30px; overflow-y: auto; border-right: 2px solid var(--border-color); background: #fafafa; display: none; transition: flex 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
         .reading-context-inner { font-size: 16px; line-height: 1.8; color: #333; text-align: justify; }
         .context-image { max-width: 100%; margin: 15px 0; border: 1px solid #eee; display: block; }
         
-        .q-container { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+        .q-container { flex: 1; min-width: 0; padding: 30px; overflow-y: auto; position: relative; transition: flex 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
         .q-container-inner { max-width: 800px; margin: 0 auto; }
         
         .q-number { font-weight: bold; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; }
@@ -477,7 +477,238 @@
         .ai-diagnostics-body p { margin-bottom: 6px; }
         .ai-diagnostics-body ul, .ai-diagnostics-body ol { margin-left: 18px; margin-bottom: 6px; }
 
-        .nav-panel { width: 340px; background: var(--panel-bg); border-left: 2px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; overflow-y: auto; }
+        /* --- ADAPTIVE DOCK & BOTTOM BAR STYLES --- */
+        .nav-panel-topbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+        .btn-dock-toggle {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 5px 11px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-dock-toggle:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        .nav-panel {
+            width: 340px;
+            background: var(--panel-bg);
+            border-left: 2px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-left-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-panel.docked-bottom {
+            transform: translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+            width: 0 !important;
+            min-width: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border-left-width: 0 !important;
+            overflow: hidden !important;
+        }
+
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: #ffffff;
+            border-top: 2px solid var(--border-color);
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+            z-index: 30;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(100%);
+            pointer-events: none;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-top-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bottom-bar.visible {
+            max-height: 64px;
+            padding: 10px 24px;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .btn-bottom-dock-expand {
+            background: var(--tsa-blue);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-bottom-dock-expand:hover {
+            background: #096dd9;
+            transform: translateY(-1px);
+        }
+        .bottom-bar-center {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .bottom-timer {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--tsa-blue);
+            font-variant-numeric: tabular-nums;
+        }
+        .bottom-counter {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .bottom-bar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-bottom-nav {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-bottom-nav:hover:not(:disabled) {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .btn-bottom-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-bottom-submit {
+            background: var(--tsa-red);
+            color: white;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-bottom-submit:hover {
+            background: #be123c;
+            transform: translateY(-1px);
+        }
+
+        /* Khi câu hỏi có ngữ liệu: Bố cục 50/50 tập trung đọc hiểu */
+        #quiz-view.context-mode .question-panel {
+            display: flex;
+            flex-direction: row;
+        }
+        #quiz-view.context-mode .reading-context {
+            flex: 1 1 50%;
+            min-width: 0;
+            display: block;
+        }
+        #quiz-view.context-mode .q-container {
+            flex: 1 1 50%;
+            min-width: 0;
+        }
+        @keyframes ctxEnter {
+            from { opacity: 0; transform: translateX(-12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .ctx-enter {
+            animation: ctxEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Khử khựng chuyển động khi load bài thi lần đầu */
+        .dock-instant,
+        .dock-instant .nav-panel,
+        .dock-instant .bottom-bar,
+        .dock-instant .question-panel,
+        .dock-instant .reading-context,
+        .dock-instant .q-container {
+            transition: none !important;
+        }
+
+        /* CỜ CẢNH BÁO NGHI VẤN ĐÁP ÁN (AI DOUBLE-CHECK) */
+        .answer-doubt-flag {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-left: 4px solid #d97706;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #92400e;
+            font-weight: 600;
+        }
+        .answer-doubt-flag strong {
+            color: #78350f;
+        }
+
+        /* KHÓA TƯƠNG TÁC CHẾ ĐỘ XEM LẠI (REVIEW MODE) */
+        .option-item.locked, .tf-cell-btn.locked {
+            cursor: default !important;
+        }
+        .option-item.locked:hover {
+            border-color: var(--border-color);
+            background: #fff;
+        }
+        .option-item.selected.locked:hover {
+            border-color: var(--answered-bg);
+            background: #e6f7ff;
+        }
+        .option-item.correct-ans.locked:hover {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        .option-item.wrong-ans.locked:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
         .timer-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .time-text { font-size: 24px; font-weight: bold; color: var(--tsa-blue); }
         .btn-submit { background: var(--tsa-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
@@ -1309,7 +1540,10 @@
                 </div>
             </div>
             
-            <div class="nav-panel">
+            <div class="nav-panel" id="nav-panel">
+                <div class="nav-panel-topbar">
+                    <button class="btn-dock-toggle" onclick="toggleNavDock()" title="Thu bảng điều hướng xuống thanh đáy">⤓ Thu xuống đáy</button>
+                </div>
                 <div id="timer-submit-area">
                     <div style="font-size: 14px; color: #666; margin-bottom: 5px;" id="timer-label">Thời gian còn lại</div>
                     <div class="timer-box">
@@ -1322,6 +1556,20 @@
 
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 15px;">BẢNG ĐIỀU HƯỚNG</div>
                 <div class="grid-numbers" id="nav-grid"></div>
+            </div>
+        </div>
+
+        <!-- THANH ĐIỀU HƯỚNG ĐÁY (ADAPTIVE BOTTOM DOCK) -->
+        <div id="bottom-bar" class="bottom-bar" aria-hidden="true" inert>
+            <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">📑 Bảng câu hỏi ⤒</button>
+            <div class="bottom-bar-center">
+                <span id="bottom-timer" class="bottom-timer">⏳ 00:00</span>
+                <span id="bottom-bar-counter" class="bottom-counter">Câu 1/0</span>
+            </div>
+            <div class="bottom-bar-nav">
+                <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">‹ Câu trước</button>
+                <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Câu tiếp ›</button>
+                <button id="btn-bottom-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
             </div>
         </div>
     </div>
@@ -1606,6 +1854,85 @@
             const s = Math.floor(sec % 60);
             if (m === 0) return `${s}s`;
             return `${m}p ${s.toString().padStart(2, '0')}s`;
+        }
+
+        // Bản ghi một câu sai/bỏ trống để lưu lịch sử & đưa cho Cố vấn AI.
+        // Chứa đủ đề bài + phương án + ngữ liệu để AI có thể TỰ GIẢI ĐỘC LẬP (double-check).
+        function buildWrongQuestionRecord(q, qIdx, userAns, sec) {
+            q = q || {};
+            let subDetails = null;
+            if (q.type === 'true_false' && Array.isArray(q.options)) {
+                subDetails = q.options.map((opt, oIdx) => {
+                    const userChoice = (userAns && userAns[oIdx]) || 'Bỏ trống';
+                    const rightChoice = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) || 'Chưa rõ';
+                    const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
+                    return {
+                        item: String.fromCharCode(97 + oIdx),
+                        text: (opt || '').toString().substring(0, 400),
+                        selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
+                        correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
+                        isCorrect: isMatched
+                    };
+                });
+            }
+            return {
+                qIndex: qIdx + 1,
+                qZeroIndex: qIdx,
+                question: (q.text || '').substring(0, 1500),
+                context: (q.context || '').substring(0, 1500),
+                options: Array.isArray(q.options)
+                    ? q.options.map(o => (typeof o === 'string' ? o : JSON.stringify(o)).substring(0, 300))
+                    : [],
+                selected: userAns !== undefined ? userAns : null,
+                correct: q.correct_answer !== undefined ? q.correct_answer : null,
+                type: q.type || 'multiple_choice',
+                timeSpent: sec || 0,
+                subDetails: subDetails
+            };
+        }
+
+        // Hiển thị đáp án đúng dễ đọc theo từng dạng câu hỏi (dùng ở chế độ xem lại)
+        function formatCorrectAnswerDisplay(q) {
+            const ca = q.correct_answer;
+            if (ca === undefined || ca === null || ca === '') return 'Chưa cập nhật';
+            const labelOf = (v) => {
+                const i = parseInt(v);
+                return (!isNaN(i) && labels[i]) ? labels[i] : escapeHtml(String(v));
+            };
+            switch (q.type) {
+                case 'multiple_choice':
+                    return labelOf(ca);
+                case 'multiple_response': {
+                    const arr = Array.isArray(ca) ? ca : Object.values(ca);
+                    return arr.map(labelOf).join(', ');
+                }
+                case 'true_false': {
+                    if (typeof ca !== 'object') return escapeHtml(String(ca));
+                    const n = Array.isArray(q.options) ? q.options.length : 4;
+                    const parts = [];
+                    for (let i = 0; i < n; i++) {
+                        const v = ca[i] !== undefined ? ca[i] : ca[i.toString()];
+                        parts.push(`${String.fromCharCode(97 + i)}) ${v === 'T' ? 'Đúng' : (v === 'F' ? 'Sai' : '?')}`);
+                    }
+                    return parts.join(' &nbsp;·&nbsp; ');
+                }
+                case 'fill_in_the_blanks':
+                    if (typeof ca === 'object') {
+                        return Object.entries(ca).map(([k, v]) => `[${escapeHtml(String(k))}] ${escapeHtml(String(v))}`).join(' &nbsp;·&nbsp; ');
+                    }
+                    return escapeHtml(String(ca));
+                default:
+                    return escapeHtml(typeof ca === 'object' ? JSON.stringify(ca) : String(ca));
+            }
+        }
+
+        // Định dạng lời chẩn đoán AI; làm nổi bật cờ cảnh báo trung lập khi AI tự giải ra đáp án khác đề.
+        function formatAiDiagnosisHtml(text) {
+            const raw = (typeof text === 'string') ? text : JSON.stringify(text);
+            return formatAiMarkdown(raw).replace(
+                /\[\s*⚠\uFE0F?\s*Nghi vấn đáp án:([^\]]*)\]/g,
+                (m, body) => `<div class="answer-doubt-flag">⚠️ <strong>Nghi vấn đáp án:</strong>${body}</div>`
+            );
         }
         
         let pasteTarget = 'question'; 
@@ -2055,6 +2382,48 @@
             });
         }
 
+        // Chuẩn hoá đề do AI bóc tách:
+        // 1) 'context' chỉ hợp lệ khi dùng chung cho >= 2 câu; nếu chỉ 1 câu dùng -> gộp vào 'text', context = null.
+        // 2) 'true_false' chỉ có 1 mệnh đề -> chuyển thành 'multiple_choice' với 2 lựa chọn Đúng/Sai.
+        function normalizeExtractedQuestions(questions) {
+            if (!Array.isArray(questions)) return questions;
+            const keyOf = (c) => (c || '').replace(/\s+/g, ' ').trim();
+
+            const counts = {};
+            questions.forEach(q => {
+                const k = keyOf(q.context);
+                if (k) counts[k] = (counts[k] || 0) + 1;
+            });
+
+            questions.forEach(q => {
+                const k = keyOf(q.context);
+                if (!k) { q.context = null; return; }
+                if (counts[k] >= 2) return; // ngữ liệu dùng chung -> giữ nguyên
+
+                const ctxText = q.context.trim();
+                const alreadyInText = keyOf(q.text).includes(k);
+                if (!alreadyInText) q.text = ctxText + '\n\n' + (q.text || '');
+                q.context = null;
+                if (q.contextImage) {
+                    if (!q.image) q.image = q.contextImage;
+                    q.contextImage = null;
+                }
+            });
+
+            questions.forEach(q => {
+                if (q.type === 'true_false' && Array.isArray(q.options) && q.options.length === 1) {
+                    const stmt = q.options[0].toString().replace(/^[a-d][\.\)]\s*/i, '');
+                    const ca = q.correct_answer;
+                    let val = (ca && typeof ca === 'object') ? (ca[0] !== undefined ? ca[0] : ca['0']) : ca;
+                    q.text = (q.text ? q.text + '\n' : '') + stmt;
+                    q.type = 'multiple_choice';
+                    q.options = ['A. Đúng', 'B. Sai'];
+                    q.correct_answer = (val === 'T' || val === true || val === 'true') ? 0 : ((val === 'F' || val === false || val === 'false') ? 1 : null);
+                }
+            });
+            return questions;
+        }
+
         async function startAiExtraction() {
             const apiKey = getGeminiApiKey();
             if (!apiKey) {
@@ -2107,7 +2476,12 @@
 QUY TẮC CÁC TRƯỜNG:
 - 'subject': mã môn viết thường ('toan', 'ly', 'hoa', 'sinh', 'anh', 'van', 'su', 'dia', 'tsa', 'other').
 - 'title': Tiêu đề đề thi trích xuất từ đề.
-- 'context': Văn bản bài đọc/ngữ liệu chung cho cụm câu hỏi. Nếu câu hỏi độc lập không có ngữ liệu, BẮT BUỘC để null.
+- 'context': CHỈ ĐƯỢC CHỨA DỮ LIỆU khi đoạn văn bản đó được DÙNG CHUNG cho TỪ 2 CÂU HỎI TRỞ LÊN (ví dụ chùm bài đọc hiểu 5-10 câu của TSA, một đoạn ngữ liệu cho nhiều câu liên tiếp). Các câu cùng chùm phải có nội dung 'context' GIỐNG HỆT nhau.
+- QUY TẮC CHỐNG NHẦM NGỮ LIỆU (CONTEXT VS TEXT):
+  + Nếu một câu hỏi có đoạn mô tả thí nghiệm, giả thiết, dữ kiện hay bài toán dài NHƯNG CHỈ DÙNG CHO DUY NHẤT CÂU ĐÓ (kể cả câu Đúng/Sai 4 ý a-b-c-d có phần dẫn chung cho 4 mệnh đề của chính nó) -> BẮT BUỘC nhét TOÀN BỘ đoạn đó vào trường 'text' và để 'context': null.
+  + Chỉ khi cùng một đoạn văn xuất hiện làm nền cho từ 2 câu hỏi trở lên mới được đưa vào 'context'. Nếu không chắc đoạn đó có dùng chung hay không -> coi như KHÔNG dùng chung: để vào 'text', 'context': null.
+  + Câu hỏi độc lập không có ngữ liệu chung, BẮT BUỘC để 'context': null.
+  + Câu hỏi Đúng/Sai chỉ hỏi MỘT khẳng định đơn lẻ (như câu đọc hiểu Đúng/Sai của TSA): xếp vào 'multiple_choice' với đúng 2 lựa chọn ['A. Đúng', 'B. Sai'] (correct_answer là 0 nếu Đúng, 1 nếu Sai), hoặc 'true_false' với options chỉ gồm 1 mệnh đề duy nhất.
 - 'image': Mặc định là null. Nếu câu hỏi có hình/đồ thị, thêm '[Cần chèn ảnh]' ở cuối 'text'.
 - 'id': Số thứ tự nguyên tăng dần từ 1.
 
@@ -2207,6 +2581,8 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     q.image = q.image || null;
                     q.explanation = q.explanation || '';
                 });
+                // Chốt chặn phía client: context dùng cho < 2 câu -> gộp vào text; true_false 1 mệnh đề -> multiple_choice Đúng/Sai
+                normalizeExtractedQuestions(parsedExam.questions);
 
                 currentAiExtractedData = parsedExam;
                 closeAiImportModal();
@@ -2666,34 +3042,9 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             const tot = h.totalQ || (h.questions ? h.questions.length : 0);
                             let wrongList = [];
                             if (h.wrongQs && h.questions) {
-                                wrongList = h.wrongQs.map(qIdx => {
-                                    const q = h.questions[qIdx] || {};
-                                    let subDetails = null;
-                                    if (q.type === 'true_false' && Array.isArray(q.options)) {
-                                        subDetails = q.options.map((opt, oIdx) => {
-                                            const userChoice = (h.answers && h.answers[qIdx] && h.answers[qIdx][oIdx]) || 'Bỏ trống';
-                                            const rightChoice = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) || 'Chưa rõ';
-                                            const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
-                                            return {
-                                                item: String.fromCharCode(97 + oIdx),
-                                                text: (opt || '').substring(0, 150),
-                                                selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
-                                                correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
-                                                isCorrect: isMatched
-                                            };
-                                        });
-                                    }
-                                    return {
-                                        qIndex: qIdx + 1,
-                                        qZeroIndex: qIdx,
-                                        question: (q.text || '').substring(0, 300),
-                                        selected: h.answers ? h.answers[qIdx] : null,
-                                        correct: q.correct_answer,
-                                        type: q.type || 'multiple_choice',
-                                        timeSpent: (h.timeSpent && h.timeSpent[qIdx]) || 0,
-                                        subDetails: subDetails
-                                    };
-                                });
+                                wrongList = h.wrongQs.map(qIdx =>
+                                    buildWrongQuestionRecord(h.questions[qIdx] || {}, qIdx, h.answers ? h.answers[qIdx] : null, (h.timeSpent && h.timeSpent[qIdx]) || 0)
+                                );
                             }
                             const tSpent = h.timeSpent || {};
                             const totSec = h.totalActiveSeconds || Object.values(tSpent).reduce((a, b) => a + b, 0);
@@ -2774,6 +3125,18 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             });
 
             // Chi tiết danh sách câu sai của đề thi mới nhất để AI lập question_breakdown
+            // (kèm đủ đề bài + phương án để AI TỰ GIẢI ĐỘC LẬP rồi mới đối chiếu với đáp án lưu trong đề)
+            const fmtAnsForAi = (type, val, opts) => {
+                if (val === null || val === undefined || val === '') return 'Bỏ trống';
+                const toLabel = (v) => { const i = parseInt(v); return (!isNaN(i) && labels[i]) ? labels[i] : String(v); };
+                if (type === 'multiple_choice') return toLabel(val);
+                if (type === 'multiple_response') {
+                    const arr = Array.isArray(val) ? val : Object.entries(val).filter(([k, v]) => v === true || v === 'true').map(([k]) => k);
+                    return arr.length ? arr.map(toLabel).join(', ') : 'Bỏ trống';
+                }
+                return typeof val === 'object' ? JSON.stringify(val) : String(val);
+            };
+
             let latestWrongQsSummary = "";
             if (latestAtt.wrongQuestions && latestAtt.wrongQuestions.length > 0) {
                 latestWrongQsSummary = `DANH SÁCH CÁC CÂU LÀM SAI / BỎ TRỐNG CẦN CHẨN ĐOÁN TRONG ĐỀ THI GẦN NHẤT ("${latestAtt.examTitle}"):\n`;
@@ -2782,19 +3145,29 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     const qSnippet = (w.question || '').replace(/\s+/g, ' ').trim();
                     const sec = (w.timeSpent !== undefined) ? w.timeSpent : 0;
                     const timeTag = sec > 0 ? ` [Dừng ${sec}s]` : '';
+                    const opts = Array.isArray(w.options) ? w.options : [];
                     
                     latestWrongQsSummary += `\n* Index ${qZero} (Câu ${w.qIndex} trên đề - dạng ${w.type || 'multiple_choice'})${timeTag}:\n`;
-                    latestWrongQsSummary += `  Nội dung câu: "${qSnippet}"\n`;
+                    if (w.context) latestWrongQsSummary += `  Ngữ liệu chung: "${w.context.replace(/\s+/g, ' ').trim()}"\n`;
+                    latestWrongQsSummary += `  Đề bài: "${qSnippet}"\n`;
 
                     if (w.type === 'true_false' && w.subDetails && Array.isArray(w.subDetails)) {
-                        latestWrongQsSummary += `  Các ý Đúng/Sai 4 ý:\n`;
+                        latestWrongQsSummary += `  Các mệnh đề Đúng/Sai (học sinh chọn vs đáp án lưu trong đề):\n`;
                         w.subDetails.forEach(sd => {
-                            latestWrongQsSummary += `    - Ý (${sd.item}) "${sd.text}": Học sinh chọn [${sd.selected}] | Đáp án đúng [${sd.correct}] => ${sd.isCorrect ? 'ĐÚNG' : 'SAI (Nhầm lẫn)'}\n`;
+                            latestWrongQsSummary += `    - Ý (${sd.item}) "${sd.text}": Học sinh chọn [${sd.selected}] | Đáp án lưu trong đề [${sd.correct}] => ${sd.isCorrect ? 'KHỚP' : 'LỆCH'}\n`;
                         });
-                    } else if (w.type === 'short_answer' || w.type === 'fill_in_the_blanks') {
-                        latestWrongQsSummary += `  Học sinh nhập: [${JSON.stringify(w.selected ?? 'Bỏ trống')}] | Đáp án đúng: [${JSON.stringify(w.correct)}]\n`;
                     } else {
-                        latestWrongQsSummary += `  Học sinh chọn: ${JSON.stringify(w.selected)} | Đáp án đúng: ${JSON.stringify(w.correct)}\n`;
+                        if (opts.length > 0 && (w.type === 'multiple_choice' || w.type === 'multiple_response')) {
+                            latestWrongQsSummary += `  Các phương án:\n`;
+                            opts.forEach((o, i) => {
+                                const txt = /^[A-Ha-h][\.\)]\s/.test(o) ? o : `${labels[i] || i}. ${o}`;
+                                latestWrongQsSummary += `    ${txt.replace(/\s+/g, ' ').trim()}\n`;
+                            });
+                        } else if (opts.length > 0) {
+                            latestWrongQsSummary += `  Lựa chọn điền khuyết: ${JSON.stringify(opts)}\n`;
+                        }
+                        latestWrongQsSummary += `  Học sinh chọn/nhập: ${fmtAnsForAi(w.type, w.selected, opts)}\n`;
+                        latestWrongQsSummary += `  Đáp án lưu trong đề (correct_answer): ${fmtAnsForAi(w.type, w.correct, opts)}\n`;
                     }
                 });
             } else {
@@ -2846,7 +3219,17 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
    - Giá trị (value) là phân tích sư phạm sâu sắc:
      + Trắc nghiệm 1 đáp án / Nhiều đáp án: Chỉ rõ học sinh bị bẫy ở giả thiết nào, nhầm lẫn công thức nào hoặc nhầm dấu / tính toán chỗ nào.
      + Trắc nghiệm Đúng/Sai 4 ý: Chỉ đích danh ý con nào (a, b, c hay d) học sinh bị sai, sai do đâu (hiểu sai bản chất hiện tượng, biến đổi toán sai, hay ngộ nhận mệnh đề đảo).
-     + Điền số ngắn: Chỉ rõ sai số do làm tròn, sai đơn vị đo hay sai phương pháp lập phương trình.`;
+     + Điền số ngắn: Chỉ rõ sai số do làm tròn, sai đơn vị đo hay sai phương pháp lập phương trình.
+
+QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRONG "question_breakdown"):
+- BƯỚC 1 - TỰ GIẢI ĐỘC LẬP: Trước hết, hãy TỰ GIẢI câu hỏi từ đầu bằng tư duy khoa học / toán học của chính bạn, chỉ dựa trên đề bài, ngữ liệu và các phương án. CHƯA ĐƯỢC nhìn "Đáp án lưu trong đề" ở bước này, không được suy ngược từ đáp án đó.
+- BƯỚC 2 - ĐỐI CHIẾU: Sau khi có kết quả riêng, mới so sánh với "Đáp án lưu trong đề (correct_answer)".
+- BƯỚC 3 - XỬ LÝ:
+  + Nếu kết quả tự giải KHỚP đáp án trong đề: phân tích bình thường nguyên nhân học sinh sai.
+  + Nếu kết quả tự giải KHÁC đáp án trong đề: vẫn phân tích lỗi của học sinh, nhưng BẮT BUỘC mở đầu nhận xét bằng đúng cờ cảnh báo trung lập sau (thay X là kết quả AI tự tính, Y là đáp án đề đang chọn):
+    [⚠️ Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
+  + TUYỆT ĐỐI KHÔNG tuyên bố đề sai, KHÔNG đề nghị hay tự ý sửa điểm. Điểm số luôn được tính 100% theo đáp án gốc trong cơ sở dữ liệu; cờ cảnh báo chỉ mang tính tham khảo để học sinh tự kiểm chứng lại.
+- Viết đầy đủ, không bỏ dở giữa chừng. Nếu dùng ký hiệu LaTeX trong chuỗi JSON, phải escape dấu gạch chéo ngược thành \\\\ (ví dụ \\\\frac) để JSON hợp lệ.`;
 
             const model = getGeminiModel();
             const currentThinkingLevel = getGeminiThinkingLevel();
@@ -2856,6 +3239,8 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                 contents: [{ parts: [{ text: advisorPrompt }] }],
                 generationConfig: {
                     temperature: 0.3,
+                    // Token suy luận (thinking) cũng tính vào hạn mức này -> đặt dư để không bị cắt cụt (tối thiểu 1200)
+                    maxOutputTokens: 8192,
                     responseMimeType: "application/json",
                     thinkingConfig: {
                         thinkingLevel: currentThinkingLevel
@@ -3333,6 +3718,7 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
             
             document.getElementById('timer-submit-area').style.display = 'block';
             document.getElementById('score-result-area').style.display = 'none';
+            resetNavDockState();
         }
 
         // --- XEM LẠI BÀI ---
@@ -3431,6 +3817,8 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                 if (timerLbl) timerLbl.innerText = label;
                 const totTimer = document.getElementById('total-timer');
                 if (totTimer) totTimer.innerText = `${Math.floor(currentSession.totalSeconds / 60)}:${(currentSession.totalSeconds % 60).toString().padStart(2, '0')}`;
+                const bottomTimer = document.getElementById('bottom-timer');
+                if (bottomTimer) bottomTimer.innerText = `⏳ ${formatClock(currentSession.totalSeconds)}`;
 
                 // Đếm thời gian cho câu hỏi hiện tại
                 if (currentSession.currentIndex !== undefined && currentSession.currentIndex !== null) {
@@ -3488,7 +3876,9 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
             const contextImg = document.getElementById('context-render-image');
             
             if (q.context && q.context.trim() !== "") {
+                const ctxWasHidden = (contextArea.style.display !== 'block');
                 contextArea.style.display = 'block'; contextText.innerHTML = q.context.replace(/\n/g, '<br><br>');
+                if (ctxWasHidden) { contextArea.classList.remove('ctx-enter'); void contextArea.offsetWidth; contextArea.classList.add('ctx-enter'); }
                 if (q.contextImage) { contextImg.src = q.contextImage; contextImg.style.display = 'block'; } else { contextImg.style.display = 'none'; }
             } else { contextArea.style.display = 'none'; }
 
@@ -3512,10 +3902,16 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
             }
             const timeBadgeHtml = `<span class="${timeBadgeClass}" id="q-time-spent-badge" title="Thời gian dừng lại ở câu này">⏱️ ${formatSeconds(secSpent)}${timeBadgeExtra}</span>`;
             
-            // Xử lý gợi ý tư duy Socratic
+            // Xử lý gợi ý tư duy Socratic (ẩn hoàn toàn khi đã nộp bài)
+            const isLockedReview = !!currentSession.isSubmitted;
             const cacheKey = getSocraticHintKey(q, idx);
-            const hasCachedHint = !!getCachedSocraticHint(cacheKey);
-            const isHintOpen = !!(currentSession.hintsOpened && currentSession.hintsOpened[idx]);
+            const hasCachedHint = !isLockedReview && !!getCachedSocraticHint(cacheKey);
+            const isHintOpen = !isLockedReview && !!(currentSession.hintsOpened && currentSession.hintsOpened[idx]);
+
+            const hintButtonHtml = isLockedReview ? '' : `
+                    <button class="btn-socratic-hint ${hasCachedHint ? 'has-cached' : ''}" id="btn-hint-${idx}" onclick="toggleSocraticHint(${idx})" title="Nhận gợi mở định hướng tư duy Socratic (không mớm đáp án)">
+                        💡 Gợi ý tư duy ${hasCachedHint ? '✓' : ''}
+                    </button>`;
 
             let html = `
             <div class="q-number">
@@ -3524,29 +3920,24 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                     ${timeBadgeHtml}
                 </div>
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <button class="btn-socratic-hint ${hasCachedHint ? 'has-cached' : ''}" id="btn-hint-${idx}" onclick="toggleSocraticHint(${idx})" title="Nhận gợi mở định hướng tư duy Socratic (không mớm đáp án)">
-                        💡 Gợi ý tư duy ${hasCachedHint ? '✓' : ''}
-                    </button>
+                    ${hintButtonHtml}
                     <button class="btn-edit" onclick="openEditModal()">Sửa đề & Đ.án</button>
                 </div>
             </div>`;
 
             if (q.image) html += `<img src="${q.image}" class="q-image" style="display:block;">`;
 
-            // Khung chứa Gợi ý tư duy Socratic
-            html += `<div id="socratic-hint-container-${idx}" class="socratic-hint-wrapper" style="display: ${isHintOpen ? 'block' : 'none'};"></div>`;
+            // Khung chứa Gợi ý tư duy Socratic (không tồn tại ở chế độ xem lại)
+            if (!isLockedReview) {
+                html += `<div id="socratic-hint-container-${idx}" class="socratic-hint-wrapper" style="display: ${isHintOpen ? 'block' : 'none'};"></div>`;
+            }
 
             let formattedText = q.text.replace(/\n/g, '<br>');
 
             let scoreInfoHtml = "";
             if (currentSession.isSubmitted) {
                 let isRight = currentSession.scoreCard[idx];
-                let displayRightAns = (q.correct_answer !== undefined && q.correct_answer !== null) ? JSON.stringify(q.correct_answer) : "Chưa cập nhật";
-                if (q.type === 'multiple_choice' && q.correct_answer !== undefined && q.correct_answer !== null) {
-                    let ansIndex = parseInt(q.correct_answer);
-                    if (!isNaN(ansIndex) && labels[ansIndex]) displayRightAns = labels[ansIndex];
-                    else displayRightAns = q.correct_answer;
-                }
+                const displayRightAns = formatCorrectAnswerDisplay(q);
 
                 scoreInfoHtml = `<div style="padding: 10px; margin-bottom: 15px; border-radius: 6px; font-weight: bold; background: ${isRight ? '#d1fae5; color: #065f46; border:1px solid #a7f3d0;' : '#fee2e2; color: #991b1b; border:1px solid #fecaca;'}">
                     ${isRight ? '✓ CHUẨN RỒI' : '✕ SAI RỒI'} - Đáp án đúng: <span style="font-size: 16px; font-weight: 900;">${displayRightAns}</span>
@@ -3640,7 +4031,7 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                                 <span class="ai-diagnostics-badge">Chẩn đoán tự động</span>
                             </div>
                             <div class="ai-diagnostics-body">
-                                ${formatAiMarkdown(qDiag)}
+                                ${formatAiDiagnosisHtml(qDiag)}
                             </div>
                         </div>`;
                     } else if (isBackgroundAdvisorRunning) {
@@ -3660,17 +4051,135 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
 
             area.innerHTML = html;
             
-            // Nếu khung gợi ý đang ở trạng thái mở và có nội dung trong cache -> Render ngay
-            if (isHintOpen && hasCachedHint) {
+            // Nếu khung gợi ý đang ở trạng thái mở và có nội dung trong cache -> Render ngay (chỉ khi đang làm bài)
+            if (!currentSession.isSubmitted && isHintOpen && hasCachedHint) {
                 renderSocraticHintHtml(idx, getCachedSocraticHint(cacheKey));
+            }
+
+            // KHÓA TƯƠNG TÁC KHI ĐÃ NỘP BÀI (REVIEW MODE)
+            if (currentSession.isSubmitted) {
+                area.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+                area.querySelectorAll('.option-item, .tf-cell-btn').forEach(el => {
+                    el.classList.add('locked');
+                    el.setAttribute('aria-disabled', 'true');
+                    el.removeAttribute('onclick');
+                    el.onclick = null;
+                });
             }
             
             const bmBtn = document.getElementById('btn-bookmark');
             if (bmBtn) {
+                const locked = !!currentSession.isSubmitted;
+                bmBtn.disabled = locked;
+                bmBtn.style.opacity = locked ? '0.5' : '1';
+                bmBtn.style.cursor = locked ? 'not-allowed' : 'pointer';
+                bmBtn.title = locked ? 'Không thể đánh dấu khi đã nộp bài' : '';
                 bmBtn.style.background = currentSession.bookmarks[idx] ? '#faad14' : '#f0f0f0';
                 bmBtn.style.color = currentSession.bookmarks[idx] ? 'white' : '#555';
             }
+
+            // ADAPTIVE DOCK: tự động chuyển Bảng điều hướng theo ngữ liệu của câu hiện tại
+            const hasContext = !!(q.context && q.context.trim() !== "");
+            syncAdaptiveDock(hasContext);
+            syncBottomBar();
+
             if (window.MathJax) MathJax.typesetPromise([contextArea, area]);
+        }
+
+        // --- ADAPTIVE DOCK: BẢNG ĐIỀU HƯỚNG THÍCH ỨNG ---
+        let navDockCollapsed = false;
+        let lastQuestionHadContext = null;
+
+        function applyNavDock() {
+            const panel = document.getElementById('nav-panel');
+            const bar = document.getElementById('bottom-bar');
+            if (!panel || !bar) return;
+            panel.classList.toggle('docked-bottom', navDockCollapsed);
+            bar.classList.toggle('visible', navDockCollapsed);
+            // inert: ngăn focus bàn phím / đọc màn hình vào phần đang ẩn
+            panel.inert = navDockCollapsed;
+            bar.inert = !navDockCollapsed;
+            panel.setAttribute('aria-hidden', navDockCollapsed ? 'true' : 'false');
+            bar.setAttribute('aria-hidden', navDockCollapsed ? 'false' : 'true');
+        }
+
+        function toggleNavDock(force) {
+            navDockCollapsed = (typeof force === 'boolean') ? force : !navDockCollapsed;
+            applyNavDock();
+        }
+
+        function resetNavDockState() {
+            navDockCollapsed = false;
+            lastQuestionHadContext = null;
+            const qv = document.getElementById('quiz-view');
+            if (qv) qv.classList.add('dock-instant');
+            applyNavDock();
+            if (qv) { void qv.offsetWidth; requestAnimationFrame(() => qv.classList.remove('dock-instant')); }
+        }
+
+        // Chỉ tự động đổi chế độ khi loại câu hỏi (có/không ngữ liệu) thay đổi,
+        // nhờ vậy lựa chọn thủ công của người dùng được giữ nguyên giữa các câu cùng loại.
+        function syncAdaptiveDock(hasContext) {
+            const qv = document.getElementById('quiz-view');
+            if (qv) qv.classList.toggle('context-mode', hasContext);
+            if (lastQuestionHadContext === hasContext) return;
+            const firstRender = (lastQuestionHadContext === null);
+            lastQuestionHadContext = hasContext;
+            if (firstRender && qv) {
+                qv.classList.add('dock-instant');
+                navDockCollapsed = hasContext;
+                applyNavDock();
+                void qv.offsetWidth;
+                requestAnimationFrame(() => qv.classList.remove('dock-instant'));
+            } else {
+                navDockCollapsed = hasContext;
+                applyNavDock();
+            }
+        }
+
+        function formatClock(sec) {
+            sec = Math.max(0, sec || 0);
+            return `${Math.floor(sec / 60)}:${(sec % 60).toString().padStart(2, '0')}`;
+        }
+
+        function syncBottomBar() {
+            const total = currentSession.questions ? currentSession.questions.length : 0;
+            const idx = currentSession.currentIndex || 0;
+            const counter = document.getElementById('bottom-bar-counter');
+            if (counter) counter.innerText = `Câu ${idx + 1}/${total}`;
+            const prevBtn = document.getElementById('btn-bottom-prev');
+            const nextBtn = document.getElementById('btn-bottom-next');
+            const submitBtn = document.getElementById('btn-bottom-submit');
+
+            if (prevBtn) prevBtn.disabled = idx <= 0;
+
+            if (currentSession.isSubmitted) {
+                if (nextBtn) {
+                    nextBtn.style.display = 'inline-block';
+                    nextBtn.disabled = idx >= total - 1;
+                    nextBtn.innerText = 'Câu tiếp ›';
+                    nextBtn.onclick = () => nextQuestion();
+                }
+                if (submitBtn) submitBtn.style.display = 'none';
+            } else {
+                if (submitBtn) submitBtn.style.display = 'inline-flex';
+                if (nextBtn) {
+                    if (idx >= total - 1) {
+                        nextBtn.style.display = 'none';
+                    } else {
+                        nextBtn.style.display = 'inline-block';
+                        nextBtn.disabled = false;
+                        nextBtn.innerText = 'Câu tiếp ›';
+                        nextBtn.onclick = () => nextQuestion();
+                    }
+                }
+            }
+
+            const timer = document.getElementById('bottom-timer');
+            if (timer) {
+                if (currentSession.isSubmitted) timer.innerText = '🏁 Đã nộp';
+                else timer.innerText = `⏳ ${formatClock(currentSession.totalSeconds)}`;
+            }
         }
 
         // --- TÍNH NĂNG GỢI Ý TƯ DUY SOCRATIC ---
@@ -3839,13 +4348,15 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
             return hint.trim();
         }
 
-        function selectMC(oIdx) { currentSession.answers[currentSession.currentIndex] = oIdx; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
-        function selectMR(oIdx) { let ans = currentSession.answers[currentSession.currentIndex] || {}; ans[oIdx] = !ans[oIdx]; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
-        function selectTF(sIdx, val) { let ans = currentSession.answers[currentSession.currentIndex] || {}; if (ans[sIdx] === val) delete ans[sIdx]; else ans[sIdx] = val; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
-        function updateSA(val) { if (val.trim() === '') delete currentSession.answers[currentSession.currentIndex]; else currentSession.answers[currentSession.currentIndex] = val; saveActiveExamSession(); renderNavGrid(); }
-        function selectBlank(bIdx, val) { let ans = currentSession.answers[currentSession.currentIndex] || {}; ans[bIdx] = val; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
-        function toggleBookmark() { currentSession.bookmarks[currentSession.currentIndex] = !currentSession.bookmarks[currentSession.currentIndex]; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function selectMC(oIdx) { if (currentSession.isSubmitted) return; currentSession.answers[currentSession.currentIndex] = oIdx; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function selectMR(oIdx) { if (currentSession.isSubmitted) return; let ans = currentSession.answers[currentSession.currentIndex] || {}; ans[oIdx] = !ans[oIdx]; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function selectTF(sIdx, val) { if (currentSession.isSubmitted) return; let ans = currentSession.answers[currentSession.currentIndex] || {}; if (ans[sIdx] === val) delete ans[sIdx]; else ans[sIdx] = val; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function updateSA(val) { if (currentSession.isSubmitted) return; if (val.trim() === '') delete currentSession.answers[currentSession.currentIndex]; else currentSession.answers[currentSession.currentIndex] = val; saveActiveExamSession(); renderNavGrid(); }
+        function selectBlank(bIdx, val) { if (currentSession.isSubmitted) return; let ans = currentSession.answers[currentSession.currentIndex] || {}; ans[bIdx] = val; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function toggleBookmark() { if (currentSession.isSubmitted) return; currentSession.bookmarks[currentSession.currentIndex] = !currentSession.bookmarks[currentSession.currentIndex]; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
         function jumpToQuestion(idx) { currentSession.currentIndex = idx; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function prevQuestion() { if (currentSession.currentIndex > 0) jumpToQuestion(currentSession.currentIndex - 1); }
+        function nextQuestion() { if (currentSession.currentIndex < currentSession.questions.length - 1) jumpToQuestion(currentSession.currentIndex + 1); }
         function reviewAll() { jumpToQuestion(0); }
 
         // --- HÀM DÙNG CHUNG CHẤM ĐIỂM TOÀN BỘ BÀI THI (RECALCULATE SCORE) ---
@@ -3942,16 +4453,9 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                     if (isQuestionCorrect) { thptScores.p3.rightQ++; thptScores.p3.pts += p3Weight; }
                 }
 
-                // Điểm theo chuẩn Đề thường (Điểm luỹ tiến Đúng/Sai 0.1, 0.25, 0.5, 1.0; các câu khác đúng = 1.0)
-                if (q.type === 'true_false') {
-                    let tfNormPts = 0;
-                    if (matches === 1) tfNormPts = 0.1;
-                    else if (matches === 2) tfNormPts = 0.25;
-                    else if (matches === 3) tfNormPts = 0.5;
-                    else if (matches >= 4) tfNormPts = 1.0;
-                    normalEarnedPoints += tfNormPts;
-                } else {
-                    if (isQuestionCorrect) normalEarnedPoints += 1.0;
+                // Điểm theo chuẩn Đề thường / TSA: Chỉ tính điểm khi câu hỏi đúng trọn vẹn 100% (câu Đúng/Sai phải đúng cả 4/4 ý)
+                if (isQuestionCorrect) {
+                    normalEarnedPoints += 1.0;
                 }
 
                 if (isQuestionCorrect) { correctCount++; } else { wrongQs.push(i); }
@@ -4061,34 +4565,9 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                 const isEligibleForAi = (totalQ > 0 && (answeredCount / totalQ) >= 0.2);
                 const examSub = (currentSession.subject ? currentSession.subject.toLowerCase() : 'other');
 
-                const wrongQuestionsList = wrongQs.map(qIdx => {
-                    const q = currentSession.questions[qIdx] || {};
-                    let subDetails = null;
-                    if (q.type === 'true_false' && Array.isArray(q.options)) {
-                        subDetails = q.options.map((opt, oIdx) => {
-                            const userChoice = (currentSession.answers[qIdx] && currentSession.answers[qIdx][oIdx]) || 'Bỏ trống';
-                            const rightChoice = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) || 'Chưa rõ';
-                            const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
-                            return {
-                                item: String.fromCharCode(97 + oIdx),
-                                text: (opt || '').substring(0, 150),
-                                selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
-                                correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
-                                isCorrect: isMatched
-                            };
-                        });
-                    }
-                    return {
-                        qIndex: qIdx + 1,
-                        qZeroIndex: qIdx,
-                        question: (q.text || '').substring(0, 300),
-                        selected: currentSession.answers[qIdx] !== undefined ? currentSession.answers[qIdx] : null,
-                        correct: q.correct_answer !== undefined ? q.correct_answer : null,
-                        type: q.type || 'multiple_choice',
-                        timeSpent: timeSpentMap[qIdx] || 0,
-                        subDetails: subDetails
-                    };
-                });
+                const wrongQuestionsList = wrongQs.map(qIdx =>
+                    buildWrongQuestionRecord(currentSession.questions[qIdx] || {}, qIdx, currentSession.answers[qIdx], timeSpentMap[qIdx] || 0)
+                );
 
                 const historyRecord = {
                     timestamp: Date.now(),
@@ -4128,6 +4607,11 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
             const scoreArea = document.getElementById('score-result-area');
             scoreArea.innerHTML = fullScoreHtml; 
             scoreArea.style.display = 'block';
+
+            // Tự động bung bảng điều hướng lên nếu đang bị thu xuống đáy để người dùng nhìn thấy điểm số và danh sách câu sai
+            if (navDockCollapsed) {
+                toggleNavDock(false);
+            }
 
             renderNavGrid(); 
             renderQuestion();
@@ -4239,33 +4723,9 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
                 // Cập nhật lại Firebase exam_history
                 const examSub = currentSession.subject ? currentSession.subject.toLowerCase() : 'other';
                 const timeSpentMap = { ...(currentSession.questionTimeSpent || {}) };
-                const wrongQuestionsList = scoreResult.wrongQs.map(qIdx => {
-                    const qItem = currentSession.questions[qIdx] || {};
-                    let subDetails = null;
-                    if (qItem.type === 'true_false' && Array.isArray(qItem.options)) {
-                        subDetails = qItem.options.map((opt, oIdx) => {
-                            const userChoice = (currentSession.answers[qIdx] && currentSession.answers[qIdx][oIdx]) || 'Bỏ trống';
-                            const rightChoice = (qItem.correct_answer && (qItem.correct_answer[oIdx] || qItem.correct_answer[oIdx.toString()])) || 'Chưa rõ';
-                            const isMatched = (userChoice !== 'Bỏ trống' && userChoice.toString().toUpperCase() === rightChoice.toString().toUpperCase());
-                            return {
-                                item: String.fromCharCode(97 + oIdx),
-                                text: (opt || '').substring(0, 150),
-                                selected: userChoice === 'T' ? 'Đúng' : (userChoice === 'F' ? 'Sai' : userChoice),
-                                correct: rightChoice === 'T' ? 'Đúng' : (rightChoice === 'F' ? 'Sai' : rightChoice),
-                                isCorrect: isMatched
-                            };
-                        });
-                    }
-                    return {
-                        qIndex: qIdx + 1,
-                        question: (qItem.text || '').substring(0, 300),
-                        selected: currentSession.answers[qIdx] !== undefined ? currentSession.answers[qIdx] : null,
-                        correct: qItem.correct_answer !== undefined ? qItem.correct_answer : null,
-                        type: qItem.type || 'multiple_choice',
-                        timeSpent: timeSpentMap[qIdx] || 0,
-                        subDetails: subDetails
-                    };
-                });
+                const wrongQuestionsList = scoreResult.wrongQs.map(qIdx =>
+                    buildWrongQuestionRecord(currentSession.questions[qIdx] || {}, qIdx, currentSession.answers[qIdx], timeSpentMap[qIdx] || 0)
+                );
 
                 if (isCloudActive && cloudDB && examSub) {
                     try {
