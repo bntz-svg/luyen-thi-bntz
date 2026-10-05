@@ -12,9 +12,10 @@
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <!-- FIREBASE CLOUD SYNC SDK -->
+    <!-- FIREBASE CLOUD SYNC & AUTH SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     
     <style>
         :root { --tsa-red: #c8102e; --tsa-blue: #0033a0; --bg-color: #f8fafc; --panel-bg: #ffffff; --text-main: #334155; --border-color: #e2e8f0; --answered-bg: #2563eb; --active-border: #4f46e5; }
@@ -1879,46 +1880,141 @@
             appId: "1:569066957296:web:123456789"
         };
 
-        // --- 1. MÀN HÌNH KHÓA PIN BẢO MẬT (SHA-256) ---
-        const PIN_HASH = "52318c9727c3ff0f883bb50b7a5f694d5ff878ae9695e01d21812ad4fa9d2c6e";
+        // --- 1. KHỞI TẠO FIREBASE CLOUD SYNC & AUTHENTICATION ---
+        let cloudDB = null;
+        let isCloudActive = false;
+        let cloudListenersInitialized = false;
 
-        async function computeSha256(str) {
-            const buffer = new TextEncoder().encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        try {
+            if (!firebase.apps || !firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            cloudDB = firebase.database();
+            if (firebase.auth) {
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(e => console.warn("Lỗi cấu hình Session Persistence:", e));
+            }
+        } catch(e) { console.log("Lỗi khởi tạo Firebase:", e); }
+
+        // --- CÁC HÀM LẮNG NGHE REALTIME DATABASE (CHỈ CHẠY KHI ĐÃ ĐĂNG NHẬP) ---
+        function initCloudListeners() {
+            if (!cloudDB || cloudListenersInitialized) return;
+            isCloudActive = true;
+            cloudListenersInitialized = true;
+
+            const badge = document.getElementById('cloud-sync-badge');
+            if (badge) {
+                badge.innerText = "☁️ Đã đồng bộ Cloud";
+                badge.style.background = "#d1fae5";
+                badge.style.color = "#065f46";
+            }
+
+            try {
+                // 1. Lắng nghe realtime kho đề thư viện
+                cloudDB.ref('library').on('value', async (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        library = data;
+                        try {
+                            const db = await openDB();
+                            const tx = db.transaction(storeName, "readwrite");
+                            const store = tx.objectStore(storeName);
+                            store.clear();
+                            for (const [k, v] of Object.entries(library)) { store.put({ id: k, data: v }); }
+                        } catch (dbErr) {
+                            console.warn("Lỗi lưu IndexedDB từ Firebase:", dbErr);
+                        }
+                    }
+                    if ((document.getElementById('home-view') && document.getElementById('home-view').style.display !== 'none') || (document.getElementById('portal-view') && document.getElementById('portal-view').style.display !== 'none')) renderHomeStats();
+                    if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') renderDashboardGrid();
+                    if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel') && document.getElementById('detail-view-panel').style.display !== 'none') openDetailView(activeDetailKey);
+                }, (error) => {
+                    console.error("Lỗi Realtime Database (library):", error);
+                });
+
+                // 2. Lắng nghe realtime dữ liệu Cố vấn AI
+                cloudDB.ref('ai_advisor').on('value', (snapshot) => {
+                    cachedAiAdvisor = snapshot.val() || {};
+                    if (currentFilter && currentFilter !== 'all' && document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                        renderAiAdvisorWidget(currentFilter);
+                    }
+                }, (error) => {
+                    console.error("Lỗi Realtime Database (ai_advisor):", error);
+                });
+
+                // 3. Lắng nghe realtime dữ liệu Lịch sử làm bài
+                cloudDB.ref('exam_history').on('value', (snapshot) => {
+                    cachedExamHistory = snapshot.val() || {};
+                }, (error) => {
+                    console.error("Lỗi Realtime Database (exam_history):", error);
+                });
+            } catch (syncErr) {
+                console.error("Lỗi thiết lập listeners Firebase:", syncErr);
+            }
         }
 
+        function detachCloudListeners() {
+            if (cloudDB && cloudListenersInitialized) {
+                try {
+                    cloudDB.ref('library').off();
+                    cloudDB.ref('ai_advisor').off();
+                    cloudDB.ref('exam_history').off();
+                } catch(e) {}
+            }
+            cloudListenersInitialized = false;
+            isCloudActive = false;
+            const badge = document.getElementById('cloud-sync-badge');
+            if (badge) {
+                badge.innerText = "💻 Bộ nhớ máy (Offline)";
+                badge.style.background = "#f1f5f9";
+                badge.style.color = "#64748b";
+            }
+        }
+
+        // --- 2. MÀN HÌNH KHÓA PIN LIÊN KẾT FIREBASE AUTHENTICATION ---
         async function handlePinSubmit(e) {
             if (e) e.preventDefault();
             const inputEl = document.getElementById('pin-input');
             const errEl = document.getElementById('pin-error-msg');
             const lockScreen = document.getElementById('pin-lock-screen');
+            const btnUnlock = document.getElementById('btn-pin-unlock');
             if (!inputEl) return;
-            const entered = inputEl.value;
+            const entered = inputEl.value.trim();
             if (!entered) {
                 if (errEl) errEl.innerText = 'Vui lòng nhập mã PIN!';
                 return;
             }
+
+            if (btnUnlock) {
+                btnUnlock.innerText = 'Đang xác thực...';
+                btnUnlock.disabled = true;
+            }
+            if (errEl) errEl.innerText = '';
+
             try {
-                const hash = await computeSha256(entered);
-                if (hash === PIN_HASH) {
-                    sessionStorage.setItem('bntz_pin_authorized', 'true');
-                    if (errEl) errEl.innerText = '';
-                    if (lockScreen) {
-                        lockScreen.classList.add('fade-out');
-                        setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
-                    }
-                } else {
-                    if (errEl) errEl.innerText = 'Mã PIN không chính xác!';
-                    inputEl.classList.remove('shake');
-                    void inputEl.offsetWidth;
-                    inputEl.classList.add('shake');
-                    inputEl.value = '';
-                    inputEl.focus();
+                if (firebase.auth) {
+                    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                    await firebase.auth().signInWithEmailAndPassword('admin@bntz.com', entered);
                 }
+                sessionStorage.setItem('bntz_pin_authorized', 'true');
+                if (errEl) errEl.innerText = '';
+                if (lockScreen) {
+                    lockScreen.classList.add('fade-out');
+                    setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
+                }
+                initCloudListeners();
             } catch (err) {
-                console.error("Lỗi xác thực PIN:", err);
-                if (errEl) errEl.innerText = 'Lỗi hệ thống khi băm mật khẩu!';
+                console.error("Lỗi xác thực PIN / Firebase Auth:", err);
+                if (errEl) errEl.innerText = 'Mã PIN không chính xác!';
+                inputEl.classList.remove('shake');
+                void inputEl.offsetWidth;
+                inputEl.classList.add('shake');
+                inputEl.value = '';
+                inputEl.focus();
+            } finally {
+                if (btnUnlock) {
+                    btnUnlock.innerText = 'Mở Khóa Phòng Luyện';
+                    btnUnlock.disabled = false;
+                }
             }
         }
 
@@ -1927,25 +2023,47 @@
             const lockScreen = document.getElementById('pin-lock-screen');
             if (!lockScreen) return;
             const isAuthorized = sessionStorage.getItem('bntz_pin_authorized') === 'true';
-            if (isAuthorized) {
+            if (isAuthorized && firebase.auth && firebase.auth().currentUser) {
                 lockScreen.style.display = 'none';
+                initCloudListeners();
             } else {
                 lockScreen.style.display = 'flex';
                 lockScreen.classList.remove('fade-out');
                 const pinInput = document.getElementById('pin-input');
                 if (pinInput) setTimeout(() => pinInput.focus(), 120);
+                if (!isAuthorized && firebase.auth && firebase.auth().currentUser) {
+                    firebase.auth().signOut().catch(() => {});
+                }
             }
         }
-        checkPinLockStatus();
 
-        // Khởi tạo Firebase Cloud Sync
-        let cloudDB = null;
-        let isCloudActive = false;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            cloudDB = firebase.database();
-            isCloudActive = true;
-        } catch(e) { console.log("Lỗi Firebase", e); }
+        // Bọc toàn bộ kiểm soát trạng thái đăng nhập Firebase Auth
+        if (firebase.auth) {
+            firebase.auth().onAuthStateChanged((user) => {
+                const isPinSession = sessionStorage.getItem('bntz_pin_authorized') === 'true';
+                if (user && isPinSession) {
+                    isCloudActive = true;
+                    const lockScreen = document.getElementById('pin-lock-screen');
+                    if (lockScreen) lockScreen.style.display = 'none';
+                    initCloudListeners();
+                } else {
+                    isCloudActive = false;
+                    detachCloudListeners();
+                    const lockScreen = document.getElementById('pin-lock-screen');
+                    if (lockScreen) {
+                        lockScreen.style.display = 'flex';
+                        lockScreen.classList.remove('fade-out');
+                        const pinInput = document.getElementById('pin-input');
+                        if (pinInput) setTimeout(() => pinInput.focus(), 120);
+                    }
+                    if (user && !isPinSession) {
+                        firebase.auth().signOut().catch(() => {});
+                    }
+                }
+            });
+        }
+
+        checkPinLockStatus();
 
         const dbName = "TSA_Library_Database_V7"; 
         const storeName = "library";
@@ -5313,42 +5431,11 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 console.warn("Lỗi đọc session bài thi dở:", e);
             }
 
-            if (isCloudActive && cloudDB) {
-                document.getElementById('cloud-sync-badge').innerText = "☁️ Đã đồng bộ Cloud";
-                document.getElementById('cloud-sync-badge').style.background = "#d1fae5";
-                document.getElementById('cloud-sync-badge').style.color = "#065f46";
-
-                cloudDB.ref('library').on('value', async (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        library = data;
-                        const db = await openDB();
-                        const tx = db.transaction(storeName, "readwrite");
-                        const store = tx.objectStore(storeName);
-                        store.clear();
-                        for (const [k, v] of Object.entries(library)) { store.put({ id: k, data: v }); }
-                    }
-                    if ((document.getElementById('home-view') && document.getElementById('home-view').style.display !== 'none') || (document.getElementById('portal-view') && document.getElementById('portal-view').style.display !== 'none')) renderHomeStats();
-                    if (document.getElementById('dashboard-view').style.display !== 'none') renderDashboardGrid();
-                    if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel').style.display !== 'none') openDetailView(activeDetailKey);
-                });
-
-                // Lắng nghe realtime dữ liệu Cố vấn AI
-                cloudDB.ref('ai_advisor').on('value', (snapshot) => {
-                    cachedAiAdvisor = snapshot.val() || {};
-                    if (currentFilter && currentFilter !== 'all' && document.getElementById('dashboard-view').style.display !== 'none') {
-                        renderAiAdvisorWidget(currentFilter);
-                    }
-                });
-
-                // Lắng nghe realtime dữ liệu Lịch sử làm bài
-                cloudDB.ref('exam_history').on('value', (snapshot) => {
-                    cachedExamHistory = snapshot.val() || {};
-                });
+            // Đồng bộ Cloud theo trạng thái xác thực Firebase Authentication
+            if (sessionStorage.getItem('bntz_pin_authorized') === 'true' && firebase.auth && firebase.auth().currentUser) {
+                initCloudListeners();
             } else {
-                document.getElementById('cloud-sync-badge').innerText = "💻 Bộ nhớ máy (Offline)";
-                document.getElementById('cloud-sync-badge').style.background = "#f1f5f9";
-                document.getElementById('cloud-sync-badge').style.color = "#64748b";
+                detachCloudListeners();
             }
             updateHeaderKeyStatus();
 
