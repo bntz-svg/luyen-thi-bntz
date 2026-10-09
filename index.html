@@ -385,7 +385,94 @@
             border-color: #fde68a;
         }
 
-        /* TẦNG 2 & TẦNG 3: BÁO CÁO CHIẾN THUẬT & CHẨN ĐOÁN LỖI SAI */
+        /* TẦNG 2 & TẦNG 3: BÁO CÁO CHIẾN THUẬT & ĐÁNH GIÁ NĂNG LỰC COLLAPSIBLE */
+        .collapsible-widget-card {
+            border-radius: 10px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
+        .collapsible-widget-card.tactics-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 1.5px solid #a7f3d0;
+            border-left: 5px solid #10b981;
+        }
+        .collapsible-widget-card.performance-card {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 1.5px solid #ddd6fe;
+            border-left: 5px solid #8b5cf6;
+        }
+        .collapsible-widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+        .collapsible-widget-header:hover {
+            background: rgba(0, 0, 0, 0.025);
+        }
+        .collapsible-widget-title {
+            font-size: 14.5px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tactics-card .collapsible-widget-title { color: #065f46; }
+        .performance-card .collapsible-widget-title { color: #5b21b6; }
+
+        .collapsible-arrow {
+            font-size: 11px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        .collapsible-widget-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+        .tactics-card .collapsible-widget-badge {
+            background: #d1fae5;
+            color: #047857;
+        }
+        .performance-card .collapsible-widget-badge {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .collapsible-widget-body {
+            padding: 4px 18px 16px 18px;
+            font-size: 13.5px;
+            line-height: 1.65;
+            transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, padding 0.3s ease;
+            max-height: 1200px;
+            opacity: 1;
+        }
+        .tactics-card .collapsible-widget-body { color: #064e3b; }
+        .tactics-card .collapsible-widget-body strong { color: #047857; }
+        .performance-card .collapsible-widget-body { color: #3b0764; }
+        .performance-card .collapsible-widget-body strong { color: #6d28d9; }
+
+        .collapsible-widget-body p { margin-bottom: 6px; }
+        .collapsible-widget-body ul, .collapsible-widget-body ol { margin-left: 18px; margin-bottom: 6px; }
+
+        /* Trạng thái thu gọn */
+        .collapsible-widget-card.collapsed .collapsible-widget-body {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+        .collapsible-widget-card.collapsed {
+            margin-bottom: 8px;
+        }
+
         .exam-tactics-card {
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             border: 1.5px solid #a7f3d0;
@@ -393,7 +480,7 @@
             border-radius: 10px;
             padding: 16px 20px;
             box-shadow: 0 3px 10px rgba(16, 185, 129, 0.08);
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
         .exam-tactics-header {
             display: flex;
@@ -560,11 +647,16 @@
             transform: translateY(0);
             pointer-events: auto;
         }
+        .bottom-bar-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
         .btn-bottom-dock-expand {
             background: var(--tsa-blue);
             color: #ffffff;
             border: none;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 700;
@@ -582,7 +674,9 @@
         .bottom-bar-center {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 16px;
+            flex: 0 0 auto;
         }
         .bottom-timer {
             font-size: 18px;
@@ -599,7 +693,10 @@
             border-radius: 6px;
         }
         .bottom-bar-nav {
+            flex: 1;
             display: flex;
+            align-items: center;
+            justify-content: flex-end;
             gap: 8px;
         }
         .btn-bottom-nav {
@@ -1818,7 +1915,7 @@
 
         <!-- THANH ĐIỀU HƯỚNG ĐÁY (ADAPTIVE BOTTOM DOCK) -->
         <div id="bottom-bar" class="bottom-bar" aria-hidden="true" inert>
-            <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">📑 Bảng câu hỏi ⤒</button>
+            <div class="bottom-bar-left"></div>
             <div class="bottom-bar-center">
                 <span id="bottom-timer" class="bottom-timer">⏳ 00:00</span>
                 <span id="bottom-bar-counter" class="bottom-counter">Câu 1/0</span>
@@ -1826,6 +1923,7 @@
             <div class="bottom-bar-nav">
                 <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">‹ Câu trước</button>
                 <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Câu tiếp ›</button>
+                <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">📑 Bảng câu hỏi ⤒</button>
                 <button id="btn-bottom-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
             </div>
         </div>
@@ -1903,15 +2001,10 @@
             cloudListenersInitialized = true;
 
             const badge = document.getElementById('cloud-sync-badge');
-            if (badge) {
-                badge.innerText = "☁️ Đã đồng bộ Cloud";
-                badge.style.background = "#d1fae5";
-                badge.style.color = "#065f46";
-            }
 
             try {
-                // 1. Lắng nghe realtime kho đề thư viện
-                cloudDB.ref('library').on('value', async (snapshot) => {
+                // 1. Kéo dữ liệu thư viện 1 lần duy nhất (once) khi mở khóa thành công để tiết kiệm băng thông
+                cloudDB.ref('library').once('value').then(async (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
                         library = data;
@@ -1925,11 +2018,16 @@
                             console.warn("Lỗi lưu IndexedDB từ Firebase:", dbErr);
                         }
                     }
+                    if (badge) {
+                        badge.innerText = "☁️ Đã đồng bộ Cloud";
+                        badge.style.background = "#d1fae5";
+                        badge.style.color = "#065f46";
+                    }
                     if ((document.getElementById('home-view') && document.getElementById('home-view').style.display !== 'none') || (document.getElementById('portal-view') && document.getElementById('portal-view').style.display !== 'none')) renderHomeStats();
                     if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') renderDashboardGrid();
                     if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel') && document.getElementById('detail-view-panel').style.display !== 'none') openDetailView(activeDetailKey);
-                }, (error) => {
-                    console.error("Lỗi Realtime Database (library):", error);
+                }).catch((error) => {
+                    console.error("Lỗi Realtime Database (library once):", error);
                 });
 
                 // 2. Lắng nghe realtime dữ liệu Cố vấn AI
@@ -1956,7 +2054,6 @@
         function detachCloudListeners() {
             if (cloudDB && cloudListenersInitialized) {
                 try {
-                    cloudDB.ref('library').off();
                     cloudDB.ref('ai_advisor').off();
                     cloudDB.ref('exam_history').off();
                 } catch(e) {}
@@ -2205,29 +2302,23 @@
             });
         }
         
-        async function saveAllToCloudAndLocal() {
-            if (isCloudActive && cloudDB) {
-                try {
-                    await cloudDB.ref('library').set(library);
-                    document.getElementById('cloud-sync-badge').innerText = "☁️ Đã đồng bộ Cloud";
-                    document.getElementById('cloud-sync-badge').style.background = "#d1fae5";
-                    document.getElementById('cloud-sync-badge').style.color = "#065f46";
-                } catch(e) {
-                    console.log("Cloud sync error", e);
-                }
-            }
-            const db = await openDB();
-            const tx = db.transaction(storeName, "readwrite");
-            const store = tx.objectStore(storeName);
-            store.clear();
-            for (const [key, data] of Object.entries(library)) {
-                store.put({ id: key, data: data });
-            }
-        }
-
         async function saveToDB(key, data) {
             library[key] = data;
-            await saveAllToCloudAndLocal();
+            try {
+                const db = await openDB();
+                const tx = db.transaction(storeName, "readwrite");
+                const store = tx.objectStore(storeName);
+                store.put({ id: key, data: data });
+            } catch (err) {
+                console.warn("Lỗi lưu IndexedDB:", err);
+            }
+            if (isCloudActive && cloudDB) {
+                try {
+                    await cloudDB.ref('library/' + key).set(data);
+                } catch(e) {
+                    console.error("Lỗi sync nhánh con lên Firebase:", e);
+                }
+            }
         }
 
         async function getAllFromDB() {
@@ -2240,7 +2331,21 @@
 
         async function deleteFromDB(key) {
             delete library[key];
-            await saveAllToCloudAndLocal();
+            try {
+                const db = await openDB();
+                const tx = db.transaction(storeName, "readwrite");
+                const store = tx.objectStore(storeName);
+                store.delete(key);
+            } catch (err) {
+                console.warn("Lỗi xóa IndexedDB:", err);
+            }
+            if (isCloudActive && cloudDB) {
+                try {
+                    await cloudDB.ref('library/' + key).remove();
+                } catch(e) {
+                    console.error("Lỗi xóa nhánh con trên Firebase:", e);
+                }
+            }
         }
 
         let library = {}; 
@@ -3319,6 +3424,16 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 || null;
         }
 
+        function toggleCollapsibleCard(cardId) {
+            const card = document.getElementById(cardId);
+            if (!card) return;
+            card.classList.toggle('collapsed');
+            const arrow = card.querySelector('.collapsible-arrow');
+            if (arrow) {
+                arrow.textContent = card.classList.contains('collapsed') ? '▶' : '▼';
+            }
+        }
+
         function renderDetailExamTacticsWidget(key) {
             const widget = document.getElementById('detail-exam-tactics-widget');
             if (!widget) return;
@@ -3329,20 +3444,47 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 return;
             }
             const latestHistory = data.history[0];
-            if (latestHistory && latestHistory.exam_tactics) {
+            const hasTactics = latestHistory && latestHistory.exam_tactics;
+            const hasPerformance = latestHistory && latestHistory.exam_performance;
+
+            if (hasTactics || hasPerformance) {
                 widget.style.display = 'block';
-                widget.innerHTML = `
-                    <div class="exam-tactics-card">
-                        <div class="exam-tactics-header">
-                            <div class="exam-tactics-title">
-                                <span>⏱️ Báo Cáo Chiến Thuật Bài Thi Gần Nhất</span>
+                const historyBadge = `Lần ${data.history.length} • ${latestHistory.date || ''}`;
+                let html = '';
+
+                if (hasTactics) {
+                    html += `
+                        <div class="collapsible-widget-card tactics-card" id="card-exam-tactics">
+                            <div class="collapsible-widget-header" onclick="toggleCollapsibleCard('card-exam-tactics')">
+                                <div class="collapsible-widget-title">
+                                    <span class="collapsible-arrow">▼</span>
+                                    <span>⏱️ Báo Cáo Chiến Thuật Làm Bài</span>
+                                </div>
+                                <span class="collapsible-widget-badge">${historyBadge}</span>
                             </div>
-                            <span class="exam-tactics-badge">Lần ${data.history.length} • ${latestHistory.date || ''}</span>
-                        </div>
-                        <div class="exam-tactics-body">
-                            ${formatAiMarkdown(latestHistory.exam_tactics)}
-                        </div>
-                    </div>`;
+                            <div class="collapsible-widget-body">
+                                ${formatAiMarkdown(latestHistory.exam_tactics)}
+                            </div>
+                        </div>`;
+                }
+
+                if (hasPerformance) {
+                    html += `
+                        <div class="collapsible-widget-card performance-card" id="card-exam-performance">
+                            <div class="collapsible-widget-header" onclick="toggleCollapsibleCard('card-exam-performance')">
+                                <div class="collapsible-widget-title">
+                                    <span class="collapsible-arrow">▼</span>
+                                    <span>🎯 Đánh Giá Năng Lực & Điểm Cần Cải Thiện</span>
+                                </div>
+                                <span class="collapsible-widget-badge">${historyBadge}</span>
+                            </div>
+                            <div class="collapsible-widget-body">
+                                ${formatAiMarkdown(latestHistory.exam_performance)}
+                            </div>
+                        </div>`;
+                }
+
+                widget.innerHTML = html;
                 if (window.MathJax) {
                     MathJax.typesetPromise([widget]).catch(err => console.log('MathJax tactics render error', err));
                 }
@@ -3628,10 +3770,11 @@ ${attemptsSummary}
 ${latestWrongQsSummary}
 
 YÊU CẦU ĐẦU RA:
-BẮT BUỘC TRẢ VỀ DUY NHẤT MỘT ĐỐI TƯỢNG JSON (KHÔNG KÈM BẤT KỲ VĂN BẢN NGOÀI NÀO KHÁC) GỒM ĐÚNG 3 TRƯỜNG:
+BẮT BUỘC TRẢ VỀ DUY NHẤT MỘT ĐỐI TƯỢNG JSON (KHÔNG KÈM BẤT KỲ VĂN BẢN NGOÀI NÀO KHÁC) GỒM ĐÚNG 4 TRƯỜNG:
 {
-  "subject_overview": "Đoạn văn ngắn gọn (tối đa 4-5 gạch đầu dòng) tổng hợp các chuyên đề SGK GDPT 2018 học sinh đang hổng nhiều nhất môn này dựa trên các lần làm bài và định hướng ôn tập vĩ mô. Tuyệt đối KHÔNG phân tích chi tiết từng câu lẻ tẻ ở mục này.",
-  "exam_tactics": "Phân tích chiến thuật của riêng đề thi gần nhất: tốc độ trung bình, cảnh báo cụ thể các câu lỗi ẩu (<20s), các câu bẫy sa lầy (>3p) và khuyến nghị phân bổ áp lực phòng thi.",
+  "subject_overview": "Tầng 1: Tổng hợp vĩ mô các chuyên đề GDPT 2018 bị hổng nhiều nhất môn này qua các bài thi.",
+  "exam_tactics": "Tầng 2 - Ô 1: Phân tích chiến thuật, nhịp độ giây/câu, cảnh báo câu làm vội (<20s), câu sa lầy (>3p).",
+  "exam_performance": "Tầng 2 - Ô 2: Đánh giá kiến thức đề này. Chia thành 2 mục rõ rệt: '✅ Phần làm tốt / Ổn định' (các dạng câu, chuyên đề học sinh giải quyết chắc chắn) và '⚠️ Phần cần cải thiện / Bị hổng' (các nội dung học sinh bị mất điểm, nhầm lẫn lý thuyết hay kỹ năng cần bổ sung).",
   "question_breakdown": {
     "0": "Phân tích chi tiết câu sai index 0: học sinh bị lừa ở điểm nào, gãy ở mệnh đề con nào (nếu là Đúng/Sai: chỉ rõ ý a, b, c hay d), hoặc nhầm lẫn đơn vị / công thức / làm tròn gì (nếu là Điền số)."
   }
@@ -3640,14 +3783,18 @@ BẮT BUỘC TRẢ VỀ DUY NHẤT MỘT ĐỐI TƯỢNG JSON (KHÔNG KÈM BẤT
 HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
 1. "subject_overview":
    - Tối đa 4-5 gạch đầu dòng (* hoặc -).
-   - Chỉ ra các chuyên đề chuẩn SGK 2018 học sinh bị hổng kiến thức nhiều nhất.
+   - Chỉ ra các chuyên đề chuẩn SGK 2018 học sinh bị hổng kiến thức nhiều nhất môn này dựa trên các lần làm bài và định hướng ôn tập vĩ mô.
    - Tuyệt đối KHÔNG liệt kê số thứ tự câu hỏi ở mục này để giữ giao diện tủ sách gọn gàng.
 2. "exam_tactics":
    - Nhận xét nhịp độ và tốc độ làm bài trung bình so với chuẩn phòng thi (Toán ~1.8p/câu, Lý/Hóa ~1.25p/câu, TSA ~1.5p/câu).
    - Chỉ rõ danh sách các câu lỗi ẩu (<20s) và cảnh báo tâm lý đọc lướt chủ quan.
    - Chỉ rõ danh sách các câu bị bẫy sa lầy (>3p) và cảnh báo nguy cơ mất điểm dây chuyền.
    - Đưa ra lời khuyên phân bổ áp lực phòng thi (nguyên tắc cắt lỗ 2 phút).
-3. "question_breakdown":
+3. "exam_performance":
+   - Đánh giá kiến thức chuyên sâu của riêng đề thi này, trình bày súc tích với 2 tiêu đề rõ rệt:
+     + "✅ Phần làm tốt / Ổn định": Nêu cụ thể các dạng bài, chuyên đề, thao tác tính toán học sinh làm chủ tốt, đạt điểm tối đa hoặc xử lý nhanh gọn.
+     + "⚠️ Phần cần cải thiện / Bị hổng": Nêu chính xác các mảng kiến thức, bẫy lý thuyết, kỹ năng đọc đồ thị/hình vẽ hoặc công thức học sinh bị gãy trong đề này và giải pháp khắc phục ngắn gọn.
+4. "question_breakdown":
    - Khóa (key) là chuỗi string biểu diễn chỉ số index (0-based) của các câu sai trong danh sách câu sai của đề gần nhất ở trên (ví dụ: "0", "1", "4", "12"...).
    - Nếu đề thi không có câu nào sai, trả về object rỗng: {}.
    - Giá trị (value) là phân tích sư phạm sâu sắc:
@@ -3718,6 +3865,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     parsed = {
                         subject_overview: rawText,
                         exam_tactics: "Không phân tách được chiến thuật chi tiết từ phản hồi AI.",
+                        exam_performance: "",
                         question_breakdown: {}
                     };
                 }
@@ -3752,6 +3900,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 // --- TẦNG 2 & 3: LƯU VÀO LỊCH SỬ ĐỀ THI TRONG LIBRARY VÀ FIREBASE ---
                 if (targetKey && library[targetKey] && library[targetKey].history && library[targetKey].history.length > 0) {
                     library[targetKey].history[0].exam_tactics = parsed.exam_tactics || "";
+                    library[targetKey].history[0].exam_performance = parsed.exam_performance || "";
                     library[targetKey].history[0].question_breakdown = parsed.question_breakdown || {};
                     await saveToDB(targetKey, library[targetKey]);
                 }
@@ -3761,6 +3910,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                         if (historyPushKey) {
                             await cloudDB.ref(`exam_history/${sCode}/${historyPushKey}`).update({
                                 exam_tactics: parsed.exam_tactics || "",
+                                exam_performance: parsed.exam_performance || "",
                                 question_breakdown: parsed.question_breakdown || {}
                             });
                         } else if (targetKey) {
@@ -3769,13 +3919,14 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                                 snap.forEach(child => {
                                     child.ref.update({
                                         exam_tactics: parsed.exam_tactics || "",
+                                        exam_performance: parsed.exam_performance || "",
                                         question_breakdown: parsed.question_breakdown || {}
                                     });
                                 });
                             }
                         }
                     } catch (e) {
-                        console.error("Lỗi cập nhật exam_history với AI breakdown:", e);
+                        console.error("Lỗi cập nhật exam_history với AI breakdown & performance:", e);
                     }
                 }
 
@@ -3783,6 +3934,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 if (currentSession && currentSession.isSubmitted) {
                     currentSession.questionBreakdown = parsed.question_breakdown || {};
                     currentSession.examTactics = parsed.exam_tactics || "";
+                    currentSession.examPerformance = parsed.exam_performance || "";
                     saveActiveExamSession();
                     const quizView = document.getElementById('quiz-view');
                     if (quizView && quizView.style.display !== 'none') {
@@ -4178,6 +4330,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 questionTimeSpent: h.timeSpent || {},
                 questionBreakdown: h.question_breakdown || {},
                 examTactics: h.exam_tactics || "",
+                examPerformance: h.exam_performance || "",
                 hintsOpened: {}
             };
             saveActiveExamSession();
@@ -5209,6 +5362,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                         totalActiveSeconds: totalActiveSeconds,
                         avgSecondsPerQ: avgSecondsPerQ,
                         exam_tactics: "",
+                        exam_performance: "",
                         question_breakdown: {}
                     });
                     await saveToDB(currentSession.subjectKey, subData);
@@ -5432,12 +5586,6 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 console.warn("Lỗi đọc session bài thi dở:", e);
             }
 
-            // Đồng bộ Cloud theo trạng thái xác thực Firebase Authentication
-            if (sessionStorage.getItem('bntz_pin_authorized') === 'true' && firebase.auth && firebase.auth().currentUser) {
-                initCloudListeners();
-            } else {
-                detachCloudListeners();
-            }
             updateHeaderKeyStatus();
 
             // Khôi phục phiên làm bài nếu có trong sessionStorage
