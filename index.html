@@ -26,15 +26,43 @@
         .icon-svg.lg { width: 20px; height: 20px; }
         .icon-svg.xl { width: 24px; height: 24px; }
 
-        /* HEADER */
+        /* HEADER & INK-DROP LOGO MICRO-INTERACTION */
         header { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); padding: 12px 28px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; }
         .btn-sidebar-toggle { background: #ffffff; border: 1px solid var(--border-color); color: #334155; padding: 7px 10px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .btn-sidebar-toggle:hover { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
-        .logo-text { color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 6px; }
-        .logo-text::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--tsa-red); }
+        .logo-brand-wrap { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; user-select: none; }
+        .logo-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--tsa-red); flex-shrink: 0; transform-origin: center; }
+        .logo-dot.ink-pulse { animation: logoInkPulse 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes logoInkPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 16, 46, 0.55); }
+            35% { transform: scale(1.6); box-shadow: 0 0 0 6px rgba(200, 16, 46, 0.2); }
+            70% { transform: scale(0.88); box-shadow: 0 0 0 10px rgba(200, 16, 46, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 16, 46, 0); }
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            cursor: pointer;
+            user-select: none;
+            display: inline-block;
+            background-image: linear-gradient(90deg, var(--tsa-red) 0%, #e11d48 47%, #0f172a 53%, #0f172a 100%);
+            background-size: 220% 100%;
+            background-position: 100% 0;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            transition: background-position 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .logo-text.ink-spread {
+            background-position: 0% 0;
+        }
         .exam-title { color: #64748b; border-left: 1px solid #cbd5e1; padding-left: 12px; font-weight: 500; font-size: 14.5px; }
-        .cloud-status { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #f1f5f9; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; }
+        .cloud-status { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #f1f5f9; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.15s ease; }
+        .cloud-status.guest-mode-badge { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer; user-select: none; }
+        .cloud-status.guest-mode-badge:hover { background: #e2e8f0; color: #0f172a; border-color: #94a3b8; }
         
         /* HOME VIEW - LINEAR / VERCEL / NOTION MINIMALIST DASHBOARD */
         #home-view { padding: 36px 28px; overflow-y: auto; flex: 1; display: block; background: radial-gradient(1200px 400px at 50% -100px, #f1f5f9 0%, transparent 70%), var(--bg-color); }
@@ -960,6 +988,43 @@
         .btn-pin-unlock:active {
             transform: translateY(0);
         }
+        .pin-guest-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0 14px 0;
+            color: #94a3b8;
+            font-size: 11.5px;
+            font-weight: 500;
+        }
+        .pin-guest-divider::before,
+        .pin-guest-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #f1f5f9;
+        }
+        .btn-pin-guest {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 11px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 0.18s ease;
+        }
+        .btn-pin-guest:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
 
         /* --- NÚT & KHUNG AI GIẢI CHI TIẾT THEO YÊU CẦU --- */
         .btn-ai-solve {
@@ -1282,6 +1347,11 @@
                 <div id="pin-error-msg" class="pin-error-msg"></div>
                 <button type="submit" id="btn-pin-unlock" class="btn-pin-unlock">Mở Khóa Phòng Luyện</button>
             </form>
+            <div class="pin-guest-divider">hoặc</div>
+            <button type="button" id="btn-pin-guest" class="btn-pin-guest" onclick="enterGuestMode()">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Tiếp tục với tư cách Khách</span>
+            </button>
         </div>
     </div>
     <script>
@@ -1300,7 +1370,10 @@
             <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" onclick="toggleSidebar()" style="display: none;" title="Đóng / Mở danh mục môn học">
                 <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
             </button>
-            <span class="logo-text" id="header-logo-brand" onclick="navToHome()">bntz</span>
+            <div class="logo-brand-wrap" onclick="navToHome()">
+                <span class="logo-dot" id="header-logo-dot"></span>
+                <span class="logo-text" id="header-logo-brand">bntz</span>
+            </div>
             <span class="exam-title" id="main-title">Trang chủ</span>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -1308,7 +1381,7 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                 <span id="header-key-label">Gemini Key</span>
             </button>
-            <span id="cloud-sync-badge" class="cloud-status">
+            <span id="cloud-sync-badge" class="cloud-status" onclick="handleCloudBadgeClick()">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
                 <span>Đang kết nối Cloud...</span>
             </span>
@@ -1762,7 +1835,10 @@
                         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 5px;">
+                <div style="font-size: 11.5px; color: #94a3b8; margin-top: 5px;">
+                    Dùng key miễn phí từ Google AI Studio, không tốn tiền.
+                </div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
                     Chưa có API key? Lấy miễn phí tại: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #7c3aed; text-decoration: underline; font-weight: bold;">Google AI Studio</a>
                 </div>
             </div>
@@ -2159,7 +2235,13 @@
             measurementId: "G-R68QWBJDDD"
         };
 
-        // --- 1. KHỞI TẠO FIREBASE CLOUD SYNC & AUTHENTICATION ---
+        // --- 1. KHỞI TẠO FIREBASE CLOUD SYNC, AUTHENTICATION & GUEST MODE ---
+        window.isGuestMode = false;
+        let guestGeminiApiKey = '';
+        let guestGeminiModel = 'gemini-3.8-flash';
+        let guestGeminiThinkingLevel = 'MEDIUM';
+        const detailedSolutionMemCache = {};
+
         let cloudDB = null;
         let isCloudActive = false;
         let cloudListenersInitialized = false;
@@ -2174,9 +2256,70 @@
             }
         } catch(e) { console.log("Lỗi khởi tạo Firebase:", e); }
 
-        // --- CÁC HÀM LẮNG NGHE REALTIME DATABASE (CHỈ CHẠY KHI ĐÃ ĐĂNG NHẬP) ---
+        function renderGuestCloudBadge() {
+            const badge = document.getElementById('cloud-sync-badge');
+            if (!badge) return;
+            badge.className = 'cloud-status guest-mode-badge';
+            badge.style.background = '';
+            badge.style.color = '';
+            badge.title = 'Đang ở Chế độ Khách (RAM) - Bấm để mở khóa tài khoản Admin';
+            badge.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <span>Chế độ Khách (Cục bộ)</span>`;
+        }
+
+        function handleCloudBadgeClick() {
+            if (window.isGuestMode) {
+                const lockScreen = document.getElementById('pin-lock-screen');
+                const errEl = document.getElementById('pin-error-msg');
+                const pinInput = document.getElementById('pin-input');
+                if (errEl) errEl.innerText = '';
+                if (lockScreen) {
+                    lockScreen.classList.remove('fade-out');
+                    lockScreen.style.display = 'flex';
+                }
+                if (pinInput) {
+                    pinInput.value = '';
+                    setTimeout(() => pinInput.focus(), 100);
+                }
+            }
+        }
+
+        function enterGuestMode() {
+            const wasAlreadyGuest = (window.isGuestMode === true);
+            window.isGuestMode = true;
+            detachCloudListeners();
+            renderGuestCloudBadge();
+
+            if (!wasAlreadyGuest) {
+                library = {};
+                cachedAiAdvisor = {};
+                cachedExamHistory = {};
+                activeDetailKey = null;
+                guestGeminiApiKey = '';
+                guestGeminiModel = 'gemini-3.8-flash';
+                guestGeminiThinkingLevel = 'MEDIUM';
+            }
+
+            updateHeaderKeyStatus();
+            updateAiKeyStatusBar();
+
+            const lockScreen = document.getElementById('pin-lock-screen');
+            const errEl = document.getElementById('pin-error-msg');
+            if (errEl) errEl.innerText = '';
+            if (lockScreen) {
+                lockScreen.classList.add('fade-out');
+                setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
+            }
+
+            if (!wasAlreadyGuest) {
+                navToHome();
+            } else {
+                renderHomeStats();
+            }
+        }
+
+        // --- CÁC HÀM LẮNG NGHE REALTIME DATABASE (CHỈ CHẠY KHI ĐÃ ĐĂNG NHẬP ADMIN) ---
         function initCloudListeners() {
-            if (!cloudDB || cloudListenersInitialized) return;
+            if (window.isGuestMode || !cloudDB || cloudListenersInitialized) return;
             isCloudActive = true;
             cloudListenersInitialized = true;
 
@@ -2185,6 +2328,7 @@
             try {
                 // 1. Kéo dữ liệu thư viện 1 lần duy nhất (once) khi mở khóa thành công để tiết kiệm băng thông
                 cloudDB.ref('library').once('value').then(async (snapshot) => {
+                    if (window.isGuestMode) return;
                     const data = snapshot.val();
                     if (data) {
                         library = data;
@@ -2199,6 +2343,8 @@
                         }
                     }
                     if (badge) {
+                        badge.className = 'cloud-status';
+                        badge.title = 'Đã đồng bộ dữ liệu với Firebase Cloud';
                         badge.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> <span>Đã đồng bộ Cloud</span>`;
                         badge.style.background = "#d1fae5";
                         badge.style.color = "#065f46";
@@ -2212,6 +2358,7 @@
 
                 // 2. Lắng nghe realtime dữ liệu Cố vấn AI
                 cloudDB.ref('ai_advisor').on('value', (snapshot) => {
+                    if (window.isGuestMode) return;
                     cachedAiAdvisor = snapshot.val() || {};
                     if (currentFilter && currentFilter !== 'all' && document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
                         renderAiAdvisorWidget(currentFilter);
@@ -2222,6 +2369,7 @@
 
                 // 3. Lắng nghe realtime dữ liệu Lịch sử làm bài
                 cloudDB.ref('exam_history').on('value', (snapshot) => {
+                    if (window.isGuestMode) return;
                     cachedExamHistory = snapshot.val() || {};
                 }, (error) => {
                     console.error("Lỗi Realtime Database (exam_history):", error);
@@ -2240,8 +2388,14 @@
             }
             cloudListenersInitialized = false;
             isCloudActive = false;
+            if (window.isGuestMode) {
+                renderGuestCloudBadge();
+                return;
+            }
             const badge = document.getElementById('cloud-sync-badge');
             if (badge) {
+                badge.className = 'cloud-status';
+                badge.title = 'Đang dùng bộ nhớ cục bộ';
                 badge.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg> <span>Bộ nhớ máy (Offline)</span>`;
                 badge.style.background = "#f1f5f9";
                 badge.style.color = "#64748b";
@@ -2273,7 +2427,15 @@
                     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                     await firebase.auth().signInWithEmailAndPassword('admin@bntz.com', entered);
                 }
+                window.isGuestMode = false;
                 sessionStorage.setItem('bntz_pin_authorized', 'true');
+                try { library = await getAllFromDB(); } catch (dbErr) {}
+                updateHeaderKeyStatus();
+                updateAiKeyStatusBar();
+                renderHomeStats();
+                if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                    renderDashboardGrid();
+                }
                 if (errEl) errEl.innerText = '';
                 if (lockScreen) {
                     lockScreen.classList.add('fade-out');
@@ -2298,6 +2460,7 @@
 
         function checkPinLockStatus() {
             try { localStorage.removeItem('bntz_pin_authorized'); } catch (e) {}
+            if (window.isGuestMode) return;
             const lockScreen = document.getElementById('pin-lock-screen');
             if (!lockScreen) return;
             const isAuthorized = sessionStorage.getItem('bntz_pin_authorized') === 'true';
@@ -2318,6 +2481,7 @@
         // Bọc toàn bộ kiểm soát trạng thái đăng nhập Firebase Auth
         if (firebase.auth) {
             firebase.auth().onAuthStateChanged((user) => {
+                if (window.isGuestMode) return;
                 const isPinSession = sessionStorage.getItem('bntz_pin_authorized') === 'true';
                 if (user && isPinSession) {
                     isCloudActive = true;
@@ -2484,6 +2648,7 @@
         
         async function saveToDB(key, data) {
             library[key] = data;
+            if (window.isGuestMode) return;
             try {
                 const db = await openDB();
                 const tx = db.transaction(storeName, "readwrite");
@@ -2502,6 +2667,7 @@
         }
 
         async function getAllFromDB() {
+            if (window.isGuestMode) return {};
             const db = await openDB();
             return new Promise((resolve, reject) => {
                 const req = db.transaction(storeName, "readonly").objectStore(storeName).getAll();
@@ -2511,6 +2677,7 @@
 
         async function deleteFromDB(key) {
             delete library[key];
+            if (window.isGuestMode) return;
             try {
                 const db = await openDB();
                 const tx = db.transaction(storeName, "readwrite");
@@ -2544,6 +2711,7 @@
 
         function getCachedSocraticHint(key) {
             if (socraticHintCache[key]) return socraticHintCache[key];
+            if (window.isGuestMode) return null;
             try {
                 const stored = sessionStorage.getItem('socratic_' + key);
                 if (stored) {
@@ -2556,6 +2724,7 @@
 
         function setCachedSocraticHint(key, text) {
             socraticHintCache[key] = text;
+            if (window.isGuestMode) return;
             try {
                 sessionStorage.setItem('socratic_' + key, text);
             } catch {}
@@ -2669,7 +2838,13 @@
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
-            document.getElementById('header-logo-brand').innerText = "bntz";
+            const logoDot = document.getElementById('header-logo-dot');
+            const logoBrand = document.getElementById('header-logo-brand');
+            if (logoDot) logoDot.classList.remove('ink-pulse');
+            if (logoBrand) {
+                logoBrand.innerText = "bntz";
+                logoBrand.classList.remove('ink-spread');
+            }
             document.getElementById('main-title').innerText = "Trang chủ";
             const hdrBtn = document.getElementById('header-btn-area');
             if (hdrBtn) hdrBtn.innerHTML = '';
@@ -2687,7 +2862,19 @@
             document.getElementById('dashboard-view').style.display = 'none';
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
-            document.getElementById('header-logo-brand').innerText = "bntz";
+            const logoDot = document.getElementById('header-logo-dot');
+            const logoBrand = document.getElementById('header-logo-brand');
+            if (logoDot) {
+                logoDot.classList.remove('ink-pulse');
+                void logoDot.offsetWidth;
+                logoDot.classList.add('ink-pulse');
+            }
+            if (logoBrand) {
+                logoBrand.innerText = "bntz";
+                logoBrand.classList.remove('ink-spread');
+                void logoBrand.offsetWidth;
+                logoBrand.classList.add('ink-spread');
+            }
             document.getElementById('main-title').innerText = "Tủ sách đề thi";
             const hdrBtn = document.getElementById('header-btn-area');
             if (hdrBtn) hdrBtn.innerHTML = '';
@@ -2775,12 +2962,14 @@
 
         function toggleSidebar() { document.getElementById('main-sidebar').classList.toggle('collapsed'); }
 
-        // --- IMPORT ---
+        // --- IMPORT & GEMINI KEY ISOLATION ---
         function getGeminiApiKey() {
+            if (window.isGuestMode) return guestGeminiApiKey || '';
             return localStorage.getItem('gemini_api_key') || '';
         }
 
         function getGeminiModel() {
+            if (window.isGuestMode) return guestGeminiModel || 'gemini-3.8-flash';
             return localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
         }
 
@@ -2797,6 +2986,10 @@
         };
 
         function getGeminiThinkingLevel() {
+            if (window.isGuestMode) {
+                const gRaw = (guestGeminiThinkingLevel || 'MEDIUM').toUpperCase();
+                return ['LOW', 'MEDIUM', 'HIGH'].includes(gRaw) ? gRaw : 'MEDIUM';
+            }
             const raw = (localStorage.getItem('gemini_thinking_level') || 'MEDIUM').toUpperCase();
             if (['LOW', 'MEDIUM', 'HIGH'].includes(raw)) return raw;
             return 'MEDIUM';
@@ -2843,7 +3036,11 @@
         function onThinkingSliderInput(val) {
             const step = parseInt(val) || 2;
             const level = THINKING_LEVEL_MAP[step] || 'MEDIUM';
-            localStorage.setItem('gemini_thinking_level', level);
+            if (window.isGuestMode) {
+                guestGeminiThinkingLevel = level;
+            } else {
+                localStorage.setItem('gemini_thinking_level', level);
+            }
             updateThinkingSliderUI(step);
             updateAiKeyStatusBar();
         }
@@ -2886,8 +3083,13 @@
             const key = getGeminiApiKey();
             const label = document.getElementById('header-key-label');
             if (label) {
-                label.innerText = key ? 'Gemini Key (Đã lưu)' : 'Gemini Key';
-                label.style.color = key ? '#7c3aed' : '#475569';
+                if (key) {
+                    label.innerText = window.isGuestMode ? 'Gemini Key (Tạm thời)' : 'Gemini Key (Đã lưu)';
+                    label.style.color = '#7c3aed';
+                } else {
+                    label.innerText = 'Nhập Key Gemini';
+                    label.style.color = '#475569';
+                }
             }
         }
 
@@ -2923,14 +3125,24 @@
             const step = slider ? parseInt(slider.value) || 2 : 2;
             const thinkingLevel = THINKING_LEVEL_MAP[step] || 'MEDIUM';
 
-            localStorage.setItem('gemini_api_key', key);
-            localStorage.setItem('gemini_model', model);
-            localStorage.setItem('gemini_thinking_level', thinkingLevel);
+            if (window.isGuestMode) {
+                guestGeminiApiKey = key;
+                guestGeminiModel = model;
+                guestGeminiThinkingLevel = thinkingLevel;
+            } else {
+                localStorage.setItem('gemini_api_key', key);
+                localStorage.setItem('gemini_model', model);
+                localStorage.setItem('gemini_thinking_level', thinkingLevel);
+            }
 
             updateHeaderKeyStatus();
             updateAiKeyStatusBar();
             closeApiKeyModal();
-            alert(`Đã lưu cấu hình AI thành công!\n- Model: ${model}\n- Mức độ tư duy: ${thinkingLevel}`);
+            if (window.isGuestMode) {
+                alert(`Đã lưu cấu hình AI tạm thời trên phiên Khách (RAM)!\n- Model: ${model}\n- Mức độ tư duy: ${thinkingLevel}`);
+            } else {
+                alert(`Đã lưu cấu hình AI thành công!\n- Model: ${model}\n- Mức độ tư duy: ${thinkingLevel}`);
+            }
         }
 
         function updateAiKeyStatusBar() {
@@ -3495,7 +3707,11 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             await saveToDB(uniqueId, finalExamData);
 
             closeAiPreviewModal();
-            alert(`Nạp đề bằng AI thành công!\nĐề "${title}" (${sanitizedQuestions.length} câu) đã được lưu vào Tủ sách và đồng bộ lên Firebase Cloud!`);
+            if (window.isGuestMode) {
+                alert(`Nạp đề bằng AI thành công!\nĐề "${title}" (${sanitizedQuestions.length} câu) đã được lưu tạm thời vào Tủ sách phiên Khách (RAM).`);
+            } else {
+                alert(`Nạp đề bằng AI thành công!\nĐề "${title}" (${sanitizedQuestions.length} câu) đã được lưu vào Tủ sách và đồng bộ lên Firebase Cloud!`);
+            }
             
             navToSubjectPortal();
         }
@@ -3514,7 +3730,9 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     if(!data.subject || !data.questions) throw "Lỗi";
                     data.history = data.history || [];
                     const uniqueId = data.subject + "_" + Date.now();
-                    await saveToDB(uniqueId, data); alert("Nạp đề thành công & đã đồng bộ Cloud!"); navToSubjectPortal();
+                    await saveToDB(uniqueId, data);
+                    alert(window.isGuestMode ? "Nạp đề thành công vào bộ nhớ tạm phiên Khách (RAM)!" : "Nạp đề thành công & đã đồng bộ Cloud!");
+                    navToSubjectPortal();
                 } catch { alert("File đéo hợp lệ!"); }
             };
             reader.readAsText(file); event.target.value = ''; 
@@ -3532,7 +3750,8 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 data.history = data.history || [];
                 const uniqueId = data.subject + "_" + Date.now();
                 await saveToDB(uniqueId, data);
-                alert("Nạp đề thành công & đã đồng bộ Cloud!"); closePasteJsonModal(); navToSubjectPortal();
+                alert(window.isGuestMode ? "Nạp đề thành công vào bộ nhớ tạm phiên Khách (RAM)!" : "Nạp đề thành công & đã đồng bộ Cloud!");
+                closePasteJsonModal(); navToSubjectPortal();
             } catch(err) { alert("Mã JSON đéo hợp lệ m ơi!"); }
         }
 
@@ -3793,7 +4012,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 attempts = Object.values(cachedExamHistory[sCode]);
             }
 
-            if (attempts.length === 0 && isCloudActive && cloudDB) {
+            if (attempts.length === 0 && !window.isGuestMode && isCloudActive && cloudDB) {
                 try {
                     const snap = await cloudDB.ref(`exam_history/${sCode}`).limitToLast(10).once('value');
                     const val = snap.val();
@@ -4081,7 +4300,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 };
                 cachedAiAdvisor[sCode] = advisorRecord;
 
-                if (isCloudActive && cloudDB) {
+                if (!window.isGuestMode && isCloudActive && cloudDB) {
                     try {
                         await cloudDB.ref(`ai_advisor/${sCode}`).set(advisorRecord);
                     } catch (e) {
@@ -4101,7 +4320,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     await saveToDB(targetKey, library[targetKey]);
                 }
 
-                if (isCloudActive && cloudDB) {
+                if (!window.isGuestMode && isCloudActive && cloudDB) {
                     try {
                         if (historyPushKey) {
                             await cloudDB.ref(`exam_history/${sCode}/${historyPushKey}`).update({
@@ -4443,8 +4662,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
         function closeSessionConfig() { document.getElementById('config-session-modal').style.display = 'none'; }
 
-        // --- SESSION STORAGE PERSISTENCE (CHỐNG VĂNG KHI F5) ---
+        // --- SESSION STORAGE PERSISTENCE (CHỐNG VĂNG KHI F5 - CHỈ ÁP DỤNG CHO ADMIN) ---
         function saveActiveExamSession() {
+            if (window.isGuestMode) return;
             if (!currentSession || !currentSession.questions || currentSession.questions.length === 0) return;
             try {
                 const sessionCopy = { ...currentSession, intervalTotal: null };
@@ -4455,6 +4675,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function clearActiveExamSession() {
+            if (window.isGuestMode) return;
             try {
                 sessionStorage.removeItem('active_exam_session');
             } catch (e) {}
@@ -4877,8 +5098,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
                 // AI GIẢI CHI TIẾT THEO YÊU CẦU (ON-DEMAND DETAILED SOLUTION)
                 const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
-                let cachedSol = null;
-                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                let cachedSol = detailedSolutionMemCache[solKey] || null;
+                if (!cachedSol && !window.isGuestMode) {
+                    try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                }
                 const hasCachedSol = !!cachedSol;
                 const isSolOpen = !!(currentSession.solutionsOpened && currentSession.solutionsOpened[idx]);
 
@@ -4913,8 +5136,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             // Nếu khung giải chi tiết đang mở và đã có trong cache -> Render ngay lập tức (0.05s)
             if (currentSession.isSubmitted) {
                 const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
-                let cachedSol = null;
-                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                let cachedSol = detailedSolutionMemCache[solKey] || null;
+                if (!cachedSol && !window.isGuestMode) {
+                    try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+                }
                 const isSolOpen = !!(currentSession.solutionsOpened && currentSession.solutionsOpened[idx]);
                 if (isSolOpen && cachedSol) {
                     renderDetailedSolutionHtml(idx, cachedSol);
@@ -5220,8 +5445,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             container.style.display = 'block';
 
             const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
-            let cachedSol = null;
-            try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+            let cachedSol = detailedSolutionMemCache[solKey] || null;
+            if (!cachedSol && !window.isGuestMode) {
+                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+            }
 
             // 1. Nếu đã có trong cache và không yêu cầu giải lại -> Hiển thị ngay lập tức (0.05s)
             if (cachedSol && !forceRegen) {
@@ -5256,7 +5483,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
             try {
                 const solutionText = await callGeminiForDetailedSolution(q, idx);
-                try { sessionStorage.setItem(solKey, solutionText); } catch(e) {}
+                detailedSolutionMemCache[solKey] = solutionText;
+                if (!window.isGuestMode) {
+                    try { sessionStorage.setItem(solKey, solutionText); } catch(e) {}
+                }
                 renderDetailedSolutionHtml(idx, solutionText);
                 
                 // Cập nhật lại nút hiển thị dấu check đã có lời giải
@@ -5633,7 +5863,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     wrongQuestions: wrongQuestionsList
                 };
 
-                if (isCloudActive && cloudDB && examSub) {
+                if (!window.isGuestMode && isCloudActive && cloudDB && examSub) {
                     try {
                         const pushRef = await cloudDB.ref(`exam_history/${examSub}`).push(historyRecord);
                         currentSession.lastHistoryPushKey = pushRef.key;
@@ -5774,7 +6004,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     buildWrongQuestionRecord(currentSession.questions[qIdx] || {}, qIdx, currentSession.answers[qIdx], timeSpentMap[qIdx] || 0)
                 );
 
-                if (isCloudActive && cloudDB && examSub) {
+                if (!window.isGuestMode && isCloudActive && cloudDB && examSub) {
                     try {
                         if (currentSession.lastHistoryPushKey) {
                             await cloudDB.ref(`exam_history/${examSub}/${currentSession.lastHistoryPushKey}`).update({
@@ -5802,7 +6032,10 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             // Xóa cache lời giải chi tiết của câu này (để tránh lưu lời giải theo đề/đáp án cũ)
             const solKey = `sol_${currentSession.subjectKey || 'exam'}_${currentSession.currentIndex}`;
-            try { sessionStorage.removeItem(solKey); } catch(e) {}
+            delete detailedSolutionMemCache[solKey];
+            if (!window.isGuestMode) {
+                try { sessionStorage.removeItem(solKey); } catch(e) {}
+            }
 
             closeEditModal(); 
             renderQuestion(); 
@@ -5810,25 +6043,47 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             saveActiveExamSession();
         }
 
+        // --- TOÀN MÀN HÌNH BẰNG PHÍM F11 (FULLSCREEN API) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F11' || e.code === 'F11') {
+                e.preventDefault();
+                if (!document.fullscreenElement) {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(err => console.warn("Lỗi bật toàn màn hình:", err));
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(err => console.warn("Lỗi thoát toàn màn hình:", err));
+                    }
+                }
+            }
+        });
+
         window.onload = async () => {
             checkPinLockStatus();
-            try { library = await getAllFromDB(); } catch {}
 
-            // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở
             let activeSessionData = null;
-            try {
-                const savedSession = sessionStorage.getItem('active_exam_session');
-                if (savedSession) {
-                    activeSessionData = JSON.parse(savedSession);
+            const isAdminAuthorized = !window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true';
+
+            if (isAdminAuthorized) {
+                try { library = await getAllFromDB(); } catch {}
+                // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở của Admin
+                try {
+                    const savedSession = sessionStorage.getItem('active_exam_session');
+                    if (savedSession) {
+                        activeSessionData = JSON.parse(savedSession);
+                    }
+                } catch (e) {
+                    console.warn("Lỗi đọc session bài thi dở:", e);
                 }
-            } catch (e) {
-                console.warn("Lỗi đọc session bài thi dở:", e);
+            } else {
+                library = {};
             }
 
             updateHeaderKeyStatus();
 
-            // Khôi phục phiên làm bài nếu có trong sessionStorage
-            if (activeSessionData && activeSessionData.questions && activeSessionData.questions.length > 0) {
+            // Khôi phục phiên làm bài nếu có trong sessionStorage (chỉ khi đã xác thực Admin)
+            if (isAdminAuthorized && activeSessionData && activeSessionData.questions && activeSessionData.questions.length > 0) {
                 currentSession = activeSessionData;
                 currentSession.intervalTotal = null;
                 launchQuizView(currentSession.subject);
