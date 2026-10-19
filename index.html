@@ -18,43 +18,71 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     
     <style>
-        :root { --tsa-red: #c8102e; --tsa-blue: #0033a0; --bg-color: #f8fafc; --panel-bg: #ffffff; --text-main: #334155; --border-color: #e2e8f0; --answered-bg: #2563eb; --active-border: #4f46e5; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --tsa-red: #c8102e; --tsa-blue: #0033a0; --bg-color: #f8fafc; --panel-bg: #ffffff; --text-main: #0f172a; --border-color: #e2e8f0; --answered-bg: #2563eb; --active-border: #4f46e5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; }
         
+        .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; fill: none; flex-shrink: 0; display: inline-block; vertical-align: middle; }
+        .icon-svg.lg { width: 20px; height: 20px; }
+        .icon-svg.xl { width: 24px; height: 24px; }
+
         /* HEADER */
-        header { background: var(--panel-bg); padding: 12px 25px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 20px; }
-        .btn-sidebar-toggle { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 18px; transition: 0.2s; }
-        .btn-sidebar-toggle:hover { background: #e2e8f0; }
-        .logo-text { color: var(--tsa-red); font-size: 26px; font-weight: 900; cursor: pointer; user-select: none; }
-        .exam-title { color: #64748b; border-left: 2px solid #cbd5e1; padding-left: 12px; font-weight: 600; font-size: 16px; }
-        .cloud-status { font-size: 12px; padding: 4px 8px; border-radius: 12px; background: #e0f2fe; color: #0369a1; font-weight: bold; }
+        header { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); padding: 12px 28px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; }
+        .btn-sidebar-toggle { background: #ffffff; border: 1px solid var(--border-color); color: #334155; padding: 7px 10px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .btn-sidebar-toggle:hover { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+        .logo-text { color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 6px; }
+        .logo-text::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--tsa-red); }
+        .exam-title { color: #64748b; border-left: 1px solid #cbd5e1; padding-left: 12px; font-weight: 500; font-size: 14.5px; }
+        .cloud-status { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #f1f5f9; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; }
         
-        /* HOME VIEW - NEON DEPTH */
-        #home-view { padding: 30px; overflow-y: auto; flex: 1; display: block; }
-        .home-container { max-width: 1000px; margin: 0 auto; }
+        /* HOME VIEW - LINEAR / VERCEL / NOTION MINIMALIST DASHBOARD */
+        #home-view { padding: 36px 28px; overflow-y: auto; flex: 1; display: block; background: radial-gradient(1200px 400px at 50% -100px, #f1f5f9 0%, transparent 70%), var(--bg-color); }
+        .home-container { max-width: 1020px; margin: 0 auto; }
         
-        .welcome-banner { background: #0f172a; color: #f8fafc; padding: 32px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2); border: 1px solid #1e293b; position: relative; overflow: hidden; }
-        .welcome-banner::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(79,70,229,0.3) 0%, transparent 70%); border-radius: 50%; }
-        .welcome-banner h1 { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; color: #ffffff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .welcome-banner p { font-size: 14px; color: #94a3b8; font-weight: 500; }
+        .welcome-banner { background: #ffffff; color: #0f172a; padding: 32px 36px; border-radius: 14px; margin-bottom: 24px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 8px 24px -12px rgba(15, 23, 42, 0.04); position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+        .welcome-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #475569; background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+        .welcome-banner h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.025em; color: #0f172a; line-height: 1.3; }
+        .welcome-banner p { font-size: 14px; color: #64748b; font-weight: 400; line-height: 1.55; max-width: 640px; }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-num { font-size: 32px; font-weight: 900; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #ffffff; padding: 22px 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: left; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+        .stat-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); }
+        .stat-card-top { display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+        .stat-icon-box { width: 32px; height: 32px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #334155; }
+        .stat-num { font-size: 32px; font-weight: 700; color: #0f172a; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+        .stat-subtext { font-size: 12px; color: #94a3b8; font-weight: 400; }
         
-        .home-actions { display: flex; gap: 20px; margin-bottom: 35px; }
-        .home-act-btn { flex: 1; padding: 15px 20px; border: none; border-radius: 8px; font-weight: 800; font-size: 15px; cursor: pointer; transition: all 0.3s ease; color: white; text-align: center; letter-spacing: 0.5px; }
+        .home-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+        .home-act-btn { padding: 18px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--border-color); background: #ffffff; color: #0f172a; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03); }
+        .home-act-btn .act-left { display: flex; align-items: center; gap: 12px; }
+        .home-act-btn .act-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; flex-shrink: 0; transition: all 0.18s ease; }
+        .home-act-btn .act-text { display: flex; flex-direction: column; gap: 2px; }
+        .home-act-btn .act-title { font-size: 14.5px; font-weight: 600; color: inherit; letter-spacing: -0.01em; }
+        .home-act-btn .act-desc { font-size: 12px; font-weight: 400; color: #64748b; }
+        .home-act-btn .act-arrow { color: #94a3b8; transition: transform 0.18s ease, color 0.18s ease; }
+        .home-act-btn:hover { transform: translateY(-2px); border-color: #cbd5e1; box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.08); }
+        .home-act-btn:hover .act-arrow { transform: translateX(3px); color: #0f172a; }
         
-        .neon-blue { background: linear-gradient(145deg, #1d4ed8, #2563eb); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(37,99,235,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #60a5fa; }
-        .neon-blue:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(37,99,235,0.9), 0 0 40px rgba(37,99,235,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
-        
-        .neon-green { background: linear-gradient(145deg, #059669, #10b981); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(16,185,129,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #34d399; }
-        .neon-green:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(16,185,129,0.9), 0 0 40px rgba(16,185,129,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
+        .home-act-btn.primary-dark { background: #0f172a; border-color: #0f172a; color: #ffffff; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14); }
+        .home-act-btn.primary-dark .act-icon { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.16); color: #ffffff; }
+        .home-act-btn.primary-dark .act-desc { color: #94a3b8; }
+        .home-act-btn.primary-dark .act-arrow { color: #94a3b8; }
+        .home-act-btn.primary-dark:hover { background: #1e293b; border-color: #1e293b; box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.25); }
+        .home-act-btn.primary-dark:hover .act-arrow { color: #ffffff; }
 
-        .neon-purple { background: linear-gradient(145deg, #6d28d9, #8b5cf6); box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 15px rgba(139,92,246,0.5), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); border: 1px solid #a78bfa; }
-        .neon-purple:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(139,92,246,0.9), 0 0 40px rgba(139,92,246,0.5), inset 0 1px 3px rgba(255,255,255,0.5); transform: translateY(-2px); }
+        .home-features-panel { background: #ffffff; border-radius: 14px; border: 1px solid var(--border-color); padding: 24px 28px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02); }
+        .home-features-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+        .home-features-title { font-size: 14px; font-weight: 600; color: #0f172a; display: flex; align-items: center; gap: 8px; letter-spacing: -0.01em; }
+        .home-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .home-feature-item { padding: 18px; border-radius: 10px; background: #f8fafc; border: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 8px; transition: border-color 0.2s ease, background 0.2s ease; }
+        .home-feature-item:hover { background: #ffffff; border-color: #e2e8f0; }
+        .home-feature-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: #0f172a; }
+        .home-feature-body { font-size: 12.5px; color: #64748b; line-height: 1.55; }
+
+        @media (max-width: 820px) {
+            .stat-grid, .home-actions, .home-features-grid { grid-template-columns: 1fr; }
+        }
 
         /* VIEW TRANSITIONS */
         .view-transition { animation: viewFadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
@@ -69,15 +97,15 @@
         .subject-portal-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.12); }
         
         .portal-banner { padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-        .portal-banner h3 { font-size: 17px; font-weight: 800; margin: 0; color: white; display: flex; align-items: center; gap: 8px; }
-        .portal-banner-icon { font-size: 24px; }
-        .portal-badge { padding: 3px 9px; border-radius: 12px; font-size: 10.5px; font-weight: 800; background: rgba(255,255,255,0.25); color: white; backdrop-filter: blur(4px); }
+        .portal-banner h3 { font-size: 16.5px; font-weight: 700; margin: 0; color: white; display: flex; align-items: center; gap: 10px; }
+        .portal-banner-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.16); }
+        .portal-badge { padding: 3px 9px; border-radius: 12px; font-size: 10.5px; font-weight: 700; background: rgba(255,255,255,0.22); color: white; backdrop-filter: blur(4px); }
         
         .portal-body { padding: 16px 20px; display: flex; flex-direction: column; flex: 1; }
-        .portal-desc { font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 14px; font-weight: 500; }
+        .portal-desc { font-size: 12.5px; color: #64748b; line-height: 1.5; margin-bottom: 14px; font-weight: 400; }
         .portal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid #f1f5f9; }
-        .portal-count { font-size: 13px; font-weight: 800; color: #334155; }
-        .portal-btn { background: #0f172a; color: white; border: none; padding: 7px 15px; border-radius: 6px; font-size: 12.5px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+        .portal-count { font-size: 13px; font-weight: 700; color: #334155; }
+        .portal-btn { background: #0f172a; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .subject-portal-card:hover .portal-btn { background: var(--tsa-blue); transform: translateX(2px); }
 
         /* THEMES */
@@ -225,12 +253,14 @@
         .option-item.wrong-ans { border-color: #ef4444; background: #fef2f2; }
         .option-item.wrong-ans .option-label { background: #ef4444; color: white; }
 
-        .tf-table { width: 100%; border-collapse: collapse; margin-top: 15px; border: 1px solid var(--border-color); background: #fff; }
-        .tf-table th { background: #f0f2f5; padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color); }
-        .tf-table td { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 15px; }
-        .tf-cell-btn { width: 80px; text-align: center; cursor: pointer; user-select: none; transition: all 0.2s; }
-        .tf-cell-btn.selected-true { background: rgba(24, 144, 255, 0.15); color: var(--tsa-blue); font-weight: bold; }
-        .tf-cell-btn.selected-false { background: rgba(239, 68, 68, 0.15); color: var(--tsa-red); font-weight: bold; }
+        .tf-table { width: 100%; border-collapse: collapse; margin-top: 15px; border: 1px solid var(--border-color); background: #fff; border-radius: 8px; overflow: hidden; }
+        .tf-table th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color); color: #334155; font-size: 13.5px; }
+        .tf-table th:nth-child(2), .tf-table th:nth-child(3) { text-align: center; width: 84px; }
+        .tf-table td { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 15px; vertical-align: middle; }
+        .tf-cell-btn { width: 84px; text-align: center; cursor: pointer; user-select: none; transition: all 0.18s ease; font-size: 18px; line-height: 1; color: #94a3b8; border-left: 1px solid #f1f5f9; }
+        .tf-cell-btn:hover:not(.locked) { background: #f8fafc; color: #475569; }
+        .tf-cell-btn.selected-true { background: rgba(37, 99, 235, 0.12); color: var(--tsa-blue); font-weight: bold; }
+        .tf-cell-btn.selected-false { background: rgba(239, 68, 68, 0.12); color: var(--tsa-red); font-weight: bold; }
         .tf-cell-btn.correct-cell { background: #10b981 !important; color: white !important; font-weight: bold; }
         .tf-cell-btn.wrong-cell { background: #ef4444 !important; color: white !important; font-weight: bold; }
 
@@ -426,9 +456,13 @@
         .performance-card .collapsible-widget-title { color: #5b21b6; }
 
         .collapsible-arrow {
-            font-size: 11px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.2s ease;
+        }
+        .collapsible-widget-card.collapsed .collapsible-arrow {
+            transform: rotate(-90deg);
         }
         .collapsible-widget-badge {
             font-size: 11px;
@@ -651,6 +685,22 @@
             flex: 1;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+        }
+        .bottom-bar-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex: 0 0 auto;
+        }
+        .bottom-bar-right, .bottom-bar-nav {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
         }
         .btn-bottom-dock-expand {
             background: var(--tsa-blue);
@@ -671,33 +721,23 @@
             background: #096dd9;
             transform: translateY(-1px);
         }
-        .bottom-bar-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            flex: 0 0 auto;
-        }
         .bottom-timer {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--tsa-blue);
             font-variant-numeric: tabular-nums;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .bottom-counter {
             font-size: 13.5px;
             font-weight: 700;
-            color: #64748b;
+            color: #475569;
             background: #f1f5f9;
             padding: 4px 10px;
             border-radius: 6px;
-        }
-        .bottom-bar-nav {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
+            border: 1px solid #e2e8f0;
         }
         .btn-bottom-nav {
             background: #f8fafc;
@@ -708,6 +748,9 @@
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .btn-bottom-nav:hover:not(:disabled) {
@@ -1229,7 +1272,9 @@
     <!-- MÀN HÌNH KHÓA PIN BẢO MẬT (FROSTED GLASS & HỒNG/ĐỎ) -->
     <div id="pin-lock-screen" class="pin-lock-screen" style="display: none;">
         <div class="pin-lock-card">
-            <div class="pin-lock-icon">🔐</div>
+            <div class="pin-lock-icon" style="display:flex; justify-content:center; color:#e11d48;">
+                <svg class="icon-svg" style="width:42px; height:42px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
             <h2 class="pin-lock-title">Phòng Luyện Thi bntz</h2>
             <p class="pin-lock-subtitle">Nhập mã PIN để tiếp tục truy cập</p>
             <form onsubmit="handlePinSubmit(event)" autocomplete="off">
@@ -1252,70 +1297,141 @@
 
     <header>
         <div class="logo-area">
-            <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" onclick="toggleSidebar()" style="display: none;">🗂️</button>
+            <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" onclick="toggleSidebar()" style="display: none;" title="Đóng / Mở danh mục môn học">
+                <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            </button>
             <span class="logo-text" id="header-logo-brand" onclick="navToHome()">bntz</span>
             <span class="exam-title" id="main-title">Trang chủ</span>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <button onclick="openApiKeyModal()" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px 11px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; color: #475569; display: flex; align-items: center; gap: 5px; transition: 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" title="Cài đặt Gemini API Key">
-                <span>🔑</span> <span id="header-key-label">Gemini Key</span>
+            <button onclick="openApiKeyModal()" style="background: #ffffff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #334155; display: flex; align-items: center; gap: 6px; transition: 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#ffffff'" title="Cài đặt Gemini API Key">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                <span id="header-key-label">Gemini Key</span>
             </button>
-            <span id="cloud-sync-badge" class="cloud-status">☁️ Đang kết nối Cloud...</span>
+            <span id="cloud-sync-badge" class="cloud-status">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                <span>Đang kết nối Cloud...</span>
+            </span>
             <div id="header-btn-area"></div>
         </div>
     </header>
 
-    <!-- 1. TRANG CHỦ MINIMALIST + NEON -->
+    <!-- 1. TRANG CHỦ HIỆN ĐẠI (LINEAR / VERCEL / NOTION DASHBOARD) -->
     <div id="home-view">
         <div class="home-container">
             <div class="welcome-banner">
-                <h1>Hệ thống quản lý tủ đề & ôn thi THPT Quốc Gia, TSA</h1>
-                <p>Nền tảng cày luyện đề thi cá nhân hóa, theo dõi lịch sử và gộp câu lỗi ôn tập chuyên sâu.</p>
+                <div>
+                    <div class="welcome-badge">
+                        <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        <span>Workspace Ôn Luyện THPT Quốc Gia & TSA</span>
+                    </div>
+                    <h1>Hệ thống quản lý tủ đề & phân tích năng lực chuyên sâu</h1>
+                    <p>Nền tảng luyện đề cá nhân hóa theo chương trình GDPT 2018 & TSA Bách Khoa, tích hợp Cố vấn AI và tự động tổng hợp câu sai.</p>
+                </div>
             </div>
 
             <div class="stat-grid">
                 <div class="stat-card">
-                    <div style="font-size: 12px; color: #64748b; margin-bottom: 5px; font-weight: 700;">TỔNG SỐ ĐỀ THI</div>
-                    <div class="stat-num" style="color: var(--tsa-blue);" id="stat-subjects">0</div>
+                    <div class="stat-card-top">
+                        <span>Tổng số đề thi</span>
+                        <div class="stat-icon-box">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-num" id="home-stat-exams">0</div>
+                    <div class="stat-subtext">Bộ đề lưu trữ trong tủ sách</div>
                 </div>
                 <div class="stat-card">
-                    <div style="font-size: 12px; color: #64748b; margin-bottom: 5px; font-weight: 700;">LƯỢT LÀM BÀI</div>
-                    <div class="stat-num" style="color: #10b981;" id="stat-attempts">0</div>
+                    <div class="stat-card-top">
+                        <span>Lượt làm bài</span>
+                        <div class="stat-icon-box">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-num" id="home-stat-attempts">0</div>
+                    <div class="stat-subtext">Phiên luyện tập & thi thử đã hoàn thành</div>
                 </div>
                 <div class="stat-card">
-                    <div style="font-size: 12px; color: #64748b; margin-bottom: 5px; font-weight: 700;">🎯 SỐ LẦN ≥ 9.0</div>
-                    <div class="stat-num" style="color: #be123c;" id="stat-high-scores">0</div>
+                    <div class="stat-card-top">
+                        <span>Số lần &ge; 9.0</span>
+                        <div class="stat-icon-box">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-num" id="home-stat-highscores">0</div>
+                    <div class="stat-subtext">Cột mốc điểm số xuất sắc đạt được</div>
                 </div>
             </div>
 
             <div class="home-actions">
-                <button class="home-act-btn neon-blue" onclick="navToSubjectPortal()">
-                    📚 Vào Tủ Sách Đề Thi
+                <button class="home-act-btn primary-dark" onclick="navToSubjectPortal()">
+                    <div class="act-left">
+                        <div class="act-icon">
+                            <svg class="icon-svg lg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                        </div>
+                        <div class="act-text">
+                            <span class="act-title">Vào Tủ Sách Đề Thi</span>
+                            <span class="act-desc">Duyệt đề theo 10 phân môn</span>
+                        </div>
+                    </div>
+                    <svg class="icon-svg act-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
-                <button class="home-act-btn neon-green" onclick="openImportOptionsModal()">
-                    📥 Nạp Đề Thi Mới
+
+                <button class="home-act-btn" onclick="openImportModal()">
+                    <div class="act-left">
+                        <div class="act-icon">
+                            <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <div class="act-text">
+                            <span class="act-title">Nạp Đề Thi Mới</span>
+                            <span class="act-desc">Tải file hoặc dán mã JSON</span>
+                        </div>
+                    </div>
+                    <svg class="icon-svg act-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
-                <button class="home-act-btn neon-purple" onclick="openAiImportModal()">
-                    🤖 Nhập đề bằng AI (PDF / Ảnh)
+
+                <button class="home-act-btn" onclick="openAiParserModal()">
+                    <div class="act-left">
+                        <div class="act-icon">
+                            <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
+                        </div>
+                        <div class="act-text">
+                            <span class="act-title">Nhập Đề Bằng AI</span>
+                            <span class="act-desc">Bóc tách tự động từ PDF / Ảnh</span>
+                        </div>
+                    </div>
+                    <svg class="icon-svg act-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
             </div>
 
-            <div style="background: white; border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 14px; font-weight: 700; display:flex; align-items:center; gap:8px;">
-                    <span>✨</span> Hướng Dẫn & Tính Năng Nổi Bật
-                </h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px;">
-                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
-                        <strong style="color: #2563eb; display:block; margin-bottom: 5px; font-size: 14px;">📚 1. Tủ Sách Flashcard 10 Môn</strong>
-                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Phân loại đề thi trực quan theo 9 môn thi THPT Quốc Gia (Toán, Lý, Hóa, Sinh, Anh, Văn, Sử, Địa) + TSA Bách Khoa.</span>
+            <div class="home-features-panel">
+                <div class="home-features-header">
+                    <div class="home-features-title">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>Kiến trúc hệ thống & Quy trình ôn luyện</span>
                     </div>
-                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
-                        <strong style="color: #7c3aed; display:block; margin-bottom: 5px; font-size: 14px;">🤖 2. Cố Vấn Học Tập AI GDPT 2018</strong>
-                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Tự động nhận diện câu sai, đánh giá sự tiến bộ theo chuyên đề chuẩn SGK mới và định hướng lộ trình cải thiện điểm.</span>
+                </div>
+                <div class="home-features-grid">
+                    <div class="home-feature-item">
+                        <div class="home-feature-head">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            <span>1. Tủ Sách Phân Môn Trực Quan</span>
+                        </div>
+                        <div class="home-feature-body">Phân loại đề thi khoa học theo 9 môn THPT Quốc Gia (Toán, Lý, Hóa, Sinh, Anh, Văn, Sử, Địa) và TSA Bách Khoa.</div>
                     </div>
-                    <div style="padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9;">
-                        <strong style="color: #059669; display:block; margin-bottom: 5px; font-size: 14px;">🔥 3. Tạo Đề Gộp Câu Sai & Luyện Thi</strong>
-                        <span style="font-size: 13px; color: #64748b; line-height: 1.5;">Gộp các câu từng làm sai hoặc bookmark từ nhiều đề thành bộ đề luyện tập chuyên sâu không sợ lặp lại lỗi cũ.</span>
+                    <div class="home-feature-item">
+                        <div class="home-feature-head">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            <span>2. Cố Vấn Học Tập AI Ba Tầng</span>
+                        </div>
+                        <div class="home-feature-body">Đánh giá chuyên đề hổng kiến thức chuẩn GDPT 2018, phân tích chiến thuật thời gian và mổ xẻ chi tiết từng câu sai.</div>
+                    </div>
+                    <div class="home-feature-item">
+                        <div class="home-feature-head">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                            <span>3. Tạo Đề Gộp Câu Sai & Đánh Dấu</span>
+                        </div>
+                        <div class="home-feature-body">Trích lọc tự động các câu từng làm sai hoặc bookmark từ nhiều đề để tạo bài luyện tập khắc phục triệt để lỗ hổng.</div>
                     </div>
                 </div>
             </div>
@@ -1327,19 +1443,22 @@
         <div class="home-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
                 <div>
-                    <button class="btn-back" onclick="navToHome()" style="margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-                        <span>←</span> <span>Quay về Trang chủ</span>
+                    <button class="btn-back" onclick="navToHome()" style="margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        <span>Quay về Trang chủ</span>
                     </button>
-                    <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
-                        📚 Tủ Sách Đề Thi Theo Môn
+                    <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px;">
+                        <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        <span>Tủ Sách Đề Thi Theo Môn</span>
                     </h2>
                     <p style="font-size: 13.5px; color: #64748b; margin: 0;">
                         Chọn môn học để xem bộ đề, luyện thi và nhận đánh giá từ Cố vấn AI
                     </p>
                 </div>
                 <div>
-                    <button onclick="navToDashboard('all')" style="background: #334155; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 13.5px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); transition: 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#334155'">
-                        <span>📚</span> Xem tất cả đề thi
+                    <button onclick="navToDashboard('all')" style="background: #0f172a; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); transition: 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        <span>Xem tất cả đề thi</span>
                     </button>
                 </div>
             </div>
@@ -1348,14 +1467,14 @@
                 <!-- 1. TOÁN -->
                 <div class="subject-portal-card theme-toan" onclick="navToDashboard('toan')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">📐</span> Môn Toán học</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span> Môn Toán học</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Khảo sát hàm số, Vectơ & Oxyz, Thống kê ghép nhóm, Xác suất có điều kiện, Nguyên hàm & Tích phân.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-toan">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1363,14 +1482,14 @@
                 <!-- 2. VẬT LÝ -->
                 <div class="subject-portal-card theme-ly" onclick="navToDashboard('ly')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">⚡</span> Môn Vật lý</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> Môn Vật lý</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Vật lý nhiệt, Khí lý tưởng, Từ trường & Cảm ứng điện từ, Vật lý hạt nhân.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-ly">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1378,14 +1497,14 @@
                 <!-- 3. HÓA HỌC -->
                 <div class="subject-portal-card theme-hoa" onclick="navToDashboard('hoa')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🧪</span> Môn Hóa học</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></span> Môn Hóa học</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Ester - Lipid, Carbohydrate, Hợp chất chứa Nitrogen, Polymer, Pin điện & Phức chất.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-hoa">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1393,14 +1512,14 @@
                 <!-- 4. SINH HỌC -->
                 <div class="subject-portal-card theme-sinh" onclick="navToDashboard('sinh')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🧬</span> Môn Sinh học</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/></svg></span> Môn Sinh học</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Di truyền phân tử & tế bào, Quy luật di truyền, Tiến hóa & Sinh thái học môi trường.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-sinh">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1408,14 +1527,14 @@
                 <!-- 5. TIẾNG ANH -->
                 <div class="subject-portal-card theme-anh" onclick="navToDashboard('anh')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🌐</span> Môn Tiếng Anh</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Môn Tiếng Anh</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Ngữ âm, Trọng âm, Ngữ pháp cốt lõi, Từ vựng & Cụm từ, Điền từ & Đọc hiểu văn bản.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-anh">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1423,14 +1542,14 @@
                 <!-- 6. NGỮ VĂN -->
                 <div class="subject-portal-card theme-van" onclick="navToDashboard('van')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">📖</span> Môn Ngữ văn</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span> Môn Ngữ văn</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Đọc hiểu văn bản (Nghệ thuật & Thông tin), Nghị luận xã hội và Nghị luận văn học.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-van">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1438,14 +1557,14 @@
                 <!-- 7. LỊCH SỬ -->
                 <div class="subject-portal-card theme-su" onclick="navToDashboard('su')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🏛️</span> Môn Lịch sử</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></span> Môn Lịch sử</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Lịch sử thế giới hiện đại, ASEAN, Lịch sử Việt Nam hiện đại & Công cuộc Đổi mới.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-su">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1453,14 +1572,14 @@
                 <!-- 8. ĐỊA LÝ -->
                 <div class="subject-portal-card theme-dia" onclick="navToDashboard('dia')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🌍</span> Môn Địa lý</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></span> Môn Địa lý</h3>
                         <span class="portal-badge">GDPT 2018</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Địa lý tự nhiên Việt Nam, Dân cư, Các ngành kinh tế và Các vùng kinh tế trọng điểm.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-dia">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1468,14 +1587,14 @@
                 <!-- 9. TSA BÁCH KHOA -->
                 <div class="subject-portal-card theme-tsa" onclick="navToDashboard('tsa')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">🧠</span> TSA Bách Khoa</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span> TSA Bách Khoa</h3>
                         <span class="portal-badge">ĐHBK Hà Nội</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Tư duy Toán học, Tư duy Đọc hiểu khoa học và Tư duy Khoa học / Giải quyết vấn đề thực nghiệm.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-tsa">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1483,14 +1602,14 @@
                 <!-- 10. MÔN KHÁC -->
                 <div class="subject-portal-card theme-other" onclick="navToDashboard('other')">
                     <div class="portal-banner">
-                        <h3><span class="portal-banner-icon">📁</span> Môn học khác</h3>
+                        <h3><span class="portal-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Môn học khác</h3>
                         <span class="portal-badge">Tổng hợp</span>
                     </div>
                     <div class="portal-body">
                         <div class="portal-desc">Các bộ đề tổng hợp liên môn, đề kiểm tra định kỳ và bài tập mở rộng khác.</div>
                         <div class="portal-footer">
                             <span class="portal-count" id="portal-count-other">0 đề thi</span>
-                            <button class="portal-btn">Xem bộ đề →</button>
+                            <button class="portal-btn">Xem bộ đề <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1500,29 +1619,31 @@
 
     <!-- 3. DANH SÁCH ĐỀ THI THEO MÔN (DASHBOARD VIEW) -->
     <div id="dashboard-view">
-        <div class="sidebar" id="main-sidebar">
+        <div class="sidebar collapsed" id="main-sidebar">
             <div class="sidebar-title">Danh Mục Phân Môn</div>
-            <button class="subject-tab-btn active" id="tab-all" onclick="filterSubject('all')"><span>📚 Tất cả đề</span></button>
-            <button class="subject-tab-btn" id="tab-toan" onclick="filterSubject('toan')"><span>📐 Môn Toán</span></button>
-            <button class="subject-tab-btn" id="tab-ly" onclick="filterSubject('ly')"><span>⚡ Môn Vật Lý</span></button>
-            <button class="subject-tab-btn" id="tab-hoa" onclick="filterSubject('hoa')"><span>🧪 Môn Hóa Học</span></button>
-            <button class="subject-tab-btn" id="tab-sinh" onclick="filterSubject('sinh')"><span>🧬 Môn Sinh Học</span></button>
-            <button class="subject-tab-btn" id="tab-anh" onclick="filterSubject('anh')"><span>🌐 Môn Tiếng Anh</span></button>
-            <button class="subject-tab-btn" id="tab-van" onclick="filterSubject('van')"><span>📖 Môn Ngữ Văn</span></button>
-            <button class="subject-tab-btn" id="tab-su" onclick="filterSubject('su')"><span>🏛️ Môn Lịch Sử</span></button>
-            <button class="subject-tab-btn" id="tab-dia" onclick="filterSubject('dia')"><span>🌍 Môn Địa Lý</span></button>
-            <button class="subject-tab-btn" id="tab-tsa" onclick="filterSubject('tsa')"><span>🧠 TSA Bách Khoa</span></button>
-            <button class="subject-tab-btn" id="tab-other" onclick="filterSubject('other')"><span>📁 Môn Khác</span></button>
+            <button class="subject-tab-btn active" id="tab-all" onclick="filterSubject('all')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Tất cả đề</span></button>
+            <button class="subject-tab-btn" id="tab-toan" onclick="filterSubject('toan')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg> Môn Toán</span></button>
+            <button class="subject-tab-btn" id="tab-ly" onclick="filterSubject('ly')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Môn Vật Lý</span></button>
+            <button class="subject-tab-btn" id="tab-hoa" onclick="filterSubject('hoa')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg> Môn Hóa Học</span></button>
+            <button class="subject-tab-btn" id="tab-sinh" onclick="filterSubject('sinh')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/></svg> Môn Sinh Học</span></button>
+            <button class="subject-tab-btn" id="tab-anh" onclick="filterSubject('anh')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Môn Tiếng Anh</span></button>
+            <button class="subject-tab-btn" id="tab-van" onclick="filterSubject('van')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Môn Ngữ Văn</span></button>
+            <button class="subject-tab-btn" id="tab-su" onclick="filterSubject('su')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg> Môn Lịch Sử</span></button>
+            <button class="subject-tab-btn" id="tab-dia" onclick="filterSubject('dia')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg> Môn Địa Lý</span></button>
+            <button class="subject-tab-btn" id="tab-tsa" onclick="filterSubject('tsa')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg> TSA Bách Khoa</span></button>
+            <button class="subject-tab-btn" id="tab-other" onclick="filterSubject('other')"><span style="display:inline-flex;align-items:center;gap:8px;"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Môn Khác</span></button>
         </div>
 
         <div class="dashboard-content">
             <div class="dashboard-container" id="grid-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <button class="btn-back" onclick="navToSubjectPortal()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: bold; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-                        <span>←</span> <span>Quay lại Tủ sách môn</span>
+                    <button class="btn-back" onclick="navToSubjectPortal()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        <span>Quay lại Tủ sách môn</span>
                     </button>
                     <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; background: #f8fafc; border: 1px solid var(--border-color);">
-                        <span>🏠</span> <span>Trang chủ</span>
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Trang chủ</span>
                     </button>
                 </div>
                 <!-- WIDGET CỐ VẤN AI THEO MÔN -->
@@ -1531,14 +1652,17 @@
                     <div style="display: flex; align-items: center; gap: 15px; flex: 1; min-width: 280px; flex-wrap: wrap;">
                         <strong id="current-filter-title" style="color: #0f172a; font-size: 15px; white-space: nowrap;">Đang xem: Tất cả đề thi</strong>
                         <div class="search-box-wrapper">
-                            <span class="search-input-icon">🔍</span>
+                            <span class="search-input-icon" style="display:flex; align-items:center;">
+                                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </span>
                             <input type="text" id="exam-search-input" class="search-input-field" placeholder="Tìm kiếm tên đề, chuyên đề, năm thi..." oninput="handleSearchExam(this.value)" onkeydown="if(event.key === 'Escape') clearExamSearch()">
                             <button id="btn-clear-search" class="search-clear-btn" onclick="clearExamSearch()" style="display: none;" title="Xóa tìm kiếm">✕</button>
                         </div>
                     </div>
                     <div id="combine-action-area">
-                        <button onclick="toggleCombineMode()" style="background: #e11d48; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(225,29,72,0.2); font-size: 13px;">
-                            🔥 Tạo Đề Gộp
+                        <button onclick="toggleCombineMode()" style="background: #0f172a; color: white; border: none; padding: 9px 16px; border-radius: 7px; font-weight: 600; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                            <span>Tạo Đề Gộp</span>
                         </button>
                     </div>
                 </div>
@@ -1547,27 +1671,38 @@
 
             <!-- VÙNG CHI TIẾT ĐỀ THI -->
             <div class="dashboard-container" id="detail-view-panel">
-                <button class="btn-back" onclick="closeDetailView()">⬅ Quay lại Tủ Đề</button>
-                <div class="detail-header">
-                    <div>
-                        <div id="detail-badge" style="margin-bottom: 10px;"></div>
-                        <h2 id="detail-title" style="color: var(--tsa-blue); font-size: 22px;">Tên đề thi</h2>
-                        <div class="detail-stats" id="detail-stats">28 câu | Đã làm: 1 lần</div>
-                        <div class="best-score" id="detail-best-score" style="display:none;">Best: 0đ</div>
+                <div id="exam-detail-view">
+                    <button class="btn-back" onclick="closeDetailView()">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        <span>Quay lại Tủ Đề</span>
+                    </button>
+                    <div class="detail-header">
+                        <div>
+                            <div id="detail-badge" style="margin-bottom: 10px;"></div>
+                            <h2 id="detail-title" style="color: var(--tsa-blue); font-size: 22px;">Tên đề thi</h2>
+                            <div class="detail-stats" id="detail-stats">28 câu | Đã làm: 1 lần</div>
+                            <div class="best-score" id="detail-best-score" style="display:none;">Best: 0đ</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-direction: column; align-items: flex-end;">
+                            <button onclick="openEditSubjectModal()" style="background:#ffffff; border:1px solid var(--border-color); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:600; color:#334155; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                                <svg class="icon-svg" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                <span>Sửa Tên / Đổi Môn</span>
+                            </button>
+                            <button onclick="deleteCurrentSubject()" style="background:none; border:none; color:#ef4444; font-size:12px; text-decoration:underline; cursor:pointer;">Xóa đề này</button>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 10px; flex-direction: column; align-items: flex-end;">
-                        <button onclick="openEditSubjectModal()" style="background:none; border:1px solid #ccc; padding:6px 12px; border-radius:4px; font-size:12px; cursor:pointer;">✏️ Sửa Tên/Đổi Môn</button>
-                        <button onclick="deleteCurrentSubject()" style="background:none; border:none; color:#ef4444; font-size:12px; text-decoration:underline; cursor:pointer;">Xóa đề này</button>
+                    <div class="detail-actions">
+                        <button class="d-btn btn-practice" onclick="openSessionConfig('practice')">Luyện Tập</button>
+                        <button class="d-btn btn-exam" onclick="openSessionConfig('exam')">Thi Thử</button>
                     </div>
+                    <!-- TẦNG 2: BÁO CÁO CHIẾN THUẬT BÀI THI GẦN NHẤT -->
+                    <div id="detail-exam-tactics-widget" style="display: none;"></div>
+                    <h4 style="margin-bottom: 15px; color: #475569; display: flex; align-items: center; gap: 7px;">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>Lịch sử làm bài</span>
+                    </h4>
+                    <div class="history-list" id="detail-history-list"></div>
                 </div>
-                <div class="detail-actions">
-                    <button class="d-btn btn-practice" onclick="openSessionConfig('practice')">Luyện Tập</button>
-                    <button class="d-btn btn-exam" onclick="openSessionConfig('exam')">Thi Thử</button>
-                </div>
-                <!-- TẦNG 2: BÁO CÁO CHIẾN THUẬT BÀI THI GẦN NHẤT -->
-                <div id="detail-exam-tactics-widget" style="display: none;"></div>
-                <h4 style="margin-bottom: 15px; color: #475569;">📊 Lịch sử làm bài</h4>
-                <div class="history-list" id="detail-history-list"></div>
             </div>
         </div>
     </div>
@@ -1575,18 +1710,27 @@
     <!-- MODAL NẠP ĐỀ THI -->
     <div id="import-options-modal" class="modal-overlay">
         <div class="modal-content" style="width: 440px;">
-            <h3 style="color: var(--tsa-blue); margin-bottom: 15px;">Nạp Đề Thi Mới</h3>
+            <h3 style="color: #0f172a; margin-bottom: 15px;">Nạp Đề Thi Mới</h3>
             <button class="import-opt-btn" onclick="openAiImportModalFromOptions()" style="border-color: #c4b5fd; background: #faf5ff;">
-                <strong style="color: #7c3aed; display: block; margin-bottom: 4px;">🤖 0. Nhập Đề Bằng AI (PDF / Ảnh)</strong>
+                <strong style="color: #7c3aed; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>0. Nhập Đề Bằng AI (PDF / Ảnh)</span>
+                </strong>
                 <span style="font-size: 12px; color: #64748b;">Tự động nhận diện câu hỏi, giải đáp án & trích xuất cấu trúc đề thi</span>
             </button>
             <button class="import-opt-btn" onclick="triggerFileInput()">
-                <strong style="color: var(--tsa-blue); display: block; margin-bottom: 4px;">📥 1. Tải Lên File JSON Từ Máy</strong>
+                <strong style="color: var(--tsa-blue); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span>1. Tải Lên File JSON Từ Máy</span>
+                </strong>
                 <span style="font-size: 12px; color: #64748b;">Chọn file `.json` đã lưu trên máy tính của bạn</span>
             </button>
             <input type="file" id="file-upload" accept=".json" style="display: none;" onchange="handleFileUpload(event)">
             <button class="import-opt-btn" onclick="openPasteJsonModalFromOptions()">
-                <strong style="color: var(--tsa-red); display: block; margin-bottom: 4px;">📋 2. Dán Mã JSON Trực Tiếp</strong>
+                <strong style="color: var(--tsa-red); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>2. Dán Mã JSON Trực Tiếp</span>
+                </strong>
                 <span style="font-size: 12px; color: #64748b;">Copy mã JSON từ AI và dán trực tiếp vào khung thoại</span>
             </button>
             <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
@@ -1600,7 +1744,8 @@
         <div class="modal-content" style="width: 530px; max-width: 95vw;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="color: #7c3aed; margin: 0; font-size: 18px; display:flex; align-items:center; gap:8px;">
-                    🔑 Cài Đặt Gemini API Key
+                    <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                    <span>Cài Đặt Gemini API Key</span>
                 </h3>
                 <button onclick="closeApiKeyModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8;">✕</button>
             </div>
@@ -1613,7 +1758,9 @@
                 <label>Gemini API Key:</label>
                 <div style="position: relative;">
                     <input type="password" id="gemini-key-input" class="cfg-input" placeholder="Dán khóa AIzaSy... vào đây" style="padding-right: 40px;">
-                    <button type="button" onclick="toggleKeyVisibility()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #64748b;" title="Hiện / Ẩn Key">👁️</button>
+                    <button type="button" onclick="toggleKeyVisibility()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; display:flex; align-items:center;" title="Hiện / Ẩn Key">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
                 </div>
                 <div style="font-size: 12px; color: #64748b; margin-top: 5px;">
                     Chưa có API key? Lấy miễn phí tại: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #7c3aed; text-decoration: underline; font-weight: bold;">Google AI Studio</a>
@@ -1633,7 +1780,7 @@
                     </datalist>
                 </div>
                 <div style="font-size: 11.5px; color: #64748b; margin-top: 5px;">
-                    💡 Chọn nhanh từ danh sách gợi ý hoặc tự do nhập bất kỳ tên model nào (mặc định: <code>gemini-3.8-flash</code>).
+                    Chọn nhanh từ danh sách gợi ý hoặc tự do nhập bất kỳ tên model nào (mặc định: <code>gemini-3.8-flash</code>).
                 </div>
             </div>
 
@@ -1641,9 +1788,10 @@
             <div class="cfg-row" style="margin-top: 18px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <label for="thinking-slider" style="margin-bottom: 0; display: flex; align-items: center; gap: 6px;">
-                        <span>🧠</span> Mức độ tư duy của AI:
+                        <svg class="icon-svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+                        <span>Mức độ tư duy của AI:</span>
                     </label>
-                    <span id="thinking-badge" class="badge-thinking-level badge-thinking-medium">⚖️ MEDIUM (Cân bằng)</span>
+                    <span id="thinking-badge" class="badge-thinking-level badge-thinking-medium">MEDIUM (Cân bằng)</span>
                 </div>
 
                 <div class="thinking-slider-wrap">
@@ -1658,21 +1806,18 @@
                 <div class="thinking-steps-grid">
                     <div class="thinking-step-card step-1" id="step-card-1" onclick="setThinkingLevelStep(1)">
                         <div class="step-card-header">
-                            <span>⚡</span>
                             <strong>Nấc 1: Nhanh (Low)</strong>
                         </div>
                         <div class="step-card-desc">Phản hồi siêu tốc, tiết kiệm token, phù hợp bóc tách đề cơ bản và gợi ý nhanh.</div>
                     </div>
                     <div class="thinking-step-card step-2 active" id="step-card-2" onclick="setThinkingLevelStep(2)">
                         <div class="step-card-header">
-                            <span>⚖️</span>
                             <strong>Nấc 2: Cân bằng (Medium)</strong>
                         </div>
                         <div class="step-card-desc">Mặc định: Cân bằng hài hòa giữa tốc độ xử lý và độ sâu lập luận.</div>
                     </div>
                     <div class="thinking-step-card step-3" id="step-card-3" onclick="setThinkingLevelStep(3)">
                         <div class="step-card-header">
-                            <span>🧠</span>
                             <strong>Nấc 3: Sâu sắc (High)</strong>
                         </div>
                         <div class="step-card-desc">Suy luận nhiều bước, bẻ bẫy logic phức tạp và xử lý toán vận dụng cao / TSA.</div>
@@ -1682,7 +1827,7 @@
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px;">
                 <button onclick="closeApiKeyModal()" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
-                <button onclick="saveApiKeySettings()" style="padding: 8px 18px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">💾 Lưu Cài Đặt</button>
+                <button onclick="saveApiKeySettings()" style="padding: 8px 18px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Lưu Cài Đặt</button>
             </div>
         </div>
     </div>
@@ -1692,22 +1837,26 @@
         <div class="modal-content" style="width: 580px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="color: #7c3aed; margin: 0; font-size: 18px; display:flex; align-items:center; gap:8px;">
-                    🤖 Nhập Đề Bằng AI (PDF / Ảnh)
+                    <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Nhập Đề Bằng AI (PDF / Ảnh)</span>
                 </h3>
                 <button onclick="closeAiImportModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8;">✕</button>
             </div>
 
             <!-- Trạng thái API Key -->
             <div id="ai-key-status-bar" style="padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: #faf5ff; border: 1px solid #e9d5ff;">
-                <span id="ai-key-status-text" style="color: #6b21a8; font-weight: 500;">🔑 Đang kiểm tra API Key...</span>
-                <button onclick="openApiKeyModal()" style="background: none; border: 1px solid #c084fc; color: #7c3aed; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold;">⚙️ Cài đặt</button>
+                <span id="ai-key-status-text" style="color: #6b21a8; font-weight: 500;">Đang kiểm tra API Key...</span>
+                <button onclick="openApiKeyModal()" style="background: none; border: 1px solid #c084fc; color: #7c3aed; padding: 4px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                    <svg class="icon-svg" style="width:13px;height:13px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span>Cài đặt</span>
+                </button>
             </div>
 
             <!-- Vùng chọn phân môn -->
             <div class="cfg-row">
                 <label>Phân môn (AI sẽ tự động nhận diện hoặc bạn có thể chỉ định):</label>
                 <select id="ai-subject-select" class="cfg-input">
-                    <option value="auto">✨ Tự động nhận diện môn học</option>
+                    <option value="auto">Tự động nhận diện môn học</option>
                     <option value="tsa">TSA Bách Khoa</option>
                     <option value="toan">Môn Toán</option>
                     <option value="ly">Môn Vật Lý</option>
@@ -1723,7 +1872,9 @@
 
             <!-- Vùng Dropzone Upload -->
             <div id="ai-dropzone" class="ai-dropzone" onclick="document.getElementById('ai-file-input').click()">
-                <div style="font-size: 36px; margin-bottom: 8px;">📄</div>
+                <div style="margin-bottom: 10px; color: #7c3aed; display: flex; justify-content: center;">
+                    <svg class="icon-svg" style="width: 36px; height: 36px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
                 <strong style="color: #6d28d9; font-size: 15px; display: block; margin-bottom: 4px;">Kéo thả file PDF hoặc Ảnh đề thi vào đây</strong>
                 <span style="font-size: 12px; color: #64748b;">Hỗ trợ file .pdf hoặc nhiều file ảnh (.jpg, .png, .webp)</span>
             </div>
@@ -1743,7 +1894,7 @@
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
                 <button onclick="closeAiImportModal()" style="padding: 9px 18px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
                 <button id="btn-start-ai-extract" onclick="startAiExtraction()" style="padding: 9px 20px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px;" disabled>
-                    <span>🚀 Bắt Đầu Trích Xuất Bằng AI</span>
+                    <span>Bắt Đầu Trích Xuất Bằng AI</span>
                 </button>
             </div>
         </div>
@@ -1755,7 +1906,8 @@
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 15px;">
                 <div>
                     <h3 style="color: #7c3aed; margin: 0 0 4px 0; font-size: 18px; display: flex; align-items: center; gap: 8px;">
-                        📋 Duyệt Đề Thi AI Bóc Tách
+                        <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        <span>Duyệt Đề Thi AI Bóc Tách</span>
                     </h3>
                     <p style="font-size: 13px; color: #64748b; margin: 0;">Kiểm tra nội dung, đáp án tự giải và chỉnh sửa thông tin trước khi lưu.</p>
                 </div>
@@ -1797,8 +1949,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
                 <button onclick="closeAiPreviewModal()" style="padding: 9px 18px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-weight: 500;">Hủy bỏ</button>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="reopenAiImportModal()" style="padding: 9px 16px; border: 1px solid #a78bfa; background: #faf5ff; color: #7c3aed; border-radius: 6px; cursor: pointer; font-weight: bold;">🔄 Quét Lại</button>
-                    <button onclick="confirmSaveAiExam()" style="padding: 9px 22px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(16,185,129,0.3); font-size: 14px;">💾 Xác Nhận Lưu Đề Này</button>
+                    <button onclick="reopenAiImportModal()" style="padding: 9px 16px; border: 1px solid #a78bfa; background: #faf5ff; color: #7c3aed; border-radius: 6px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                        <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        <span>Quét Lại</span>
+                    </button>
+                    <button onclick="confirmSaveAiExam()" style="padding: 9px 22px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(16,185,129,0.3); font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Xác Nhận Lưu Đề Này</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1888,7 +2046,10 @@
                 </div>
                 <div class="q-container">
                     <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                        <button class="btn-bookmark" id="btn-bookmark" onclick="toggleBookmark()">&#128278; Đánh dấu câu này</button>
+                        <button class="btn-bookmark" id="btn-bookmark" onclick="toggleBookmark()" style="display:inline-flex; align-items:center; gap:6px;">
+                            <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                            <span>Đánh dấu câu này</span>
+                        </button>
                     </div>
                     <div class="q-container-inner" id="question-render-area"></div>
                 </div>
@@ -1896,7 +2057,10 @@
             
             <div class="nav-panel" id="nav-panel">
                 <div class="nav-panel-topbar">
-                    <button class="btn-dock-toggle" onclick="toggleNavDock()" title="Thu bảng điều hướng xuống thanh đáy">⤓ Thu xuống đáy</button>
+                    <button class="btn-dock-toggle" onclick="toggleNavDock()" title="Thu bảng điều hướng xuống thanh đáy">
+                        <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+                        <span>Thu xuống đáy</span>
+                    </button>
                 </div>
                 <div id="timer-submit-area">
                     <div style="font-size: 14px; color: #666; margin-bottom: 5px;" id="timer-label">Thời gian còn lại</div>
@@ -1915,16 +2079,23 @@
 
         <!-- THANH ĐIỀU HƯỚNG ĐÁY (ADAPTIVE BOTTOM DOCK) -->
         <div id="bottom-bar" class="bottom-bar" aria-hidden="true" inert>
-            <div class="bottom-bar-left"></div>
+            <div class="bottom-bar-left">
+                <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">&lsaquo; Câu trước</button>
+                <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Câu tiếp &rsaquo;</button>
+            </div>
             <div class="bottom-bar-center">
-                <span id="bottom-timer" class="bottom-timer">⏳ 00:00</span>
+                <span id="bottom-bar-timer" class="bottom-timer">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>00:00</span>
+                </span>
                 <span id="bottom-bar-counter" class="bottom-counter">Câu 1/0</span>
             </div>
-            <div class="bottom-bar-nav">
-                <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">‹ Câu trước</button>
-                <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Câu tiếp ›</button>
-                <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">📑 Bảng câu hỏi ⤒</button>
-                <button id="btn-bottom-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
+            <div class="bottom-bar-right">
+                <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span>Bảng câu hỏi</span>
+                </button>
+                <button id="btn-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
             </div>
         </div>
     </div>
@@ -1936,13 +2107,19 @@
             <textarea id="edit-text-input" style="height: 100px;"></textarea>
             
             <div style="margin-top: 15px; padding: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 8px; color: #0f172a;">🎯 Sửa Đáp Án Đúng (correct_answer):</label>
+                <label style="font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; color: #0f172a;">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span>Sửa Đáp Án Đúng (correct_answer):</span>
+                </label>
                 <div id="edit-correct-ans-area"></div>
             </div>
 
             <div class="edit-paste-container" style="display:flex; gap:20px; margin-top:15px;">
                 <div class="edit-paste-column" style="flex:1;" id="edit-context-img-col">
-                    <h4 style="font-size: 14px; color: var(--tsa-blue); margin-bottom: 8px;">🏞️ 1. Ảnh Ngữ liệu</h4>
+                    <h4 style="font-size: 14px; color: var(--tsa-blue); margin-bottom: 8px; display:flex; align-items:center; gap:6px;">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span>1. Ảnh Ngữ liệu</span>
+                    </h4>
                     <div class="paste-zone" style="border:2px dashed #999; padding:15px; text-align:center; border-radius:6px; background:#fff; cursor:pointer;" onclick="focusPasteTarget('context')" id="zone-context">
                         <div style="font-size: 12px; font-weight: bold;">Click vào đây rồi dán (Ctrl + V)</div>
                         <img id="edit-context-preview" src="" style="max-width: 100%; max-height: 110px; display: none; margin-top: 5px; border-radius: 4px;">
@@ -1950,7 +2127,10 @@
                     </div>
                 </div>
                 <div class="edit-paste-column" style="flex:1;">
-                    <h4 style="font-size: 14px; color: var(--tsa-red); margin-bottom: 8px;">🏞️ 2. Ảnh Câu hỏi</h4>
+                    <h4 style="font-size: 14px; color: var(--tsa-red); margin-bottom: 8px; display:flex; align-items:center; gap:6px;">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span>2. Ảnh Câu hỏi</span>
+                    </h4>
                     <div class="paste-zone" style="border:2px dashed #999; padding:15px; text-align:center; border-radius:6px; background:#fff; cursor:pointer;" onclick="focusPasteTarget('question')" id="zone-question">
                         <div style="font-size: 12px; font-weight: bold;">Click vào đây rồi dán (Ctrl + V)</div>
                         <img id="edit-question-preview" src="" style="max-width: 100%; max-height: 110px; display: none; margin-top: 5px; border-radius: 4px;">
@@ -2019,7 +2199,7 @@
                         }
                     }
                     if (badge) {
-                        badge.innerText = "☁️ Đã đồng bộ Cloud";
+                        badge.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> <span>Đã đồng bộ Cloud</span>`;
                         badge.style.background = "#d1fae5";
                         badge.style.color = "#065f46";
                     }
@@ -2062,7 +2242,7 @@
             isCloudActive = false;
             const badge = document.getElementById('cloud-sync-badge');
             if (badge) {
-                badge.innerText = "💻 Bộ nhớ máy (Offline)";
+                badge.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg> <span>Bộ nhớ máy (Offline)</span>`;
                 badge.style.background = "#f1f5f9";
                 badge.style.color = "#64748b";
             }
@@ -2469,8 +2649,8 @@
         function formatAiDiagnosisHtml(text) {
             const raw = (typeof text === 'string') ? text : JSON.stringify(text);
             return formatAiMarkdown(raw).replace(
-                /\[\s*⚠\uFE0F?\s*Nghi vấn đáp án:([^\]]*)\]/g,
-                (m, body) => `<div class="answer-doubt-flag">⚠️ <strong>Nghi vấn đáp án:</strong>${body}</div>`
+                /\[\s*(?:\u26A0\uFE0F?\s*)?Nghi vấn đáp án:([^\]]*)\]/g,
+                (m, body) => `<div class="answer-doubt-flag"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24" style="vertical-align:text-bottom; margin-right:4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><strong>Nghi vấn đáp án:</strong>${body}</div>`
             );
         }
         
@@ -2580,9 +2760,9 @@
                 else counts.other++;
             }
 
-            const statSub = document.getElementById('stat-subjects');
-            const statAtt = document.getElementById('stat-attempts');
-            const statHigh = document.getElementById('stat-high-scores');
+            const statSub = document.getElementById('home-stat-exams') || document.getElementById('stat-subjects');
+            const statAtt = document.getElementById('home-stat-attempts') || document.getElementById('stat-attempts');
+            const statHigh = document.getElementById('home-stat-highscores') || document.getElementById('stat-high-scores');
             if (statSub) statSub.innerText = totalSub;
             if (statAtt) statAtt.innerText = totalAttempts;
             if (statHigh) statHigh.innerText = highScoresCount;
@@ -2642,13 +2822,13 @@
                 badge.className = 'badge-thinking-level';
                 if (step === 1) {
                     badge.classList.add('badge-thinking-low');
-                    badge.innerHTML = '⚡ LOW (Nhanh)';
+                    badge.innerHTML = 'LOW (Nhanh)';
                 } else if (step === 2) {
                     badge.classList.add('badge-thinking-medium');
-                    badge.innerHTML = '⚖️ MEDIUM (Cân bằng)';
+                    badge.innerHTML = 'MEDIUM (Cân bằng)';
                 } else if (step === 3) {
                     badge.classList.add('badge-thinking-high');
-                    badge.innerHTML = '🧠 HIGH (Sâu sắc)';
+                    badge.innerHTML = 'HIGH (Sâu sắc)';
                 }
             }
 
@@ -2706,7 +2886,7 @@
             const key = getGeminiApiKey();
             const label = document.getElementById('header-key-label');
             if (label) {
-                label.innerText = key ? 'Gemini Key ✓' : 'Gemini Key';
+                label.innerText = key ? 'Gemini Key (Đã lưu)' : 'Gemini Key';
                 label.style.color = key ? '#7c3aed' : '#475569';
             }
         }
@@ -2761,9 +2941,9 @@
             if (!textEl) return;
             if (key) {
                 const masked = key.length > 8 ? key.substring(0, 6) + '...' + key.substring(key.length - 4) : '******';
-                textEl.innerHTML = `🔑 Đang dùng: <strong style="color:#7c3aed;">${masked}</strong> | Model: <strong>${model}</strong> | Tư duy: <strong style="color:#7c3aed;">${thinkingLevel}</strong>`;
+                textEl.innerHTML = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24" style="vertical-align:text-bottom; margin-right:4px; color:#7c3aed;"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg> Đang dùng: <strong style="color:#7c3aed;">${masked}</strong> | Model: <strong>${model}</strong> | Tư duy: <strong style="color:#7c3aed;">${thinkingLevel}</strong>`;
             } else {
-                textEl.innerHTML = `<span style="color:#dc2626;">⚠️ Chưa có Gemini API Key! Bấm Cài đặt để nhập key.</span>`;
+                textEl.innerHTML = `<span style="color:#dc2626; display:inline-flex; align-items:center; gap:5px;"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Chưa có Gemini API Key! Bấm Cài đặt để nhập key.</span>`;
             }
         }
 
@@ -2777,6 +2957,10 @@
             resetAiImportState();
             document.getElementById('ai-import-modal').style.display = 'flex';
             initAiDropzone();
+        }
+
+        function openAiParserModal() {
+            openAiImportModal();
         }
 
         function openAiImportModalFromOptions() {
@@ -2891,11 +3075,13 @@
 
             aiSelectedFiles.forEach((f, idx) => {
                 const isPdf = f.name.toLowerCase().endsWith('.pdf');
-                const icon = isPdf ? '📕' : '🖼️';
+                const icon = isPdf
+                    ? `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24" style="color:#dc2626;"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>`
+                    : `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24" style="color:#2563eb;"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
                 listEl.innerHTML += `
                     <div class="ai-file-item">
                         <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-                            <span>${icon}</span>
+                            <span style="display:inline-flex; align-items:center;">${icon}</span>
                             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; font-weight: 500;">${escapeHtml(f.name)}</span>
                             <span style="color: #64748b; font-size: 11px;">(${formatFileSize(f.size)})</span>
                         </div>
@@ -3157,7 +3343,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             if (!container || !currentAiExtractedData) return;
 
             const questions = currentAiExtractedData.questions || [];
-            badge.innerText = `✨ ${questions.length} câu hỏi`;
+            badge.innerText = `${questions.length} câu hỏi`;
 
             if (questions.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding:30px; color:#64748b;">Không còn câu hỏi nào trong danh sách.</div>`;
@@ -3182,13 +3368,13 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                                 <strong style="color: var(--tsa-blue); font-size: 15px;">Câu ${qIdx + 1}</strong>
                                 <span class="ai-preview-badge">${typeLabel}</span>
                             </div>
-                            <button onclick="deleteAiPreviewQuestion(${qIdx})" style="background: none; border: 1px solid #fca5a5; color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;" title="Xóa câu này khỏi danh sách">🗑️ Xóa</button>
+                            <button onclick="deleteAiPreviewQuestion(${qIdx})" style="background: none; border: 1px solid #fca5a5; color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; display:inline-flex; align-items:center; gap:4px;" title="Xóa câu này khỏi danh sách"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Xóa</button>
                         </div>`;
 
                 if (q.context && q.context.trim() !== "") {
                     html += `
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; color: #475569;">
-                            <strong style="color: #0f172a; display: block; margin-bottom: 4px;">📖 Ngữ liệu chung:</strong>
+                            <strong style="color: #0f172a; display: block; margin-bottom: 4px;">Ngữ liệu chung:</strong>
                             ${q.context.replace(/\n/g, '<br>')}
                         </div>`;
                 }
@@ -3205,7 +3391,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                         html += `
                             <div style="display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 6px; ${borderBg} font-size: 13.5px;">
                                 <span style="font-weight: bold; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; ${labelBg} flex-shrink: 0;">${labels[oIdx] || oIdx}</span>
-                                <div style="flex: 1; word-break: break-word;">${cleanOpt} ${isCorrect ? '<strong style="color:#059669; font-size: 11px; margin-left: 4px;">(✓ Đáp án đúng)</strong>' : ''}</div>
+                                <div style="flex: 1; word-break: break-word;">${cleanOpt} ${isCorrect ? '<strong style="color:#059669; font-size: 11px; margin-left: 4px;">(Đáp án đúng)</strong>' : ''}</div>
                             </div>`;
                     });
                     html += `</div>`;
@@ -3220,7 +3406,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                         html += `
                             <div style="display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 6px; ${borderBg} font-size: 13.5px;">
                                 <span style="font-weight: bold; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; ${labelBg} flex-shrink: 0;">${labels[oIdx] || oIdx}</span>
-                                <div style="flex: 1; word-break: break-word;">${cleanOpt} ${isCorrect ? '<strong style="color:#059669; font-size: 11px; margin-left: 4px;">(✓ Đáp án đúng)</strong>' : ''}</div>
+                                <div style="flex: 1; word-break: break-word;">${cleanOpt} ${isCorrect ? '<strong style="color:#059669; font-size: 11px; margin-left: 4px;">(Đáp án đúng)</strong>' : ''}</div>
                             </div>`;
                     });
                     html += `</div>`;
@@ -3232,18 +3418,18 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                         html += `
                             <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 13px;">
                                 <div><strong>${String.fromCharCode(97 + oIdx)})</strong> ${cleanOpt}</div>
-                                <span style="font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: ${ansVal === 'T' ? '#d1fae5; color: #065f46;' : '#fee2e2; color: #991b1b;'}">${ansVal === 'T' ? '● ĐÚNG' : (ansVal === 'F' ? '● SAI' : ansVal)}</span>
+                                <span style="font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: ${ansVal === 'T' ? '#d1fae5; color: #065f46;' : '#fee2e2; color: #991b1b;'}">${ansVal === 'T' ? 'ĐÚNG' : (ansVal === 'F' ? 'SAI' : ansVal)}</span>
                             </div>`;
                     });
                     html += `</div>`;
                 } else if (q.type === 'short_answer') {
                     html += `
                         <div style="padding: 8px 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; margin-bottom: 10px; font-size: 13px;">
-                            🎯 <strong>Đáp án đúng:</strong> <span style="font-size: 15px; font-weight: bold; color: #065f46;">${q.correct_answer}</span>
+                            <strong>Đáp án đúng:</strong> <span style="font-size: 15px; font-weight: bold; color: #065f46;">${q.correct_answer}</span>
                         </div>`;
                 } else if (q.type === 'fill_in_the_blanks') {
                     html += `<div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px;">
-                        <strong style="color: #065f46; display: block; margin-bottom: 6px;">🎯 Các từ / giá trị điền khuyết:</strong>`;
+                        <strong style="color: #065f46; display: block; margin-bottom: 6px;">Các từ / giá trị điền khuyết:</strong>`;
                     if (typeof q.correct_answer === 'object' && q.correct_answer !== null) {
                         Object.entries(q.correct_answer).forEach(([bKey, bVal]) => {
                             html += `<div style="margin-bottom: 4px;"><span style="font-weight: 600; color: #047857;">[${bKey}]:</span> <strong>${bVal}</strong></div>`;
@@ -3257,7 +3443,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 if (q.explanation && q.explanation.trim() !== "") {
                     html += `
                         <div class="ai-preview-explanation">
-                            💡 <strong>Lời giải / Giải thích:</strong> ${q.explanation.replace(/\n/g, '<br>')}
+                            <strong>Lời giải / Giải thích:</strong> ${q.explanation.replace(/\n/g, '<br>')}
                         </div>`;
                 }
 
@@ -3309,12 +3495,12 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             await saveToDB(uniqueId, finalExamData);
 
             closeAiPreviewModal();
-            alert(`🎉 Nạp đề bằng AI thành công!\nĐề "${title}" (${sanitizedQuestions.length} câu) đã được lưu vào Tủ sách và đồng bộ lên Firebase Cloud!`);
+            alert(`Nạp đề bằng AI thành công!\nĐề "${title}" (${sanitizedQuestions.length} câu) đã được lưu vào Tủ sách và đồng bộ lên Firebase Cloud!`);
             
-            navToDashboard(subject);
-            openDetailView(uniqueId);
+            navToSubjectPortal();
         }
         function openImportOptionsModal() { document.getElementById('import-options-modal').style.display = 'flex'; }
+        function openImportModal() { openImportOptionsModal(); }
         function closeImportOptionsModal() { document.getElementById('import-options-modal').style.display = 'none'; }
         function triggerFileInput() { closeImportOptionsModal(); document.getElementById('file-upload').click(); }
         function openPasteJsonModalFromOptions() { closeImportOptionsModal(); openPasteJsonModal(); }
@@ -3328,7 +3514,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     if(!data.subject || !data.questions) throw "Lỗi";
                     data.history = data.history || [];
                     const uniqueId = data.subject + "_" + Date.now();
-                    await saveToDB(uniqueId, data); alert("Nạp đề thành công & đã đồng bộ Cloud!"); navToDashboard('all');
+                    await saveToDB(uniqueId, data); alert("Nạp đề thành công & đã đồng bộ Cloud!"); navToSubjectPortal();
                 } catch { alert("File đéo hợp lệ!"); }
             };
             reader.readAsText(file); event.target.value = ''; 
@@ -3346,7 +3532,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 data.history = data.history || [];
                 const uniqueId = data.subject + "_" + Date.now();
                 await saveToDB(uniqueId, data);
-                alert("Nạp đề thành công & đã đồng bộ Cloud!"); closePasteJsonModal(); navToDashboard('all');
+                alert("Nạp đề thành công & đã đồng bộ Cloud!"); closePasteJsonModal(); navToSubjectPortal();
             } catch(err) { alert("Mã JSON đéo hợp lệ m ơi!"); }
         }
 
@@ -3407,6 +3593,8 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
         }
 
         let isBackgroundAdvisorRunning = false;
+        window.justFinishedExam = false;
+        window._currentDetailExpandedState = false;
 
         function getQuestionAiDiagnosis(qBreakdown, idx) {
             if (!qBreakdown || typeof qBreakdown !== 'object') return null;
@@ -3428,13 +3616,9 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             const card = document.getElementById(cardId);
             if (!card) return;
             card.classList.toggle('collapsed');
-            const arrow = card.querySelector('.collapsible-arrow');
-            if (arrow) {
-                arrow.textContent = card.classList.contains('collapsed') ? '▶' : '▼';
-            }
         }
 
-        function renderDetailExamTacticsWidget(key) {
+        function renderDetailExamTacticsWidget(key, forceExpand) {
             const widget = document.getElementById('detail-exam-tactics-widget');
             if (!widget) return;
             const data = library[key];
@@ -3447,18 +3631,23 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             const hasTactics = latestHistory && latestHistory.exam_tactics;
             const hasPerformance = latestHistory && latestHistory.exam_performance;
 
+            const isExpanded = (typeof forceExpand === 'boolean') ? forceExpand : !!window._currentDetailExpandedState;
+            const collapseClass = isExpanded ? '' : 'collapsed';
+
             if (hasTactics || hasPerformance) {
                 widget.style.display = 'block';
                 const historyBadge = `Lần ${data.history.length} • ${latestHistory.date || ''}`;
+                const chevronSvg = `<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>`;
                 let html = '';
 
                 if (hasTactics) {
                     html += `
-                        <div class="collapsible-widget-card tactics-card" id="card-exam-tactics">
+                        <div class="collapsible-widget-card tactics-card ${collapseClass}" id="card-exam-tactics">
                             <div class="collapsible-widget-header" onclick="toggleCollapsibleCard('card-exam-tactics')">
                                 <div class="collapsible-widget-title">
-                                    <span class="collapsible-arrow">▼</span>
-                                    <span>⏱️ Báo Cáo Chiến Thuật Làm Bài</span>
+                                    <span class="collapsible-arrow">${chevronSvg}</span>
+                                    <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>Báo Cáo Chiến Thuật Làm Bài</span>
                                 </div>
                                 <span class="collapsible-widget-badge">${historyBadge}</span>
                             </div>
@@ -3470,11 +3659,12 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
 
                 if (hasPerformance) {
                     html += `
-                        <div class="collapsible-widget-card performance-card" id="card-exam-performance">
+                        <div class="collapsible-widget-card performance-card ${collapseClass}" id="card-exam-performance">
                             <div class="collapsible-widget-header" onclick="toggleCollapsibleCard('card-exam-performance')">
                                 <div class="collapsible-widget-title">
-                                    <span class="collapsible-arrow">▼</span>
-                                    <span>🎯 Đánh Giá Năng Lực & Điểm Cần Cải Thiện</span>
+                                    <span class="collapsible-arrow">${chevronSvg}</span>
+                                    <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                    <span>Đánh Giá Năng Lực & Điểm Cần Cải Thiện</span>
                                 </div>
                                 <span class="collapsible-widget-badge">${historyBadge}</span>
                             </div>
@@ -3515,15 +3705,17 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     <div class="ai-advisor-card">
                         <div class="ai-advisor-header">
                             <div class="ai-advisor-title">
-                                <span>🎯 Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <span class="ai-advisor-meta">🕒 Cập nhật: ${advisor.updatedTimeStr || 'Vừa xong'} (${advisor.analyzedAttemptsCount || 1} bài làm gần nhất)</span>
-                                <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
-                                    <span>🔄</span> Phân tích lại
+                                <span class="ai-advisor-meta" style="display:inline-flex; align-items:center; gap:4px;"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Cập nhật: ${advisor.updatedTimeStr || 'Vừa xong'} (${advisor.analyzedAttemptsCount || 1} bài làm gần nhất)</span>
+                                <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
+                                    <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+                                    <span>Phân tích lại</span>
                                 </button>
                             </div>
                         </div>
@@ -3536,19 +3728,23 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
                         <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
                             <div class="ai-advisor-title">
-                                <span>🎯 Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
                         </div>
                         <div class="ai-advisor-empty">
-                            <div style="font-size: 28px; margin-bottom: 8px;">💡</div>
+                            <div style="margin-bottom: 10px; color: #7c3aed; display: flex; justify-content: center;">
+                                <svg class="icon-svg icon-svg-lg" viewBox="0 0 24 24" style="width:28px; height:28px;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                            </div>
                             <p style="margin-bottom: 12px; color: #475569; font-size: 14px; line-height: 1.5;">
                                 Bạn chưa có báo cáo cố vấn cho môn này. Hãy hoàn thành ít nhất 1 đề thi (tối thiểu 20% số câu) hoặc bấm nút <strong>Phân tích ngay</strong> bên dưới để AI đánh giá năng lực của bạn!
                             </p>
                             <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:8px 18px; border-radius:6px; font-size:13px; font-weight:bold; cursor:pointer; box-shadow:0 2px 4px rgba(124,58,237,0.25); display:inline-flex; align-items:center; gap:6px;">
-                                <span>⚡</span> Phân tích ngay
+                                <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                <span>Phân tích ngay</span>
                             </button>
                         </div>
                     </div>`;
@@ -3693,10 +3889,10 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 }
 
                 if (carelessList.length > 0) {
-                    attemptsSummary += `⚡ BÁO ĐỘNG LỖI ẨU (Làm < 20 giây nhưng trả lời SAI): ${carelessList.join(', ')}\n`;
+                    attemptsSummary += `[BÁO ĐỘNG LỖI ẨU] (Làm < 20 giây nhưng trả lời SAI): ${carelessList.join(', ')}\n`;
                 }
                 if (trapList.length > 0) {
-                    attemptsSummary += `⏳ BÁO ĐỘNG BẪY SA LẦY THỜI GIAN (Ngồi quá 3 phút nhưng vẫn SAI): ${trapList.join(', ')}\n`;
+                    attemptsSummary += `[BÁO ĐỘNG BẪY SA LẦY THỜI GIAN] (Ngồi quá 3 phút nhưng vẫn SAI): ${trapList.join(', ')}\n`;
                 }
             });
 
@@ -3774,7 +3970,7 @@ BẮT BUỘC TRẢ VỀ DUY NHẤT MỘT ĐỐI TƯỢNG JSON (KHÔNG KÈM BẤT
 {
   "subject_overview": "Tầng 1: Tổng hợp vĩ mô các chuyên đề GDPT 2018 bị hổng nhiều nhất môn này qua các bài thi.",
   "exam_tactics": "Tầng 2 - Ô 1: Phân tích chiến thuật, nhịp độ giây/câu, cảnh báo câu làm vội (<20s), câu sa lầy (>3p).",
-  "exam_performance": "Tầng 2 - Ô 2: Đánh giá kiến thức đề này. Chia thành 2 mục rõ rệt: '✅ Phần làm tốt / Ổn định' (các dạng câu, chuyên đề học sinh giải quyết chắc chắn) và '⚠️ Phần cần cải thiện / Bị hổng' (các nội dung học sinh bị mất điểm, nhầm lẫn lý thuyết hay kỹ năng cần bổ sung).",
+  "exam_performance": "Tầng 2 - Ô 2: Đánh giá kiến thức đề này. Chia thành 2 mục rõ rệt: 'Phần làm tốt / Ổn định' (các dạng câu, chuyên đề học sinh giải quyết chắc chắn) và 'Phần cần cải thiện / Bị hổng' (các nội dung học sinh bị mất điểm, nhầm lẫn lý thuyết hay kỹ năng cần bổ sung).",
   "question_breakdown": {
     "0": "Phân tích chi tiết câu sai index 0: học sinh bị lừa ở điểm nào, gãy ở mệnh đề con nào (nếu là Đúng/Sai: chỉ rõ ý a, b, c hay d), hoặc nhầm lẫn đơn vị / công thức / làm tròn gì (nếu là Điền số)."
   }
@@ -3792,8 +3988,8 @@ HƯỚNG DẪN CỤ THỂ CHO TỪNG TRƯỜNG:
    - Đưa ra lời khuyên phân bổ áp lực phòng thi (nguyên tắc cắt lỗ 2 phút).
 3. "exam_performance":
    - Đánh giá kiến thức chuyên sâu của riêng đề thi này, trình bày súc tích với 2 tiêu đề rõ rệt:
-     + "✅ Phần làm tốt / Ổn định": Nêu cụ thể các dạng bài, chuyên đề, thao tác tính toán học sinh làm chủ tốt, đạt điểm tối đa hoặc xử lý nhanh gọn.
-     + "⚠️ Phần cần cải thiện / Bị hổng": Nêu chính xác các mảng kiến thức, bẫy lý thuyết, kỹ năng đọc đồ thị/hình vẽ hoặc công thức học sinh bị gãy trong đề này và giải pháp khắc phục ngắn gọn.
+     + "Phần làm tốt / Ổn định": Nêu cụ thể các dạng bài, chuyên đề, thao tác tính toán học sinh làm chủ tốt, đạt điểm tối đa hoặc xử lý nhanh gọn.
+     + "Phần cần cải thiện / Bị hổng": Nêu chính xác các mảng kiến thức, bẫy lý thuyết, kỹ năng đọc đồ thị/hình vẽ hoặc công thức học sinh bị gãy trong đề này và giải pháp khắc phục ngắn gọn.
 4. "question_breakdown":
    - Khóa (key) là chuỗi string biểu diễn chỉ số index (0-based) của các câu sai trong danh sách câu sai của đề gần nhất ở trên (ví dụ: "0", "1", "4", "12"...).
    - Nếu đề thi không có câu nào sai, trả về object rỗng: {}.
@@ -3808,9 +4004,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 - BƯỚC 3 - XỬ LÝ:
   + Nếu kết quả tự giải KHỚP đáp án trong đề: phân tích bình thường nguyên nhân học sinh sai.
   + Nếu kết quả tự giải KHÁC đáp án trong đề: vẫn phân tích lỗi của học sinh, nhưng BẮT BUỘC mở đầu nhận xét bằng đúng cờ cảnh báo trung lập sau (thay X là kết quả AI tự tính, Y là đáp án đề đang chọn):
-    [⚠️ Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
+    [Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
   + TUYỆT ĐỐI KHÔNG tuyên bố đề sai, KHÔNG đề nghị hay tự ý sửa điểm. Điểm số luôn được tính 100% theo đáp án gốc trong cơ sở dữ liệu; cờ cảnh báo chỉ mang tính tham khảo để học sinh tự kiểm chứng lại.
-- Viết đầy đủ, không bỏ dở giữa chừng. Nếu dùng ký hiệu LaTeX trong chuỗi JSON, phải escape dấu gạch chéo ngược thành \\\\ (ví dụ \\\\frac) để JSON hợp lệ.`;
+- Viết đầy đủ, không bỏ dở giữa chừng. Không sử dụng emoji. Nếu dùng ký hiệu LaTeX trong chuỗi JSON, phải escape dấu gạch chéo ngược thành \\\\ (ví dụ \\\\frac) để JSON hợp lệ.`;
 
             const model = getGeminiModel();
             const currentThinkingLevel = getGeminiThinkingLevel();
@@ -3945,7 +4141,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 // Cập nhật màn hình chi tiết đề thi nếu đang mở đề này
                 const detailPanel = document.getElementById('detail-view-panel');
                 if (detailPanel && detailPanel.style.display !== 'none' && activeDetailKey === targetKey) {
-                    renderDetailExamTacticsWidget(targetKey);
+                    renderDetailExamTacticsWidget(targetKey, window._currentDetailExpandedState);
                 }
             } finally {
                 isBackgroundAdvisorRunning = false;
@@ -4054,7 +4250,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 if (currentSearchQuery) {
                     grid.innerHTML = `
                         <div style="grid-column: 1 / -1; background: #fff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center; color: #64748b;">
-                            <div style="font-size: 38px; margin-bottom: 12px;">🔍</div>
+                            <div style="margin-bottom: 12px; color: #94a3b8; display: flex; justify-content: center;">
+                                <svg class="icon-svg icon-svg-xl" viewBox="0 0 24 24" style="width:36px; height:36px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            </div>
                             <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 6px; font-weight: 700;">Không tìm thấy đề thi phù hợp</h4>
                             <p style="font-size: 14px; margin-bottom: 15px; color: #64748b;">Không có đề nào khớp với từ khóa "<strong>${escapeHtml(currentSearchQuery)}</strong>" trong danh mục này.</p>
                             <button onclick="clearExamSearch()" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;">Xóa từ khóa tìm kiếm</button>
@@ -4062,7 +4260,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 } else {
                     grid.innerHTML = `
                         <div style="grid-column: 1 / -1; background: #fff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 45px 20px; text-align: center; color: #64748b;">
-                            <div style="font-size: 38px; margin-bottom: 12px;">📂</div>
+                            <div style="margin-bottom: 12px; color: #94a3b8; display: flex; justify-content: center;">
+                                <svg class="icon-svg icon-svg-xl" viewBox="0 0 24 24" style="width:36px; height:36px;"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+                            </div>
                             <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 6px; font-weight: 700;">Chưa có đề thi nào trong mục này</h4>
                             <p style="font-size: 14px; color: #64748b;">Hãy nạp thêm đề thi mới để bắt đầu ôn luyện nhé!</p>
                         </div>`;
@@ -4097,10 +4297,16 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 const count = document.querySelectorAll('.combine-checkbox:checked').length;
                 btnArea.innerHTML = `
                     <button onclick="toggleCombineMode()" style="background: #f1f5f9; color: #475569; border: none; padding: 9px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-right: 10px;">Hủy</button>
-                    <button onclick="executeCombine()" style="background: #10b981; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(16,185,129,0.2);">✅ Xác Nhận Gộp (${count})</button>
+                    <button onclick="executeCombine()" style="background: #10b981; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(16,185,129,0.2); display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Xác Nhận Gộp (${count})</span>
+                    </button>
                 `;
             } else {
-                btnArea.innerHTML = `<button onclick="toggleCombineMode()" style="background: #e11d48; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(225,29,72,0.2); font-size: 13px;">🔥 Tạo Đề Gộp</button>`;
+                btnArea.innerHTML = `<button onclick="toggleCombineMode()" style="background: #e11d48; color: white; border: none; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(225,29,72,0.2); font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                    <span>Tạo Đề Gộp</span>
+                </button>`;
             }
         }
 
@@ -4172,8 +4378,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 document.getElementById('detail-best-score').style.display = 'none';
             }
 
-            // TẦNG 2: Hiển thị Báo cáo chiến thuật bài thi gần nhất
-            renderDetailExamTacticsWidget(key);
+            // TẦNG 2: Hiển thị Báo cáo chiến thuật & Đánh giá năng lực với cơ chế đóng/mở thông minh
+            const expandTier2 = (window.justFinishedExam === true);
+            window.justFinishedExam = false;
+            window._currentDetailExpandedState = expandTier2;
+            renderDetailExamTacticsWidget(key, expandTier2);
 
             const hContainer = document.getElementById('detail-history-list');
             hContainer.innerHTML = '';
@@ -4186,15 +4395,23 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                         <div class="history-item">
                             <div>
                                 <strong style="color: var(--tsa-blue); font-size:15px;">Lần ${data.history.length - idx}</strong> - <span style="font-size: 13px; color: #64748b;">${h.date}</span>
-                                <div style="font-size: 13px; margin-top: 5px;">Điểm: <strong style="color: #be123c; font-size:16px;">${h.score}</strong> | Đúng: ${h.correctCount}/${h.totalQ} ${h.totalActiveSeconds ? `| ⏱️ ${formatSeconds(h.totalActiveSeconds)}` : ''}</div>
+                                <div style="font-size: 13px; margin-top: 5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                    <span>Điểm: <strong style="color: #be123c; font-size:16px;">${h.score}</strong></span>
+                                    <span>| Đúng: ${h.correctCount}/${h.totalQ}</span>
+                                    ${h.totalActiveSeconds ? `<span style="display:inline-flex; align-items:center; gap:3px; color:#64748b;">| <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${formatSeconds(h.totalActiveSeconds)}</span>` : ''}
+                                </div>
                             </div>
                             <div style="display:flex; gap:10px; align-items:center;">
-                                ${canReview ? `<button class="btn-review-exam" onclick="reviewPastExam('${key}', ${idx})">🔍 Xem lại bài</button>` : `<span style="font-size:11px; color:#94a3b8; font-style:italic;">Bản cũ k xem đc</span>`}
-                                <button onclick="deleteSingleHistory(${idx})" style="background:none; border:none; color:#ef4444; font-size:16px; cursor:pointer;" title="Xóa lượt này">🗑️</button>
+                                ${canReview ? `<button class="btn-review-exam" onclick="reviewPastExam('${key}', ${idx})" style="display:inline-flex; align-items:center; gap:5px;"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> <span>Xem lại bài</span></button>` : `<span style="font-size:11px; color:#94a3b8; font-style:italic;">Bản cũ k xem đc</span>`}
+                                <button onclick="deleteSingleHistory(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; display:inline-flex; align-items:center; padding:4px;" title="Xóa lượt này"><svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
                             </div>
                         </div>`;
                 });
             }
+        }
+
+        function openExamDetail(key) {
+            return openDetailView(key);
         }
 
         function closeDetailView() {
@@ -4338,7 +4555,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             launchQuizView(data.subject);
             
             document.getElementById('timer-submit-area').style.display = 'none';
-            document.getElementById('score-result-area').innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca;">🔍 CHẾ ĐỘ XEM LẠI</span><div class="score-number">${h.score}đ</div></div></div>`;
+            document.getElementById('score-result-area').innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> CHẾ ĐỘ XEM LẠI</span><div class="score-number">${h.score}đ</div></div></div>`;
             document.getElementById('score-result-area').style.display = 'block';
             
             renderNavGrid(); renderQuestion();
@@ -4385,7 +4602,12 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if(currentSession.isSubmitted || confirm("Thoát bài đang làm hả m?")) { 
                 clearInterval(currentSession.intervalTotal); 
                 clearActiveExamSession();
-                navToDashboard('all'); 
+                if (currentSession.isSubmitted && currentSession.subjectKey && library[currentSession.subjectKey]) {
+                    navToDashboard(currentSession.subject || 'all');
+                    openDetailView(currentSession.subjectKey);
+                } else {
+                    navToDashboard(currentSession.subject || 'all'); 
+                }
             } 
         }
 
@@ -4404,8 +4626,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 if (timerLbl) timerLbl.innerText = label;
                 const totTimer = document.getElementById('total-timer');
                 if (totTimer) totTimer.innerText = `${Math.floor(currentSession.totalSeconds / 60)}:${(currentSession.totalSeconds % 60).toString().padStart(2, '0')}`;
-                const bottomTimer = document.getElementById('bottom-timer');
-                if (bottomTimer) bottomTimer.innerText = `⏳ ${formatClock(currentSession.totalSeconds)}`;
+                const bottomTimer = document.getElementById('bottom-bar-timer');
+                if (bottomTimer) bottomTimer.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>${formatClock(currentSession.totalSeconds)}</span>`;
 
                 // Đếm thời gian cho câu hỏi hiện tại
                 if (currentSession.currentIndex !== undefined && currentSession.currentIndex !== null) {
@@ -4415,7 +4637,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     
                     const qBadge = document.getElementById('q-time-spent-badge');
                     if (qBadge) {
-                        qBadge.innerText = `⏱️ ${formatSeconds(currentSession.questionTimeSpent[curIdx])}`;
+                        qBadge.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>${formatSeconds(currentSession.questionTimeSpent[curIdx])}</span>`;
                     }
                 }
 
@@ -4487,7 +4709,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     }
                 }
             }
-            const timeBadgeHtml = `<span class="${timeBadgeClass}" id="q-time-spent-badge" title="Thời gian dừng lại ở câu này">⏱️ ${formatSeconds(secSpent)}${timeBadgeExtra}</span>`;
+            const timeBadgeHtml = `<span class="${timeBadgeClass}" id="q-time-spent-badge" title="Thời gian dừng lại ở câu này"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>${formatSeconds(secSpent)}${timeBadgeExtra}</span></span>`;
             
             // Xử lý gợi ý tư duy Socratic (ẩn hoàn toàn khi đã nộp bài)
             const isLockedReview = !!currentSession.isSubmitted;
@@ -4497,7 +4719,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
             const hintButtonHtml = isLockedReview ? '' : `
                     <button class="btn-socratic-hint ${hasCachedHint ? 'has-cached' : ''}" id="btn-hint-${idx}" onclick="toggleSocraticHint(${idx})" title="Nhận gợi mở định hướng tư duy Socratic (không mớm đáp án)">
-                        💡 Gợi ý tư duy ${hasCachedHint ? '✓' : ''}
+                        <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg>
+                        <span>Gợi ý tư duy ${hasCachedHint ? '✓' : ''}</span>
                     </button>`;
 
             let html = `
@@ -4587,15 +4810,31 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 q.options.forEach((opt, oIdx) => {
                     const cAns = currentSession.answers[idx]?.[oIdx];
                     let trueClass = "", falseClass = "";
-                    if (currentSession.isSubmitted) {
-                        let rightAns = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) ? (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()]) : null;
-                        if (rightAns === 'T') trueClass = "correct-cell"; else if (rightAns === 'F') falseClass = "correct-cell";
-                        if (cAns && cAns !== rightAns) { if (cAns === 'T') trueClass = "wrong-cell"; else falseClass = "wrong-cell"; }
+                    let selTrueClass = "", selFalseClass = "";
+                    if (!currentSession.isSubmitted) {
+                        if (cAns === 'T') selTrueClass = "selected-true";
+                        else if (cAns === 'F') selFalseClass = "selected-false";
+                    } else {
+                        let rightAns = (q.correct_answer && (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()])) ? (q.correct_answer[oIdx] || q.correct_answer[oIdx.toString()]).toString().trim().toUpperCase() : null;
+                        if (cAns === 'T' || cAns === 'F') {
+                            // Người dùng ĐÃ CHỌN: Đúng tô xanh ô đã chọn, Sai CHỈ tô đỏ ô đã chọn (tuyệt đối không tô xanh ô bên cạnh)
+                            if (cAns === rightAns) {
+                                if (cAns === 'T') trueClass = "correct-cell";
+                                else falseClass = "correct-cell";
+                            } else {
+                                if (cAns === 'T') trueClass = "wrong-cell";
+                                else falseClass = "wrong-cell";
+                            }
+                        } else {
+                            // Người dùng BỎ TRỐNG: Tô màu hiển thị vào ô đáp án đúng
+                            if (rightAns === 'T') trueClass = "correct-cell";
+                            else if (rightAns === 'F') falseClass = "correct-cell";
+                        }
                     }
                     const cleanOpt = opt.toString().replace(/^[a-d][\.\)]\s*/i, '');
                     html += `<tr><td><strong>${String.fromCharCode(97 + oIdx)})</strong> ${cleanOpt}</td>
-                        <td class="tf-cell-btn ${cAns === 'T' ? 'selected-true' : ''} ${trueClass}" onclick="${currentSession.isSubmitted ? '' : `selectTF(${oIdx}, 'T')`}">${cAns === 'T' ? '● ĐÚNG' : '○'}</td>
-                        <td class="tf-cell-btn ${cAns === 'F' ? 'selected-false' : ''} ${falseClass}" onclick="${currentSession.isSubmitted ? '' : `selectTF(${oIdx}, 'F')`}">${cAns === 'F' ? '● SAI' : '○'}</td></tr>`;
+                        <td class="tf-cell-btn ${selTrueClass} ${trueClass}" onclick="${currentSession.isSubmitted ? '' : `selectTF(${oIdx}, 'T')`}">${cAns === 'T' ? '●' : '○'}</td>
+                        <td class="tf-cell-btn ${selFalseClass} ${falseClass}" onclick="${currentSession.isSubmitted ? '' : `selectTF(${oIdx}, 'F')`}">${cAns === 'F' ? '●' : '○'}</td></tr>`;
                 }); html += `</tbody></table>`;
             } 
             else if (q.type === 'short_answer') {
@@ -4613,7 +4852,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                         <div class="ai-diagnostics-card">
                             <div class="ai-diagnostics-header">
                                 <div class="ai-diagnostics-title">
-                                    <span>🔬 Giải Phẫu Chi Tiết Lỗi Sai (AI Diagnostics)</span>
+                                    <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+                                    <span>Giải Phẫu Chi Tiết Lỗi Sai (AI Diagnostics)</span>
                                 </div>
                                 <span class="ai-diagnostics-badge">Chẩn đoán tự động</span>
                             </div>
@@ -4646,7 +4886,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     html += `
                     <div style="margin-top: 14px;">
                         <button class="btn-ai-solve wrong-solve" id="btn-ai-solve-${idx}" onclick="fetchDetailedSolution(${idx})" title="Xem AI phân tích và giải tường tận toàn diện câu này">
-                            📖 Xem AI Giải Toàn Diện Câu Này ${hasCachedSol ? '✓' : ''}
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            <span>Xem AI Giải Toàn Diện Câu Này ${hasCachedSol ? '✓' : ''}</span>
                         </button>
                         <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
                     </div>`;
@@ -4654,7 +4895,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     html += `
                     <div style="margin-top: 14px;">
                         <button class="btn-ai-solve correct-solve" id="btn-ai-solve-${idx}" onclick="fetchDetailedSolution(${idx})" title="Xem giải thích chi tiết phương pháp làm chuẩn">
-                            💡 AI Giải Thích Chi Tiết ${hasCachedSol ? '✓' : ''}
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg>
+                            <span>AI Giải Thích Chi Tiết ${hasCachedSol ? '✓' : ''}</span>
                         </button>
                         <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
                     </div>`;
@@ -4772,36 +5014,26 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if (counter) counter.innerText = `Câu ${idx + 1}/${total}`;
             const prevBtn = document.getElementById('btn-bottom-prev');
             const nextBtn = document.getElementById('btn-bottom-next');
-            const submitBtn = document.getElementById('btn-bottom-submit');
+            const submitBtn = document.getElementById('btn-submit');
 
             if (prevBtn) prevBtn.disabled = idx <= 0;
+            if (nextBtn) {
+                nextBtn.style.display = 'inline-flex';
+                nextBtn.disabled = idx >= total - 1;
+                nextBtn.innerText = 'Câu tiếp ›';
+                nextBtn.onclick = () => nextQuestion();
+            }
 
             if (currentSession.isSubmitted) {
-                if (nextBtn) {
-                    nextBtn.style.display = 'inline-block';
-                    nextBtn.disabled = idx >= total - 1;
-                    nextBtn.innerText = 'Câu tiếp ›';
-                    nextBtn.onclick = () => nextQuestion();
-                }
                 if (submitBtn) submitBtn.style.display = 'none';
             } else {
                 if (submitBtn) submitBtn.style.display = 'inline-flex';
-                if (nextBtn) {
-                    if (idx >= total - 1) {
-                        nextBtn.style.display = 'none';
-                    } else {
-                        nextBtn.style.display = 'inline-block';
-                        nextBtn.disabled = false;
-                        nextBtn.innerText = 'Câu tiếp ›';
-                        nextBtn.onclick = () => nextQuestion();
-                    }
-                }
             }
 
-            const timer = document.getElementById('bottom-timer');
+            const timer = document.getElementById('bottom-bar-timer');
             if (timer) {
-                if (currentSession.isSubmitted) timer.innerText = '🏁 Đã nộp';
-                else timer.innerText = `⏳ ${formatClock(currentSession.totalSeconds)}`;
+                if (currentSession.isSubmitted) timer.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> <span>Đã nộp</span>`;
+                else timer.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>${formatClock(currentSession.totalSeconds)}</span>`;
             }
         }
 
@@ -4854,7 +5086,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 const btn = document.getElementById(`btn-hint-${idx}`);
                 if (btn) {
                     btn.classList.add('has-cached');
-                    btn.innerHTML = '💡 Gợi ý tư duy ✓';
+                    btn.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg> <span>Gợi ý tư duy ✓</span>`;
                 }
             } catch (err) {
                 console.error("Socratic hint error:", err);
@@ -4875,7 +5107,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 <div class="socratic-hint-box">
                     <div class="socratic-hint-header">
                         <div class="socratic-hint-title">
-                            <span>💡 Gợi Mở Tư Duy Socratic</span>
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg>
+                            <span>Gợi Mở Tư Duy Socratic</span>
                             <span class="socratic-hint-badge">Định hướng</span>
                         </div>
                         <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Thu gọn">✕</button>
@@ -4898,7 +5131,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 <div class="socratic-hint-box loading">
                     <div class="socratic-hint-header">
                         <div class="socratic-hint-title">
-                            <span>💡 Gợi Mở Tư Duy Socratic</span>
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg>
+                            <span>Gợi Mở Tư Duy Socratic</span>
                         </div>
                         <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Đóng">✕</button>
                     </div>
@@ -4917,14 +5151,16 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 <div class="socratic-hint-box error">
                     <div class="socratic-hint-header">
                         <div class="socratic-hint-title" style="color:#b91c1c;">
-                            <span>⚠️ Không thể lấy gợi ý</span>
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <span>Không thể lấy gợi ý</span>
                         </div>
                         <button class="socratic-close-btn" onclick="closeSocraticHint(${idx})" title="Đóng">✕</button>
                     </div>
                     <div class="socratic-hint-body" style="color:#991b1b;">
                         <div style="margin-bottom:8px;">${errorMsg}</div>
                         <button onclick="toggleSocraticHint(${idx})" class="btn-socratic-hint" style="font-size:12px; padding:4px 8px;">
-                            🔄 Thử lại
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>Thử lại</span>
                         </button>
                     </div>
                 </div>
@@ -5033,7 +5269,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 container.innerHTML = `
                     <div class="detailed-solution-card" style="border-color:#fca5a5; border-left-color:#ef4444; background:#fef2f2;">
                         <div class="detailed-solution-header">
-                            <span style="font-weight:bold; color:#b91c1c;">⚠️ Không thể tạo lời giải chi tiết</span>
+                            <span style="font-weight:bold; color:#b91c1c; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Không thể tạo lời giải chi tiết</span>
                             <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)">Thử lại</button>
                         </div>
                         <div style="font-size:13px; color:#991b1b; padding-top:6px;">
@@ -5089,12 +5325,12 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC):
 3. XỬ LÝ:
    - Nếu kết quả tự giải KHỚP đáp án trong đề: Trình bày lời giải bình thường.
    - Nếu kết quả tự giải KHÁC đáp án trong đề: BẮT BUỘC mở đầu bằng đúng cờ cảnh báo trung lập sau (thay X là kết quả AI tự tính, Y là đáp án đề đang chọn):
-     [⚠️ Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
+     [Nghi vấn đáp án: AI tự tính ra X nhưng đề chọn Y, học sinh nên kiểm tra lại]
 
 CẤU TRÚC LỜI GIẢI GỒM ĐÚNG 3 PHẦN SƯ PHẠM RÕ RÀNG:
-1. 🎯 Bản chất & Công thức then chốt: Nêu ngắn gọn bản chất hiện tượng, định lý, công thức mấu chốt hoặc điều kiện biên cần dùng.
-2. 📝 Các bước giải chi tiết: Trình bày logic từng bước một cách mạch lạc, dễ hiểu. Nếu là câu Đúng/Sai 4 ý (a, b, c, d) hãy phân tích chi tiết từng mệnh đề con vì sao đúng hay sai. Công thức toán học hãy để trong định dạng LaTeX $...$ hoặc $$...$$.
-3. 💡 Mẹo phản xạ & Cảnh báo bẫy: Chỉ ra lỗi sai phổ biến học sinh hay mắc phải, điểm gây nhiễu, cách loại trừ nhanh hoặc mẹo nhớ lâu.
+1. Bản chất & Công thức then chốt: Nêu ngắn gọn bản chất hiện tượng, định lý, công thức mấu chốt hoặc điều kiện biên cần dùng.
+2. Các bước giải chi tiết: Trình bày logic từng bước một cách mạch lạc, dễ hiểu. Nếu là câu Đúng/Sai 4 ý (a, b, c, d) hãy phân tích chi tiết từng mệnh đề con vì sao đúng hay sai. Công thức toán học hãy để trong định dạng LaTeX $...$ hoặc $$...$$.
+3. Mẹo phản xạ & Cảnh báo bẫy: Chỉ ra lỗi sai phổ biến học sinh hay mắc phải, điểm gây nhiễu, cách loại trừ nhanh hoặc mẹo nhớ lâu.
 
 Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và chuẩn xác.`;
 
@@ -5130,10 +5366,11 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 <div class="detailed-solution-card">
                     <div class="detailed-solution-header">
                         <div class="detailed-solution-title">
-                            <span>📖 Lời Giải Chi Tiết Toàn Diện (AI Solution)</span>
+                            <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            <span>Lời Giải Chi Tiết Toàn Diện (AI Solution)</span>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)" title="Bỏ qua cache và phân tích lại từ đầu">🔄 Giải lại câu này</button>
+                            <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)" title="Bỏ qua cache và phân tích lại từ đầu"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> <span>Giải lại câu này</span></button>
                             <button class="btn-ai-sol-close" onclick="closeDetailedSolution(${idx})" title="Thu gọn">✕</button>
                         </div>
                     </div>
@@ -5277,7 +5514,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 finalScoreVal = (thptScores.p1.pts + thptScores.p2.pts + thptScores.p3.pts).toFixed(2);
                 scoreCardHtml = `<div class="score-box" style="flex-direction: column; align-items: flex-start; padding: 20px;">
                         <div style="display:flex; width: 100%; align-items: center; border-bottom: 2px solid #fbcfe8; padding-bottom: 15px; margin-bottom: 15px;">
-                            <div class="score-left" style="border: none; padding: 0; text-align: left;"><span class="score-label" style="font-size: 13px;">🎯 Điểm thi THPT</span><div class="score-number" style="font-size: 38px;">${finalScoreVal}</div></div>
+                            <div class="score-left" style="border: none; padding: 0; text-align: left;"><span class="score-label" style="font-size: 13px; display:inline-flex; align-items:center; gap:5px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Điểm thi THPT</span><div class="score-number" style="font-size: 38px;">${finalScoreVal}</div></div>
                         </div>
                         <div class="score-right" style="width: 100%; font-size: 14px;">
                             <div style="margin-bottom: 8px;"><strong>Phần I:</strong> <span style="color:#be123c; font-weight:bold;">${thptScores.p1.pts.toFixed(2)}</span> đ <span style="color:#666; font-size:12px;">(Đúng ${thptScores.p1.rightQ}/${thptScores.p1.maxQ})</span></div>
@@ -5288,7 +5525,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 finalScoreVal = totalQ > 0 ? ((normalEarnedPoints / totalQ) * 10).toFixed(2) : "0.00";
                 const pct = totalQ > 0 ? ((normalEarnedPoints / totalQ) * 100).toFixed(1) : "0.0";
                 scoreCardHtml = `<div class="score-box">
-                        <div class="score-left"><span class="score-label">📦 Điểm bài làm</span><div class="score-number">${finalScoreVal}</div></div>
+                        <div class="score-left"><span class="score-label" style="display:inline-flex; align-items:center; gap:5px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Điểm bài làm</span><div class="score-number">${finalScoreVal}</div></div>
                         <div class="score-right"><div>Số câu đúng trọn vẹn: <strong>${correctCount} / ${totalQ}</strong></div><div>Tỉ lệ chính xác: <strong>${pct}%</strong></div></div>
                     </div>`;
             }
@@ -5297,20 +5534,19 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             let diagnosticBadges = [];
             const carelessCount = wrongQs.filter(q => (timeSpentMap[q] || 0) > 0 && (timeSpentMap[q] || 0) < 20).length;
             const trapCount = wrongQs.filter(q => (timeSpentMap[q] || 0) >= 180).length;
-            if (carelessCount > 0) diagnosticBadges.push(`<span style="color:#dc2626; font-size:12px; font-weight:700;">⚡ ${carelessCount} câu làm vội (<20s)</span>`);
-            if (trapCount > 0) diagnosticBadges.push(`<span style="color:#d97706; font-size:12px; font-weight:700;">⏳ ${trapCount} câu sa lầy (>3p)</span>`);
+            if (carelessCount > 0) diagnosticBadges.push(`<span style="color:#dc2626; font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> ${carelessCount} câu làm vội (&lt;20s)</span>`);
+            if (trapCount > 0) diagnosticBadges.push(`<span style="color:#d97706; font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${trapCount} câu sa lầy (&gt;3p)</span>`);
 
-            let fullScoreHtml = scoreCardHtml + `<div class="wrong-list-container">
+            let fullScoreHtml = scoreCardHtml + `<div class="wrong-list-container" id="wrong-list-box">
                     <div class="wrong-title">
-                        <span>⚠️ CÂU SAI / BỎ TRỐNG (${wrongQs.length} câu)</span>
-                        <button class="btn-review-all" onclick="reviewAll()">🔍 Xem lại từ đầu</button>
+                        <span style="display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> CÂU SAI / BỎ TRỐNG (${wrongQs.length} câu)</span>
                     </div>
                     ${diagnosticBadges.length > 0 ? `<div style="display:flex; gap:12px; margin-bottom:10px; flex-wrap:wrap; background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">${diagnosticBadges.join(' | ')}</div>` : ''}
                     <div>${wrongQs.length === 0 ? '<span style="color:#10b981; font-size: 13px;">Quá đỉnh xịn, không trượt phát nào!</span>' : wrongQs.map(q => {
                         const sec = timeSpentMap[q] || 0;
                         let badge = '';
-                        if (sec > 0 && sec < 20) badge = ' ⚡';
-                        else if (sec >= 180) badge = ' ⏳';
+                        if (sec > 0 && sec < 20) badge = ' (Vội)';
+                        else if (sec >= 180) badge = ' (Lâu)';
                         return `<div class="w-tag" onclick="jumpToQuestion(${q})" title="Thời gian dừng: ${formatSeconds(sec)}">Câu ${q+1}${badge}</div>`;
                     }).join('')}</div>
                 </div>`;
@@ -5332,6 +5568,9 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             
             clearInterval(currentSession.intervalTotal);
             currentSession.isSubmitted = true;
+            if (currentSession.mode !== 'review') {
+                window.justFinishedExam = true;
+            }
             
             const scoreResult = recalculateCurrentScore();
             const { correctCount, wrongQs, finalScoreVal, fullScoreHtml } = scoreResult;
@@ -5509,7 +5748,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 const scoreArea = document.getElementById('score-result-area');
                 if (scoreArea) {
                     if (currentSession.mode === 'review') {
-                        scoreArea.innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca;">🔍 CHẾ ĐỘ XEM LẠI</span><div class="score-number">${scoreResult.finalScoreVal}đ</div></div></div>`;
+                        scoreArea.innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> CHẾ ĐỘ XEM LẠI</span><div class="score-number">${scoreResult.finalScoreVal}đ</div></div></div>`;
                     } else {
                         scoreArea.innerHTML = scoreResult.fullScoreHtml;
                     }
@@ -5601,7 +5840,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     const scoreArea = document.getElementById('score-result-area');
                     if (scoreArea) {
                         if (currentSession.mode === 'review') {
-                            scoreArea.innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca;">🔍 CHẾ ĐỘ XEM LẠI</span><div class="score-number">${currentSession.score || scoreResult.finalScoreVal}đ</div></div></div>`;
+                            scoreArea.innerHTML = `<div class="score-box" style="margin-bottom:0;"><div class="score-left" style="border:none; padding:0; text-align:left;"><span class="score-label" style="background:#4338ca; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> CHẾ ĐỘ XEM LẠI</span><div class="score-number">${currentSession.score || scoreResult.finalScoreVal}đ</div></div></div>`;
                         } else {
                             scoreArea.innerHTML = scoreResult.fullScoreHtml;
                         }
