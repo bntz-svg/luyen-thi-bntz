@@ -916,10 +916,12 @@
             width: 340px;
             background: var(--panel-bg);
             border-left: 2px solid var(--border-color);
-            padding: 20px;
+            padding: 20px 20px 14px 20px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            height: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
             flex-shrink: 0;
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                         opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
@@ -937,6 +939,13 @@
             padding-right: 0 !important;
             border-left-width: 0 !important;
             overflow: hidden !important;
+        }
+
+        .nav-panel-topbar,
+        #timer-submit-area,
+        #score-result-area,
+        .nav-panel-title {
+            flex-shrink: 0;
         }
 
         .bottom-bar {
@@ -1449,28 +1458,36 @@
         .score-label { background: #e11d48; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-bottom: 5px; display: inline-block; }
         .score-number { color: #be123c; font-size: 32px; font-weight: 900; line-height: 1; }
 
-        /* SCORE HUB HIỆN ĐẠI */
+        /* SCORE HUB HIỆN ĐẠI (TÔNG MÀU ĐỎ HỒNG) */
         .score-box-modern {
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
+            background: #fff1f2;
+            border: 1.5px solid #fecdd3;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
         }
         .score-hero-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #fbcfe8;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
         }
         .score-val-large {
+            color: #be123c;
+            font-weight: 900;
             font-size: 34px;
-            font-weight: 800;
-            color: #0f172a;
             font-variant-numeric: tabular-nums;
             line-height: 1;
+        }
+        .score-meta-label {
+            color: #e11d48;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2px;
         }
         .score-filter-pill {
             font-size: 11.5px;
@@ -1484,9 +1501,10 @@
             transition: all 0.15s ease;
         }
         .score-filter-pill.active {
-            background: #0f172a;
+            background: #e11d48;
+            border-color: #e11d48;
             color: #ffffff;
-            border-color: #0f172a;
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
         }
         
         .wrong-list-container { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
@@ -1494,19 +1512,45 @@
         .btn-review-all { background: var(--tsa-blue); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; }
         .w-tag { padding: 4px 10px; background: #fef2f2; border: 1px solid #fca5a5; color: #ef4444; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: bold; display: inline-block; margin: 3px; }
 
-        .grid-numbers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; }
+        .grid-numbers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            justify-items: center;
+            align-items: center;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            padding-right: 4px;
+            margin-bottom: 8px;
+        }
+        #nav-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        #nav-grid::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+        #nav-grid::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
         /* CLUSTERED NAVIGATION GROUP */
         .nav-cluster {
             grid-column: 1 / -1;
             background: #f8fafc;
             border: 1px dashed #cbd5e1;
             border-radius: 10px;
-            padding: 10px 8px 8px 8px;
+            padding: 8px 6px 6px 6px;
             margin: 4px 0;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
+            gap: 6px;
+            justify-items: center;
+            align-items: center;
             position: relative;
+            width: 100%;
+            box-sizing: border-box;
         }
         .nav-cluster-title {
             grid-column: 1 / -1;
@@ -1517,14 +1561,37 @@
             letter-spacing: 0.04em;
             margin-bottom: 2px;
             padding-left: 2px;
+            justify-self: start;
         }
-        .num-box { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; color: #555; position: relative; font-size: 14px; transition: 0.2s; }
+        .num-box {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            position: relative;
+            font-size: 13.5px;
+            transition: 0.2s;
+            box-sizing: border-box;
+            user-select: none;
+        }
         
         .num-box.answered { background: var(--answered-bg); color: white; border-color: var(--answered-bg); }
         .num-box.sc-correct { background: #d1fae5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
         .num-box.sc-wrong { background: #fee2e2 !important; color: #991b1b !important; border-color: #fecaca !important; }
         .num-box.active { border: 2px solid var(--active-border) !important; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important; }
-        .num-box.bookmarked::after { content: ''; position: absolute; top: -2px; right: 0px; width: 10px; height: 14px; background: #faad14; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+        .num-box.bookmarked::after { display: none !important; }
+        .num-box.bookmarked {
+            box-shadow: 0 0 0 2.5px #f59e0b !important;
+        }
+        .num-box.bookmarked.active {
+            box-shadow: 0 0 0 2.5px #f59e0b, 0 0 0 4.5px rgba(79, 70, 229, 0.25) !important;
+        }
         
         /* MODALS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
@@ -2706,7 +2773,7 @@
 
                 <div id="score-result-area" style="display: none;"></div>
 
-                <div style="font-size: 14px; font-weight: bold; margin-bottom: 15px;">BẢNG ĐIỀU HƯỚNG</div>
+                <div class="nav-panel-title" style="flex-shrink: 0; font-size: 14px; font-weight: bold; margin-bottom: 12px;">BẢNG ĐIỀU HƯỚNG</div>
                 <div class="grid-numbers" id="nav-grid"></div>
             </div>
         </div>
@@ -3451,19 +3518,27 @@
                 const accentColor = getActiveSubjectColor(subCode);
                 modal.style.setProperty('--dialog-accent', accentColor);
                 
-                document.getElementById('custom-dialog-title').innerText = title;
-                document.getElementById('custom-dialog-msg').innerHTML = message;
+                const titleEl = document.getElementById('custom-dialog-title');
+                if (titleEl) titleEl.innerText = title;
+                const msgEl = document.getElementById('custom-dialog-message') || document.getElementById('custom-dialog-msg');
+                if (msgEl) msgEl.innerHTML = message;
                 
-                const btnConfirm = document.getElementById('custom-dialog-confirm-btn');
-                const btnCancel = document.getElementById('custom-dialog-cancel-btn');
-                btnConfirm.innerText = confirmText;
-                btnCancel.innerText = cancelText;
-                btnCancel.style.display = 'inline-flex';
+                const btnConfirm = document.getElementById('btn-dialog-confirm') || document.getElementById('custom-dialog-confirm-btn');
+                const btnCancel = document.getElementById('btn-dialog-cancel') || document.getElementById('custom-dialog-cancel-btn');
+                if (btnConfirm) btnConfirm.innerText = confirmText;
+                if (btnCancel) {
+                    btnCancel.innerText = cancelText;
+                    btnCancel.style.display = 'inline-flex';
+                }
                 
-                document.getElementById('custom-dialog-icon').innerHTML = `
-                    <svg class="icon-svg" style="width:24px;height:24px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                `;
+                const iconEl = document.getElementById('custom-dialog-icon');
+                if (iconEl) {
+                    iconEl.innerHTML = `
+                        <svg class="icon-svg" style="width:24px;height:24px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                    `;
+                }
                 modal.classList.add('active');
+                modal.style.display = 'flex';
             });
         }
 
@@ -3474,24 +3549,33 @@
                 const accentColor = getActiveSubjectColor(subCode);
                 modal.style.setProperty('--dialog-accent', accentColor);
                 
-                document.getElementById('custom-dialog-title').innerText = title;
-                document.getElementById('custom-dialog-msg').innerHTML = message;
+                const titleEl = document.getElementById('custom-dialog-title');
+                if (titleEl) titleEl.innerText = title;
+                const msgEl = document.getElementById('custom-dialog-message') || document.getElementById('custom-dialog-msg');
+                if (msgEl) msgEl.innerHTML = message;
                 
-                const btnConfirm = document.getElementById('custom-dialog-confirm-btn');
-                const btnCancel = document.getElementById('custom-dialog-cancel-btn');
-                btnConfirm.innerText = okText;
-                btnCancel.style.display = 'none';
+                const btnConfirm = document.getElementById('btn-dialog-confirm') || document.getElementById('custom-dialog-confirm-btn');
+                const btnCancel = document.getElementById('btn-dialog-cancel') || document.getElementById('custom-dialog-cancel-btn');
+                if (btnConfirm) btnConfirm.innerText = okText;
+                if (btnCancel) btnCancel.style.display = 'none';
                 
-                document.getElementById('custom-dialog-icon').innerHTML = `
-                    <svg class="icon-svg" style="width:24px;height:24px;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                `;
+                const iconEl = document.getElementById('custom-dialog-icon');
+                if (iconEl) {
+                    iconEl.innerHTML = `
+                        <svg class="icon-svg" style="width:24px;height:24px;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    `;
+                }
                 modal.classList.add('active');
+                modal.style.display = 'flex';
             });
         }
 
         function closeCustomDialog(result) {
             const modal = document.getElementById('custom-dialog-modal');
-            modal.classList.remove('active');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
             if (customDialogResolve) {
                 const fn = customDialogResolve;
                 customDialogResolve = null;
@@ -3506,12 +3590,16 @@
             if (modal && img) {
                 img.src = src;
                 modal.classList.add('active');
+                modal.style.display = 'flex';
             }
         }
 
         function closeImageLightbox() {
             const modal = document.getElementById('image-lightbox-modal');
-            if (modal) modal.classList.remove('active');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
         }
 
         // --- NAVIGATION ---
@@ -5359,40 +5447,49 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         // --- CẤU HÌNH & BẮT ĐẦU LÀM BÀI (KÈM BỘ CHỌN CÂU HỎI TÙY CHỈNH) ---
-        let practicePickMode = 'random'; // 'random' | 'custom'
+        let practicePickMode = 'count'; // 'count' | 'custom'
         let selectedPracticeIndices = new Set();
 
         function switchPracticeTab(tab) {
-            practicePickMode = tab;
-            const btnRandom = document.getElementById('tab-prac-random');
-            const btnCustom = document.getElementById('tab-prac-custom');
-            const areaRandom = document.getElementById('prac-random-mode');
-            const areaCustom = document.getElementById('prac-custom-mode');
+            const isCount = (tab === 'count' || tab === 'random');
+            practicePickMode = isCount ? 'count' : 'custom';
+            const btnCount = document.getElementById('tab-btn-count');
+            const btnCustom = document.getElementById('tab-btn-custom');
+            const areaCount = document.getElementById('cfg-practice-tab-count');
+            const areaCustom = document.getElementById('cfg-practice-tab-custom');
 
-            if (tab === 'random') {
-                btnRandom.style.background = '#fff';
-                btnRandom.style.color = '#0f172a';
-                btnRandom.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
-                btnCustom.style.background = 'transparent';
-                btnCustom.style.color = '#64748b';
-                btnCustom.style.boxShadow = 'none';
-                areaRandom.style.display = 'block';
-                areaCustom.style.display = 'none';
+            if (isCount) {
+                if (btnCount) {
+                    btnCount.style.background = '#fff';
+                    btnCount.style.color = '#0f172a';
+                    btnCount.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+                }
+                if (btnCustom) {
+                    btnCustom.style.background = 'transparent';
+                    btnCustom.style.color = '#64748b';
+                    btnCustom.style.boxShadow = 'none';
+                }
+                if (areaCount) areaCount.style.display = 'block';
+                if (areaCustom) areaCustom.style.display = 'none';
             } else {
-                btnCustom.style.background = '#fff';
-                btnCustom.style.color = '#0f172a';
-                btnCustom.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
-                btnRandom.style.background = 'transparent';
-                btnRandom.style.color = '#64748b';
-                btnRandom.style.boxShadow = 'none';
-                areaRandom.style.display = 'none';
-                areaCustom.style.display = 'block';
+                if (btnCustom) {
+                    btnCustom.style.background = '#fff';
+                    btnCustom.style.color = '#0f172a';
+                    btnCustom.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+                }
+                if (btnCount) {
+                    btnCount.style.background = 'transparent';
+                    btnCount.style.color = '#64748b';
+                    btnCount.style.boxShadow = 'none';
+                }
+                if (areaCount) areaCount.style.display = 'none';
+                if (areaCustom) areaCustom.style.display = 'block';
                 renderQuestionPickerGrid();
             }
         }
 
         function renderQuestionPickerGrid() {
-            const grid = document.getElementById('picker-q-grid');
+            const grid = document.getElementById('cfg-question-picker-grid') || document.getElementById('picker-q-grid');
             if (!grid || !activeDetailKey || !library[activeDetailKey]) return;
             const total = library[activeDetailKey].questions.length;
             grid.innerHTML = '';
@@ -5413,7 +5510,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function updatePickerCountLabel() {
-            const lbl = document.getElementById('picker-selected-count');
+            const lbl = document.getElementById('cfg-selected-count-label') || document.getElementById('picker-selected-count');
             if (lbl) lbl.innerText = `Đã chọn: ${selectedPracticeIndices.size} câu`;
         }
 
@@ -5443,6 +5540,27 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     showCustomAlert({
                         title: 'Chưa có câu sai',
                         message: 'Đề thi này chưa ghi nhận câu làm sai nào trong lịch sử làm bài!',
+                        subCode: data.subject
+                    });
+                }
+            } else if (type === 'bookmark') {
+                selectedPracticeIndices.clear();
+                if (data.history && data.history.length > 0) {
+                    data.history.forEach(h => {
+                        if (h.bookmarks) {
+                            Object.keys(h.bookmarks).forEach(qIdx => {
+                                if (h.bookmarks[qIdx]) {
+                                    const n = parseInt(qIdx);
+                                    if (!isNaN(n) && n >= 0 && n < total) selectedPracticeIndices.add(n);
+                                }
+                            });
+                        }
+                    });
+                }
+                if (selectedPracticeIndices.size === 0) {
+                    showCustomAlert({
+                        title: 'Chưa có câu đánh dấu',
+                        message: 'Đề thi này chưa có câu hỏi nào được đánh dấu bookmark trong lịch sử!',
                         subCode: data.subject
                     });
                 }
@@ -5491,7 +5609,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 for (let i = 0; i < data.questions.length; i++) selectedPracticeIndices.add(i);
                 const rangeInp = document.getElementById('cfg-range-input');
                 if (rangeInp) rangeInp.value = '';
-                switchPracticeTab('random');
+                switchPracticeTab('count');
             } else {
                 document.getElementById('cfg-practice-area').style.display = 'none';
                 document.getElementById('cfg-exam-area').style.display = 'block';
@@ -5527,7 +5645,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             let timeSeconds = 0;
 
             if (cfgMode === 'practice') {
-                if (practicePickMode === 'random') {
+                if (practicePickMode === 'count' || practicePickMode === 'random') {
                     qList = [...data.questions];
                     let num = parseInt(document.getElementById('cfg-q-count').value);
                     let shuffle = document.getElementById('cfg-shuffle').checked;
@@ -5545,7 +5663,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     }
                     const sortedIdx = Array.from(selectedPracticeIndices).sort((a, b) => a - b);
                     qList = sortedIdx.map(idx => data.questions[idx]).filter(Boolean);
-                    let shuffleCustom = document.getElementById('cfg-custom-shuffle')?.checked;
+                    let shuffleCustom = document.getElementById('cfg-shuffle')?.checked;
                     if (shuffleCustom) { qList = qList.sort(() => Math.random() - 0.5); }
                 }
             } else {
@@ -6696,7 +6814,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 scoreCardHtml = `<div class="score-box-modern">
                     <div class="score-hero-row">
                         <div>
-                            <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px;">${currentSession.mode === 'review' ? 'Chế độ xem lại · THPT' : 'Điểm chuẩn THPT 2018'}</div>
+                            <div class="score-meta-label">${currentSession.mode === 'review' ? 'Chế độ xem lại · THPT' : 'Điểm chuẩn THPT 2018'}</div>
                             <div class="score-val-large">${finalScoreVal}</div>
                         </div>
                         <div style="text-align:right; font-size:12px; color:#475569;">
@@ -6715,7 +6833,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 scoreCardHtml = `<div class="score-box-modern">
                     <div class="score-hero-row">
                         <div>
-                            <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px;">${currentSession.mode === 'review' ? 'Chế độ xem lại' : 'Điểm bài làm'}</div>
+                            <div class="score-meta-label">${currentSession.mode === 'review' ? 'Chế độ xem lại' : 'Điểm bài làm'}</div>
                             <div class="score-val-large">${finalScoreVal}</div>
                         </div>
                         <div style="text-align:right; font-size:12.5px; color:#475569; line-height:1.5;">
@@ -7063,10 +7181,10 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             }
 
             const customDialog = document.getElementById('custom-dialog-modal');
-            if (customDialog && customDialog.classList.contains('active')) {
+            if (customDialog && (customDialog.classList.contains('active') || customDialog.style.display === 'flex')) {
                 if (e.key === 'Escape') {
                     e.preventDefault();
-                    const cancelBtn = document.getElementById('custom-dialog-cancel-btn');
+                    const cancelBtn = document.getElementById('btn-dialog-cancel') || document.getElementById('custom-dialog-cancel-btn');
                     closeCustomDialog(cancelBtn && cancelBtn.style.display !== 'none' ? false : true);
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
@@ -7076,7 +7194,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             }
 
             const lightbox = document.getElementById('image-lightbox-modal');
-            if (lightbox && lightbox.classList.contains('active')) {
+            if (lightbox && (lightbox.classList.contains('active') || lightbox.style.display === 'flex')) {
                 if (e.key === 'Escape') {
                     e.preventDefault();
                     closeImageLightbox();
