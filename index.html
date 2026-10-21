@@ -39,31 +39,37 @@
             position: relative;
             user-select: none;
         }
-        .logo-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--tsa-red);
+        .gemini-star {
+            display: inline-flex;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
             flex-shrink: 0;
+            overflow: visible;
             transform-origin: center;
-            transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+            will-change: transform, opacity, width;
         }
-        /* Pha 1: Chấm tròn bay sang phải đâm vào chữ b */
-        .logo-dot.dot-flying-in {
-            transform: translateX(13px) scale(0.35);
-            opacity: 0;
+        .gemini-star svg { width: 18px; height: 18px; display: block; flex-shrink: 0; }
+        .gemini-star.star-exit {
+            animation: geminiStarExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: none;
         }
-        /* Khi quay về Trang chủ: Chấm tròn nở ra lại vị trí gốc */
-        .logo-dot.dot-blooming {
-            animation: dotBloomAtOrigin 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .gemini-star.star-bloom {
+            animation: geminiStarBloom 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        @keyframes dotBloomAtOrigin {
-            0% { transform: scale(0); opacity: 0; }
-            65% { transform: scale(1.25); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
+        .gemini-star.star-hidden {
+            width: 0; margin-right: 0; opacity: 0; overflow: hidden; pointer-events: none;
         }
-        /* Pha 2: Mực đỏ loang ngang qua chữ bntz */
+        @keyframes geminiStarExit {
+            0%   { transform: scale(1) rotate(0deg); opacity: 1; width: 18px; margin-right: 8px; filter: brightness(1); }
+            45%  { transform: scale(1.35) rotate(45deg); opacity: 1; width: 18px; margin-right: 8px; filter: brightness(1.6) drop-shadow(0 0 6px rgba(155,114,203,0.8)); }
+            100% { transform: scale(1.5) rotate(90deg); opacity: 0; width: 0; margin-right: 0; filter: brightness(2); }
+        }
+        @keyframes geminiStarBloom {
+            0%   { transform: scale(0); opacity: 0; width: 0; margin-right: 0; }
+            65%  { transform: scale(1.2); opacity: 1; width: 18px; margin-right: 8px; }
+            100% { transform: scale(1); opacity: 1; width: 18px; margin-right: 8px; }
+        }        /* Pha 2: Mực đỏ loang ngang qua chữ bntz */
         .logo-text {
             font-size: 22px;
             font-weight: 800;
@@ -71,18 +77,18 @@
             cursor: pointer;
             user-select: none;
             display: inline-block;
-            background-image: linear-gradient(90deg, var(--tsa-red) 0%, #e11d48 47%, #0f172a 53%, #0f172a 100%);
-            background-size: 220% 100%;
-            background-position: 100% 0;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-            transition: background-position 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+            background-image: none;
+            background: none;
+            -webkit-background-clip: border-box;
+            background-clip: border-box;
+            -webkit-text-fill-color: var(--tsa-red);
+            color: var(--tsa-red);
+            transition: none;
         }
         .logo-text.ink-spread {
             background-position: 0% 0;
         }
+        #header-logo-brand { color: var(--tsa-red) !important; -webkit-text-fill-color: var(--tsa-red) !important; }
         /* ZEN TOPBAR - CHẾ ĐỘ PHÒNG THI TẬP TRUNG */
         header.zen-quiz-mode {
             background: rgba(255, 255, 255, 0.98);
@@ -550,7 +556,7 @@
         .tf-cell-btn.correct-cell { background: #10b981 !important; color: white !important; font-weight: bold; }
         .tf-cell-btn.wrong-cell { background: #ef4444 !important; color: white !important; font-weight: bold; }
 
-        .short-ans-wrapper { margin-top: 20px; padding: 15px; background: #fff; border-left: 4px solid var(--tsa-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .short-ans-wrapper { margin-top: 20px; padding: 15px; background: #fff; border: 1.5px solid var(--tsa-blue); border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .short-ans-input { width: 100%; max-width: 400px; padding: 12px 15px; font-size: 16px; border: 2px solid #ccc; border-radius: 6px; outline: none; }
         
         .blank-select { padding: 4px 8px; font-size: 16px; border: 2px solid var(--tsa-blue); border-radius: 4px; margin: 0 5px; background: #f0f7ff; font-weight: bold; color: var(--tsa-blue); cursor: pointer; outline: none; vertical-align: middle; }
@@ -599,7 +605,6 @@
         .socratic-hint-box {
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             border: 1.5px solid #fde68a;
-            border-left: 4.5px solid #d97706;
             border-radius: 9px;
             padding: 12px 16px;
             box-shadow: 0 3px 8px rgba(217, 119, 6, 0.08);
@@ -607,12 +612,10 @@
         .socratic-hint-box.loading {
             background: #f8fafc;
             border-color: #cbd5e1;
-            border-left-color: #64748b;
         }
         .socratic-hint-box.error {
             background: #fef2f2;
             border-color: #fecaca;
-            border-left-color: #ef4444;
         }
 
         .socratic-hint-header {
@@ -712,12 +715,10 @@
         .collapsible-widget-card.tactics-card {
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             border: 1.5px solid #a7f3d0;
-            border-left: 5px solid #10b981;
         }
         .collapsible-widget-card.performance-card {
             background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
             border: 1.5px solid #ddd6fe;
-            border-left: 5px solid #8b5cf6;
         }
         .collapsible-widget-header {
             display: flex;
@@ -796,7 +797,6 @@
         .exam-tactics-card {
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             border: 1.5px solid #a7f3d0;
-            border-left: 5px solid #10b981;
             border-radius: 10px;
             padding: 16px 20px;
             box-shadow: 0 3px 10px rgba(16, 185, 129, 0.08);
@@ -839,7 +839,6 @@
             margin-top: 18px;
             background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
             border: 1.5px solid #ddd6fe;
-            border-left: 5px solid #7c3aed;
             border-radius: 10px;
             padding: 16px 18px;
             box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
@@ -848,7 +847,6 @@
         .ai-diagnostics-card.loading {
             background: #faf5ff;
             border-color: #e9d5ff;
-            border-left-color: #a855f7;
         }
         .ai-diagnostics-header {
             display: flex;
@@ -946,6 +944,11 @@
         #score-result-area,
         .nav-panel-title {
             flex-shrink: 0;
+        }
+        #nav-grid {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
         }
 
         .bottom-bar {
@@ -1138,7 +1141,6 @@
             padding: 10px 14px;
             background: #fffbeb;
             border: 1.5px solid #fde68a;
-            border-left: 4px solid #d97706;
             border-radius: 6px;
             font-size: 13px;
             line-height: 1.55;
@@ -1360,7 +1362,6 @@
         .detailed-solution-card {
             background: #ffffff;
             border: 1.5px solid #c4b5fd;
-            border-left: 5px solid #7c3aed;
             border-radius: 10px;
             padding: 18px 20px;
             box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
@@ -1369,7 +1370,6 @@
         .detailed-solution-card.loading {
             background: #faf5ff;
             border-color: #e9d5ff;
-            border-left-color: #a855f7;
         }
         .detailed-solution-header {
             display: flex;
@@ -1518,10 +1518,12 @@
             gap: 6px;
             justify-items: center;
             align-items: center;
+            align-content: start;
+            grid-auto-rows: max-content;
             flex: 1;
             overflow-y: auto;
             min-height: 0;
-            padding-right: 4px;
+            padding: 6px 4px;
             margin-bottom: 8px;
         }
         #nav-grid::-webkit-scrollbar {
@@ -1541,13 +1543,14 @@
             background: #f8fafc;
             border: 1px dashed #cbd5e1;
             border-radius: 10px;
-            padding: 8px 6px 6px 6px;
+            padding: 8px 6px;
             margin: 4px 0;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 6px;
             justify-items: center;
             align-items: center;
+            align-content: start;
             position: relative;
             width: 100%;
             box-sizing: border-box;
@@ -1613,7 +1616,7 @@
         @keyframes ai-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .ai-preview-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .ai-preview-badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: #ede9fe; color: #6d28d9; }
-        .ai-preview-explanation { margin-top: 10px; padding: 10px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; color: #1e3a8a; line-height: 1.5; }
+        .ai-preview-explanation { margin-top: 10px; padding: 10px 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 13px; color: #1e3a8a; line-height: 1.5; }
 
         /* AI THINKING LEVEL SLIDER STYLES */
         .badge-thinking-level {
@@ -1787,11 +1790,6 @@
             from { opacity: 0; transform: scale(0.94) translateY(8px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .custom-dialog-accent-bar {
-            height: 5px;
-            width: 100%;
-            background: var(--dialog-accent);
-        }
         .custom-dialog-body {
             padding: 24px 26px 22px 26px;
         }
@@ -1835,8 +1833,8 @@
         .btn-dialog-cancel {
             padding: 9px 16px;
             border-radius: 9px;
-            border: 1px solid #cbd5e1;
-            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            background: #f1f5f9;
             color: #475569;
             font-size: 13.5px;
             font-weight: 600;
@@ -1844,24 +1842,24 @@
             transition: all 0.16s ease;
         }
         .btn-dialog-cancel:hover {
-            background: #f1f5f9;
-            color: #0f172a;
-            border-color: #94a3b8;
+            background: #e2e8f0;
+            color: #334155;
+            border-color: #cbd5e1;
         }
         .btn-dialog-confirm {
             padding: 9px 20px;
             border-radius: 9px;
             border: none;
-            background: var(--dialog-accent);
-            color: #ffffff;
+            background: #dc2626 !important;
+            color: #ffffff !important;
             font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-            transition: transform 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.22);
+            transition: transform 0.15s ease, background 0.15s ease;
         }
         .btn-dialog-confirm:hover {
-            opacity: 0.92;
+            background: #b91c1c !important;
             transform: translateY(-1px);
         }
 
@@ -1967,7 +1965,7 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
             </button>
             <div class="logo-brand-wrap" onclick="navToHome()">
-                <span class="logo-dot" id="header-logo-dot"></span>
+                <span class="gemini-star" id="header-gemini-star" aria-hidden="true"><svg viewBox="0 0 24 24"><defs><linearGradient id="gemini-star-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4285F4"/><stop offset="0.5" stop-color="#9B72CB"/><stop offset="1" stop-color="#c8102e"/></linearGradient></defs><path fill="url(#gemini-star-grad)" d="M12 0 C12 6.627 6.627 12 0 12 C6.627 12 12 17.373 12 24 C12 17.373 17.373 12 24 12 C17.373 12 12 6.627 12 0 Z"/></svg></span>
                 <span class="logo-text" id="header-logo-brand">bntz</span>
             </div>
             <span class="exam-title" id="main-title">Trang chủ</span>
@@ -2419,10 +2417,6 @@
                 <button onclick="closeApiKeyModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8;">✕</button>
             </div>
             
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.5;">
-                API Key và cấu hình được lưu an toàn trong <strong>localStorage</strong> của trình duyệt, không lưu lên server và không bị lộ ra mã nguồn công khai.
-            </p>
-
             <div class="cfg-row">
                 <label>Gemini API Key:</label>
                 <div style="position: relative;">
@@ -2451,9 +2445,6 @@
                         <option value="gemini-2.5-pro">gemini-2.5-pro (Mô hình tư duy sâu)</option>
                     </datalist>
                 </div>
-                <div style="font-size: 11.5px; color: #64748b; margin-top: 5px;">
-                    Chọn nhanh từ danh sách gợi ý hoặc tự do nhập bất kỳ tên model nào (mặc định: <code>gemini-3.8-flash</code>).
-                </div>
             </div>
 
             <!-- MỨC ĐỘ TƯ DUY CỦA AI (THINKING LEVEL SLIDER) -->
@@ -2475,29 +2466,10 @@
                     </div>
                 </div>
 
-                <div class="thinking-steps-grid">
-                    <div class="thinking-step-card step-1" id="step-card-1" onclick="setThinkingLevelStep(1)">
-                        <div class="step-card-header">
-                            <strong>Nấc 1: Nhanh (Low)</strong>
-                        </div>
-                        <div class="step-card-desc">Phản hồi siêu tốc, tiết kiệm token, phù hợp bóc tách đề cơ bản và gợi ý nhanh.</div>
-                    </div>
-                    <div class="thinking-step-card step-2 active" id="step-card-2" onclick="setThinkingLevelStep(2)">
-                        <div class="step-card-header">
-                            <strong>Nấc 2: Cân bằng (Medium)</strong>
-                        </div>
-                        <div class="step-card-desc">Mặc định: Cân bằng hài hòa giữa tốc độ xử lý và độ sâu lập luận.</div>
-                    </div>
-                    <div class="thinking-step-card step-3" id="step-card-3" onclick="setThinkingLevelStep(3)">
-                        <div class="step-card-header">
-                            <strong>Nấc 3: Sâu sắc (High)</strong>
-                        </div>
-                        <div class="step-card-desc">Suy luận nhiều bước, bẻ bẫy logic phức tạp và xử lý toán vận dụng cao / TSA.</div>
-                    </div>
-                </div>
+                <div class="thinking-scale-labels" style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:600; color:#64748b; margin-top:6px;"><span>Nhanh (Low)</span><span>Cân bằng (Medium)</span><span>Sâu sắc (High)</span></div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px;">
+<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px;">
                 <button onclick="closeApiKeyModal()" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer;">Hủy</button>
                 <button onclick="saveApiKeySettings()" style="padding: 8px 18px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Lưu Cài Đặt</button>
             </div>
@@ -2741,7 +2713,6 @@
         <div class="main-workspace">
             <div class="question-panel">
                 <div class="reading-context" id="reading-context-area">
-                    <h3 style="color: var(--tsa-blue); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">Ngữ liệu / Bài đọc</h3>
                     <img id="context-render-image" class="context-image" style="display: none;" onclick="openImageLightbox(this.src)" title="Bấm để phóng to ảnh">
                     <div class="reading-context-inner" id="reading-context-text"></div>
                 </div>
@@ -2856,7 +2827,6 @@
     <!-- HỘP THOẠI NỔI KÍNH MỜ (CUSTOM BLUR DIALOG) -->
     <div id="custom-dialog-modal" class="custom-dialog-backdrop" style="display: none;">
         <div class="custom-dialog-card" id="custom-dialog-card">
-            <div class="custom-dialog-accent-bar" id="custom-dialog-accent"></div>
             <div class="custom-dialog-body">
                 <div class="custom-dialog-header">
                     <div class="custom-dialog-icon" id="custom-dialog-icon">
@@ -3074,12 +3044,12 @@
             if (errEl) errEl.innerText = '';
 
             try {
+                window.isGuestMode = false;
+                sessionStorage.setItem('bntz_pin_authorized', 'true');
                 if (firebase.auth) {
                     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                     await firebase.auth().signInWithEmailAndPassword('admin@bntz.com', entered);
                 }
-                window.isGuestMode = false;
-                sessionStorage.setItem('bntz_pin_authorized', 'true');
                 try { library = await getAllFromDB(); } catch (dbErr) {}
                 updateHeaderKeyStatus();
                 updateAiKeyStatusBar();
@@ -3092,8 +3062,10 @@
                     lockScreen.classList.add('fade-out');
                     setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
                 }
+                cloudListenersInitialized = false;
                 initCloudListeners();
             } catch (err) {
+                sessionStorage.removeItem('bntz_pin_authorized');
                 console.error("Lỗi xác thực PIN / Firebase Auth:", err);
                 if (errEl) errEl.innerText = 'Mã PIN không chính xác!';
                 inputEl.classList.remove('shake');
@@ -3603,8 +3575,27 @@
         }
 
         // --- NAVIGATION ---
-        function navToHome() {
-            document.querySelector('header').classList.remove('zen-quiz-mode');
+        // Điều khiển ngôi sao Gemini trên logo Header: 'show' (nở bung) | 'hide' (nổ tan biến) | 'hide-instant'
+        function setHeaderGeminiStar(mode) {
+            const star = document.getElementById('header-gemini-star');
+            if (!star) return;
+            const isHidden = star.dataset.state === 'hidden';
+            if (mode === 'show') {
+                if (!isHidden) return;
+                star.classList.remove('star-exit', 'star-hidden', 'star-bloom');
+                void star.offsetWidth;
+                star.classList.add('star-bloom');
+                star.dataset.state = 'visible';
+            } else {
+                if (isHidden) return;
+                star.classList.remove('star-exit', 'star-hidden', 'star-bloom');
+                void star.offsetWidth;
+                star.classList.add(mode === 'hide-instant' ? 'star-hidden' : 'star-exit');
+                star.dataset.state = 'hidden';
+            }
+        }
+
+        function navToHome() {            document.querySelector('header').classList.remove('zen-quiz-mode');
             const homeView = document.getElementById('home-view');
             homeView.style.display = 'block';
             applyViewTransition(homeView);
@@ -3614,17 +3605,12 @@
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
 
-            const logoDot = document.getElementById('header-logo-dot');
             const logoBrand = document.getElementById('header-logo-brand');
             if (logoBrand) {
                 logoBrand.innerText = "bntz";
                 logoBrand.classList.remove('ink-spread');
             }
-            if (logoDot && logoDot.classList.contains('dot-flying-in')) {
-                logoDot.classList.remove('dot-flying-in');
-                void logoDot.offsetWidth;
-                logoDot.classList.add('dot-blooming');
-            }
+            setHeaderGeminiStar('show');
 
             document.getElementById('main-title').innerText = "Trang chủ";
             const hdrBtn = document.getElementById('header-btn-area');
@@ -3645,21 +3631,9 @@
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
 
-            const logoDot = document.getElementById('header-logo-dot');
             const logoBrand = document.getElementById('header-logo-brand');
-            if (logoDot) {
-                logoDot.classList.remove('dot-blooming', 'dot-flying-in');
-                void logoDot.offsetWidth;
-                logoDot.classList.add('dot-flying-in');
-            }
-            if (logoBrand) {
-                logoBrand.innerText = "bntz";
-                logoBrand.classList.remove('ink-spread');
-                setTimeout(() => {
-                    void logoBrand.offsetWidth;
-                    logoBrand.classList.add('ink-spread');
-                }, 180);
-            }
+            setHeaderGeminiStar('hide');
+            if (logoBrand) logoBrand.innerText = "bntz";
 
             document.getElementById('main-title').innerText = "Tủ sách đề thi";
             const hdrBtn = document.getElementById('header-btn-area');
@@ -3678,6 +3652,7 @@
             applyViewTransition(dashView);
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('btn-sidebar-toggle').style.display = 'block';
+            setHeaderGeminiStar('hide');
             document.getElementById('header-logo-brand').innerText = "bntz";
             const hdrBtn = document.getElementById('header-btn-area');
             if (hdrBtn) hdrBtn.innerHTML = '';
@@ -3788,14 +3763,6 @@
             if (slider) slider.value = step;
 
             const badge = document.getElementById('thinking-badge');
-            const cards = [1, 2, 3].map(s => document.getElementById(`step-card-${s}`));
-
-            cards.forEach((card, idx) => {
-                if (!card) return;
-                if (idx + 1 === step) card.classList.add('active');
-                else card.classList.remove('active');
-            });
-
             const level = THINKING_LEVEL_MAP[step] || 'MEDIUM';
 
             if (badge) {
@@ -5711,6 +5678,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             applyViewTransition(quizView);
             document.getElementById('btn-sidebar-toggle').style.display = 'none';
             
+            setHeaderGeminiStar('hide-instant');
             let sCode = subCode ? subCode.toLowerCase() : '';
             document.getElementById('header-logo-brand').innerText = subjectMap[sCode] || (sCode ? sCode.toUpperCase() : "bntz");
 
@@ -6566,7 +6534,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             } catch (err) {
                 console.error("Lỗi AI giải chi tiết:", err);
                 container.innerHTML = `
-                    <div class="detailed-solution-card" style="border-color:#fca5a5; border-left-color:#ef4444; background:#fef2f2;">
+                    <div class="detailed-solution-card" style="border-color:#fca5a5; background:#fef2f2;">
                         <div class="detailed-solution-header">
                             <span style="font-weight:bold; color:#b91c1c; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Không thể tạo lời giải chi tiết</span>
                             <button class="btn-ai-resolute" onclick="fetchDetailedSolution(${idx}, true)">Thử lại</button>
