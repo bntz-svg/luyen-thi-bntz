@@ -2769,6 +2769,7 @@
                 <div id="score-result-area" style="display: none;"></div>
 
                 <div class="nav-scroll-body" id="nav-scroll-body">
+                    <div id="wrong-list-area" style="display: none;"></div>
                     <div class="nav-panel-title" style="flex-shrink: 0; font-size: 14px; font-weight: bold; margin-bottom: 12px;">BẢNG ĐIỀU HƯỚNG</div>
                     <div class="grid-numbers" id="nav-grid"></div>
                 </div>
@@ -4603,6 +4604,42 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             return out;
         }
 
+                // --- QUẢN LÝ TRẠNG THÁI TÁC VỤ AI CHẠY NGẦM (TÁCH KHỎI DOM) ---
+        // taskId: 'advisor:<môn>' | 'hint:<khóa gợi ý>' | 'sol:<khóa lời giải>'; trạng thái: 'loading' | 'done' | 'error'
+        window.aiActiveTasks = window.aiActiveTasks || {};
+        function setAiTaskState(taskId, state) {
+            if (!taskId) return;
+            if (state) window.aiActiveTasks[taskId] = state;
+            else delete window.aiActiveTasks[taskId];
+        }
+        function getAiTaskState(taskId) {
+            return (window.aiActiveTasks && window.aiActiveTasks[taskId]) || null;
+        }
+
+        // Tách HTML bảng điểm: cục điểm ghim ở #score-result-area, khối "Câu sai / Bỏ trống" nằm trong vùng cuộn (#wrong-list-area)
+        function setScoreAreaHtml(html) {
+            const area = document.getElementById('score-result-area');
+            const wrongArea = document.getElementById('wrong-list-area');
+            if (!area) return;
+            const str = String(html || '');
+            const i = str.indexOf('<div class="wrong-list-container"');
+            area.innerHTML = i >= 0 ? str.slice(0, i) : str;
+            if (wrongArea) wrongArea.innerHTML = i >= 0 ? str.slice(i) : '';
+        }
+
+        // Chỉ vẽ kết quả AI ra giao diện nếu câu hỏi / phiên làm bài đó vẫn đang hiển thị (tránh lỗi DOM khi đã chuyển view)
+        function isSocraticHintContextCurrent(cacheKey, idx) {
+            try {
+                const q = currentSession && currentSession.questions && currentSession.questions[idx];
+                return !!q && getSocraticHintKey(q, idx) === cacheKey && !!document.getElementById(`socratic-hint-container-${idx}`);
+            } catch (e) { return false; }
+        }
+        function isSolutionContextCurrent(solKey, idx) {
+            try {
+                return !!currentSession && `sol_${currentSession.subjectKey || 'exam'}_${idx}` === solKey && !!document.getElementById(`detailed-solution-container-${idx}`);
+            } catch (e) { return false; }
+        }
+
         let isBackgroundAdvisorRunning = false;
         window.justFinishedExam = false;
         window._currentDetailExpandedState = false;
@@ -4710,6 +4747,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             const advisor = cachedAiAdvisor[sCode];
             const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || { name: subjectMap[sCode] || sCode.toUpperCase() };
             const overviewText = advisor ? (advisor.subject_overview || advisor.adviceText) : null;
+            const advisorLoading = getAiTaskState('advisor:' + sCode) === 'loading';
 
             if (overviewText) {
                 container.innerHTML = `
@@ -4718,7 +4756,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             <div class="ai-advisor-title">
                                 <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                                 <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
-                                <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
+                                <span id="ai-advisor-loading-indicator" style="display:${advisorLoading ? 'inline-flex' : 'none'}; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
@@ -4734,6 +4772,25 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             ${formatAiMarkdown(overviewText)}
                         </div>
                     </div>`;
+            } else if (advisorLoading) {
+                container.innerHTML = `
+                    <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
+                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
+                            <div class="ai-advisor-title">
+                                <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <span id="ai-advisor-loading-indicator" style="display:inline-flex; align-items:center; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
+                                    <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích ngầm...
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ai-advisor-empty" style="padding: 18px 10px;">
+                            <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:#6d28d9; font-size:14px; font-weight:600;">
+                                <span class="ai-spinner" style="display:inline-block; width:16px; height:16px; border-width:2px;"></span>
+                                <span>Đang phân tích ngầm... Bạn có thể chuyển trang, kết quả sẽ được lưu lại tự động.</span>
+                            </div>
+                        </div>
+                    </div>`;
             } else {
                 container.innerHTML = `
                     <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
@@ -4741,7 +4798,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                             <div class="ai-advisor-title">
                                 <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                                 <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
-                                <span id="ai-advisor-loading-indicator" style="display:none; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
+                                <span id="ai-advisor-loading-indicator" style="display:${advisorLoading ? 'inline-flex' : 'none'}; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
@@ -4767,27 +4824,46 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
         }
 
         async function triggerManualAiAdvisor(subject) {
+            const sCode = (subject || '').toLowerCase();
+            const taskId = 'advisor:' + sCode;
             const key = getGeminiApiKey();
             if (!key) {
                 await showCustomAlert({ title: "Chưa có Gemini API Key", message: "Vui lòng cài đặt Gemini API Key để kích hoạt Cố vấn AI!", subCode: subject });
                 openApiKeyModal();
                 return;
             }
-            const indicator = document.getElementById('ai-advisor-loading-indicator');
-            if (indicator) indicator.style.display = 'inline-flex';
+            // Đang phân tích ngầm rồi -> chỉ cần giữ nguyên khung chờ, không chạy trùng
+            if (getAiTaskState(taskId) === 'loading') {
+                if (currentFilter === sCode) renderAiAdvisorWidget(sCode);
+                return;
+            }
+
+            // "Phân tích lại": làm trống ngay kết quả cũ, xóa cache cũ và bật trạng thái chờ mới
+            const prevRecord = cachedAiAdvisor[sCode];
+            delete cachedAiAdvisor[sCode];
+            setAiTaskState(taskId, 'loading');
+            if (currentFilter === sCode) renderAiAdvisorWidget(sCode);
+
             try {
                 await runBackgroundAiAdvisor(subject, true);
             } catch (err) {
                 console.error("Manual AI advisor error:", err);
+                setAiTaskState(taskId, 'error');
                 await showCustomAlert({ title: "Lỗi Cố vấn AI", message: "Lỗi khi Cố vấn AI phân tích:<br>" + escapeHtml(err.message || String(err)), subCode: subject });
             } finally {
-                if (indicator) indicator.style.display = 'none';
+                // Nếu lần phân tích mới không tạo được kết quả -> khôi phục báo cáo cũ để không mất dữ liệu
+                if (!cachedAiAdvisor[sCode] && prevRecord) cachedAiAdvisor[sCode] = prevRecord;
+                if (getAiTaskState(taskId) === 'loading') setAiTaskState(taskId, 'error');
+                // Chỉ vẽ lại nếu khung hiển thị còn tồn tại trên màn hình
+                if (currentFilter === sCode && document.getElementById('ai-advisor-container')) renderAiAdvisorWidget(sCode);
             }
         }
 
         async function runBackgroundAiAdvisor(subject, isManual = false, targetExamId = null, historyPushKey = null) {
             const sCode = (subject || '').toLowerCase();
             if (!sCode || sCode === 'all') return;
+            // Chống chạy trùng tác vụ nền cùng môn
+            if (!isManual && getAiTaskState('advisor:' + sCode) === 'loading') return;
 
             const apiKey = getGeminiApiKey();
             if (!apiKey) {
@@ -5037,6 +5113,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             };
 
             isBackgroundAdvisorRunning = true;
+            setAiTaskState('advisor:' + sCode, 'loading');
             try {
                 let response;
                 try {
@@ -5091,6 +5168,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     latestScore: latestAtt.score
                 };
                 cachedAiAdvisor[sCode] = advisorRecord;
+                setAiTaskState('advisor:' + sCode, 'done');
 
                 if (!window.isGuestMode && isCloudActive && cloudDB) {
                     try {
@@ -5156,6 +5234,15 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 }
             } finally {
                 isBackgroundAdvisorRunning = false;
+                if (getAiTaskState('advisor:' + sCode) === 'loading') {
+                    // Lỗi giữa chừng: gỡ trạng thái chờ và làm mới các khung đang hiển thị (nếu còn tồn tại)
+                    setAiTaskState('advisor:' + sCode, 'error');
+                    try {
+                        if (currentFilter === sCode && document.getElementById('ai-advisor-container')) renderAiAdvisorWidget(sCode);
+                        const qv = document.getElementById('quiz-view');
+                        if (currentSession && currentSession.isSubmitted && qv && qv.style.display !== 'none' && document.getElementById('question-render-area')) renderQuestion();
+                    } catch (uiErr) { console.warn('Advisor UI refresh skipped:', uiErr); }
+                }
             }
         }
 
@@ -6169,7 +6256,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                             <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             <span>Xem AI Giải Toàn Diện Câu Này ${hasCachedSol ? '✓' : ''}</span>
                         </button>
-                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
+                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && (hasCachedSol || getAiTaskState('sol:' + solKey) === 'loading') ? 'block' : 'none'};"></div>
                     </div>`;
                 } else {
                     html += `
@@ -6178,7 +6265,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                             <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg>
                             <span>AI Giải Thích Chi Tiết ${hasCachedSol ? '✓' : ''}</span>
                         </button>
-                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && hasCachedSol ? 'block' : 'none'};"></div>
+                        <div id="detailed-solution-container-${idx}" class="detailed-solution-wrapper" style="display: ${isSolOpen && (hasCachedSol || getAiTaskState('sol:' + solKey) === 'loading') ? 'block' : 'none'};"></div>
                     </div>`;
                 }
             }
@@ -6188,6 +6275,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             // Nếu khung gợi ý đang ở trạng thái mở và có nội dung trong cache -> Render ngay (chỉ khi đang làm bài)
             if (!currentSession.isSubmitted && isHintOpen && hasCachedHint) {
                 renderSocraticHintHtml(idx, getCachedSocraticHint(cacheKey));
+            } else if (!currentSession.isSubmitted && isHintOpen && getAiTaskState('hint:' + cacheKey) === 'loading') {
+                renderSocraticHintLoading(idx);
             }
 
             // Nếu khung giải chi tiết đang mở và đã có trong cache -> Render ngay lập tức (0.05s)
@@ -6200,6 +6289,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 const isSolOpen = !!(currentSession.solutionsOpened && currentSession.solutionsOpened[idx]);
                 if (isSolOpen && cachedSol) {
                     renderDetailedSolutionHtml(idx, cachedSol);
+                } else if (isSolOpen && getAiTaskState('sol:' + solKey) === 'loading') {
+                    renderDetailedSolutionLoading(idx);
                 }
             }
 
@@ -6364,22 +6455,41 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 return;
             }
 
+            const hintTaskId = 'hint:' + cacheKey;
+            // Đang phân tích ngầm (đã bấm trước đó rồi chuyển câu / quay lại) -> chỉ dựng lại khung chờ
+            if (getAiTaskState(hintTaskId) === 'loading') {
+                renderSocraticHintLoading(idx);
+                return;
+            }
+
+            setAiTaskState(hintTaskId, 'loading');
             renderSocraticHintLoading(idx);
 
             try {
                 const hintText = await fetchSocraticHintFromGemini(q);
+                // Bước 1: lưu vào cache/storage trước
                 setCachedSocraticHint(cacheKey, hintText);
-                renderSocraticHintHtml(idx, hintText);
-
-                const btn = document.getElementById(`btn-hint-${idx}`);
-                if (btn) {
-                    btn.classList.add('has-cached');
-                    btn.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg> <span>Gợi ý tư duy ✓</span>`;
+                setAiTaskState(hintTaskId, 'done');
+                // Bước 2: chỉ vẽ ra giao diện nếu câu hỏi đó vẫn đang hiển thị
+                if (isSocraticHintContextCurrent(cacheKey, idx)) {
+                    renderSocraticHintHtml(idx, hintText);
+                    const btn = document.getElementById(`btn-hint-${idx}`);
+                    if (btn) {
+                        btn.classList.add('has-cached');
+                        btn.innerHTML = `<svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg> <span>Gợi ý tư duy ✓</span>`;
+                    }
                 }
             } catch (err) {
                 console.error("Socratic hint error:", err);
-                renderSocraticHintError(idx, err.message);
+                setAiTaskState(hintTaskId, 'error');
+                if (isSocraticHintContextCurrent(cacheKey, idx)) renderSocraticHintError(idx, err.message);
             }
+        }
+
+        function retrySocraticHint(idx) {
+            const container = document.getElementById(`socratic-hint-container-${idx}`);
+            if (container) container.innerHTML = '';
+            toggleSocraticHint(idx);
         }
 
         function closeSocraticHint(idx) {
@@ -6426,7 +6536,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     </div>
                     <div class="socratic-hint-body" style="display:flex; align-items:center; gap:8px; color:#475569;">
                         <span class="socratic-spinner"></span>
-                        <span>Gia sư Socratic đang phân tích định hướng tư duy...</span>
+                        <span>Đang phân tích ngầm... Gia sư Socratic đang định hướng tư duy cho câu này.</span>
                     </div>
                 </div>
             `;
@@ -6446,7 +6556,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     </div>
                     <div class="socratic-hint-body" style="color:#991b1b;">
                         <div style="margin-bottom:8px;">${errorMsg}</div>
-                        <button onclick="toggleSocraticHint(${idx})" class="btn-socratic-hint" style="font-size:12px; padding:4px 8px;">
+                        <button onclick="retrySocraticHint(${idx})" class="btn-socratic-hint" style="font-size:12px; padding:4px 8px;">
                             <svg class="icon-svg icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                             <span>Thử lại</span>
                         </button>
@@ -6496,6 +6606,25 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         // --- TÍNH NĂNG AI GIẢI CHI TIẾT THEO YÊU CẦU (ON-DEMAND DETAILED SOLUTION) ---
+        function renderDetailedSolutionLoading(idx) {
+            const container = document.getElementById(`detailed-solution-container-${idx}`);
+            if (!container) return;
+            container.style.display = 'block';
+            const model = getGeminiModel();
+            container.innerHTML = `
+                <div class="detailed-solution-card loading">
+                    <div class="detailed-solution-header">
+                        <div class="detailed-solution-title">
+                            <span class="ai-spinner" style="display:inline-block; width:15px; height:15px; border-width:2px; vertical-align:middle; margin-right:6px;"></span>
+                            <span>Đang phân tích ngầm... Gemini AI đang giải chi tiết toàn diện câu hỏi này</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: #6d28d9; padding: 10px 0;">
+                        Đang đối chiếu dữ kiện, giải từng bước và thiết lập mẹo phản xạ (Mô hình: ${model}). Bạn có thể chuyển câu khác, kết quả sẽ được lưu lại.
+                    </div>
+                </div>`;
+        }
+
         async function fetchDetailedSolution(idx, forceRegen = false) {
             const q = currentSession.questions[idx];
             if (!q) return;
@@ -6508,12 +6637,29 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             container.style.display = 'block';
 
             const solKey = `sol_${currentSession.subjectKey || 'exam'}_${idx}`;
-            let cachedSol = detailedSolutionMemCache[solKey] || null;
-            if (!cachedSol && !window.isGuestMode) {
-                try { cachedSol = sessionStorage.getItem(solKey); } catch(e) {}
+            const solTaskId = 'sol:' + solKey;
+
+            // Đang chạy ngầm -> chỉ dựng lại khung chờ, không gọi AI lần nữa
+            if (getAiTaskState(solTaskId) === 'loading') {
+                renderDetailedSolutionLoading(idx);
+                return;
             }
 
-            // 1. Nếu đã có trong cache và không yêu cầu giải lại -> Hiển thị ngay lập tức (0.05s)
+            // "Giải lại": làm trống ngay khung kết quả cũ + xóa cache cũ
+            if (forceRegen) {
+                delete detailedSolutionMemCache[solKey];
+                if (!window.isGuestMode) {
+                    try { sessionStorage.removeItem(solKey); } catch (e) {}
+                }
+                container.innerHTML = '';
+            }
+
+            let cachedSol = detailedSolutionMemCache[solKey] || null;
+            if (!cachedSol && !window.isGuestMode) {
+                try { cachedSol = sessionStorage.getItem(solKey); } catch (e) {}
+            }
+
+            // 1. Đã có trong cache -> hiển thị ngay lập tức, không chạy lại AI
             if (cachedSol && !forceRegen) {
                 renderDetailedSolutionHtml(idx, cachedSol);
                 return;
@@ -6529,37 +6675,34 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 return;
             }
 
-            // 3. Hiển thị trạng thái đang phân tích
-            const model = getGeminiModel();
-            container.innerHTML = `
-                <div class="detailed-solution-card loading">
-                    <div class="detailed-solution-header">
-                        <div class="detailed-solution-title">
-                            <span class="ai-spinner" style="display:inline-block; width:15px; height:15px; border-width:2px; vertical-align:middle; margin-right:6px;"></span>
-                            <span>Gemini AI đang phân tích và giải chi tiết toàn diện câu hỏi này...</span>
-                        </div>
-                    </div>
-                    <div style="font-size: 13px; color: #6d28d9; padding: 10px 0;">
-                        Đang đối chiếu dữ kiện, giải từng bước và thiết lập mẹo phản xạ (Mô hình: ${model})...
-                    </div>
-                </div>`;
+            // 3. Bật trạng thái chờ + khung loading
+            setAiTaskState(solTaskId, 'loading');
+            renderDetailedSolutionLoading(idx);
 
             try {
                 const solutionText = await callGeminiForDetailedSolution(q, idx);
+                // Bước 1: lưu vào cache/storage trước
                 detailedSolutionMemCache[solKey] = solutionText;
                 if (!window.isGuestMode) {
-                    try { sessionStorage.setItem(solKey, solutionText); } catch(e) {}
+                    try { sessionStorage.setItem(solKey, solutionText); } catch (e) {}
                 }
-                renderDetailedSolutionHtml(idx, solutionText);
-                
-                // Cập nhật lại nút hiển thị dấu check đã có lời giải
-                const btn = document.getElementById(`btn-ai-solve-${idx}`);
-                if (btn && !btn.innerText.includes('✓')) {
-                    btn.innerHTML += ' ✓';
+                setAiTaskState(solTaskId, 'done');
+
+                // Bước 2: chỉ vẽ ra giao diện nếu khung của câu này vẫn đang hiển thị
+                if (isSolutionContextCurrent(solKey, idx)) {
+                    renderDetailedSolutionHtml(idx, solutionText);
+                    const btn = document.getElementById(`btn-ai-solve-${idx}`);
+                    if (btn && !btn.innerText.includes('✓')) {
+                        btn.innerHTML += ' ✓';
+                    }
                 }
             } catch (err) {
                 console.error("Lỗi AI giải chi tiết:", err);
-                container.innerHTML = `
+                setAiTaskState(solTaskId, 'error');
+                if (isSolutionContextCurrent(solKey, idx)) {
+                    const errContainer = document.getElementById(`detailed-solution-container-${idx}`);
+                    if (errContainer) {
+                        errContainer.innerHTML = `
                     <div class="detailed-solution-card" style="border-color:#fca5a5; background:#fef2f2;">
                         <div class="detailed-solution-header">
                             <span style="font-weight:bold; color:#b91c1c; display:inline-flex; align-items:center; gap:6px;"><svg class="icon-svg icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Không thể tạo lời giải chi tiết</span>
@@ -6569,6 +6712,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                             ${escapeHtml(err.message || 'Lỗi không xác định khi gọi Gemini API.')}
                         </div>
                     </div>`;
+                    }
+                }
             }
         }
 
@@ -6864,7 +7009,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             const scoreArea = document.getElementById('score-result-area');
             if (scoreArea && currentSession.isSubmitted) {
-                scoreArea.innerHTML = fullScoreHtml;
+                setScoreAreaHtml(fullScoreHtml);
             }
 
             return {
@@ -7001,7 +7146,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             document.getElementById('timer-submit-area').style.display = 'none';
             const scoreArea = document.getElementById('score-result-area');
-            scoreArea.innerHTML = fullScoreHtml; 
+            setScoreAreaHtml(fullScoreHtml); 
             scoreArea.style.display = 'block';
 
             // Tự động bung bảng điều hướng lên nếu đang bị thu xuống đáy để người dùng nhìn thấy điểm số và danh sách câu sai
@@ -7096,7 +7241,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 const scoreResult = recalculateCurrentScore();
                 const scoreArea = document.getElementById('score-result-area');
                 if (scoreArea) {
-                    scoreArea.innerHTML = scoreResult.fullScoreHtml;
+                    setScoreAreaHtml(scoreResult.fullScoreHtml);
                     scoreArea.style.display = 'block';
                 }
 
@@ -7261,7 +7406,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     const scoreResult = recalculateCurrentScore();
                     const scoreArea = document.getElementById('score-result-area');
                     if (scoreArea) {
-                        scoreArea.innerHTML = scoreResult.fullScoreHtml;
+                        setScoreAreaHtml(scoreResult.fullScoreHtml);
                         scoreArea.style.display = 'block';
                     }
                     document.getElementById('timer-submit-area').style.display = 'none';
@@ -7274,20 +7419,21 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 navToHome();
             }
         };
-        // Dong bo trang thai da nop bai: ghim cuc diem, gom danh sach cau cai vao vung cuon cung luoi so cau
+        // Đồng bộ trạng thái đã nộp bài: bật class .is-submitted và hiện/ẩn khối "Câu sai / Bỏ trống" trong vùng cuộn
         (function syncNavPanelSubmittedState() {
             const scoreArea = document.getElementById('score-result-area');
             const navPanel = document.getElementById('nav-panel');
-            const scrollBody = document.getElementById('nav-scroll-body');
-            if (!scoreArea || !navPanel || !scrollBody) return;
+            const wrongArea = document.getElementById('wrong-list-area');
+            if (!scoreArea || !navPanel) return;
             const sync = () => {
                 const submitted = scoreArea.style.display !== 'none' && scoreArea.style.display !== '';
                 navPanel.classList.toggle('is-submitted', submitted);
-                const fresh = scoreArea.querySelector('.wrong-list-container');
-                scrollBody.querySelectorAll(':scope > .wrong-list-container').forEach(el => { if (el !== fresh) el.remove(); });
-                if (submitted && fresh) scrollBody.insertBefore(fresh, scrollBody.firstChild);
+                if (wrongArea) {
+                    wrongArea.style.display = submitted ? 'block' : 'none';
+                    if (!submitted) wrongArea.innerHTML = '';
+                }
             };
-            new MutationObserver(sync).observe(scoreArea, { attributes: true, attributeFilter: ['style'], childList: true });
+            new MutationObserver(sync).observe(scoreArea, { attributes: true, attributeFilter: ['style'] });
             sync();
         })();
     </script>
