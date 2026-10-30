@@ -1621,7 +1621,7 @@
         }
         
         /* MODALS */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 750px; max-width: 95%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         .modal-content textarea { width: 100%; margin: 15px 0; padding: 10px; border: 1px solid #ccc; font-family: monospace; border-radius: 6px; }
         
@@ -2176,23 +2176,34 @@
            ====================================================================== */
         @media (max-width: 768px) {
             header {
-                padding: 10px 14px;
-                gap: 8px;
+                padding: 10px 12px !important;
+                gap: 8px !important;
             }
             header .logo-area {
-                gap: 8px;
-                min-width: 0;
-                flex: 1;
+                gap: 6px !important;
+                min-width: 0 !important;
+                flex: 1 1 auto !important;
+                overflow: hidden !important;
             }
             .logo-text {
-                font-size: 19px;
+                font-size: 18px !important;
             }
             .exam-title {
-                font-size: 13px;
-                padding-left: 8px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                font-size: 12.5px !important;
+                padding-left: 6px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                max-width: clamp(90px, 32vw, 150px) !important;
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+            }
+            .header-right-tools {
+                flex-shrink: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                margin-left: auto !important;
             }
             #header-key-label {
                 display: none;
@@ -2468,14 +2479,56 @@
                 flex: 1 1 100% !important;
             }
 
-            /* Danh sách thẻ đề thi: 1 cột duy nhất (Vertical list) */
+            /* Container danh sách thẻ đề thi & khoảng cách đỉnh chống lẹm thẻ đầu */
+            .dashboard-content {
+                padding: 16px 12px calc(30px + env(safe-area-inset-bottom)) 12px !important;
+            }
+            .dashboard-container {
+                padding-top: 4px !important;
+            }
+            .top-action-bar {
+                padding: 10px 12px !important;
+                margin-bottom: 12px !important;
+                gap: 8px !important;
+            }
+            .top-action-bar > div:first-child {
+                width: 100% !important;
+                min-width: 0 !important;
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            .search-box-wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                flex: 1 1 100% !important;
+            }
+
+            /* Container danh sách thẻ đề thi: 1 cột duy nhất (Vertical list) */
+            .exam-list-container,
             .subject-grid {
                 grid-template-columns: 1fr !important;
-                gap: 10px !important;
+                gap: 12px !important;
+                padding-top: 16px !important;
+                margin-top: 8px !important;
+                overflow: visible !important;
+            }
+            .subject-grid > .subject-card:first-child {
+                margin-top: 4px !important;
             }
             .subject-card {
-                padding: 14px 16px !important;
-                border-radius: 12px !important;
+                padding: 15px 16px !important;
+                border-radius: 14px !important;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+                overflow: visible !important;
+            }
+            .subject-card-top-row {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                margin-bottom: 6px !important;
+                padding-top: 2px !important;
             }
             .subject-card h3,
             .subject-card-title {
@@ -2508,6 +2561,7 @@
             #quiz-view .question-panel {
                 flex-direction: column !important;
                 overflow-y: auto !important;
+                padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
             }
             #quiz-view.context-mode .question-panel {
                 flex-direction: column !important;
@@ -2527,13 +2581,17 @@
                 flex: 1 1 auto !important;
                 max-width: 100% !important;
                 width: 100% !important;
-                padding: 16px 14px 90px 14px !important;
-                overflow-y: auto;
+                padding: 16px 14px calc(95px + env(safe-area-inset-bottom)) 14px !important;
+                overflow-y: visible !important;
+            }
+            #quiz-view .q-container-inner {
+                padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
             }
 
             /* Backdrop overlay khi mở Bottom Sheet */
             .nav-sheet-backdrop {
                 display: block;
+                z-index: 1050 !important;
             }
             .nav-sheet-backdrop.active {
                 opacity: 1;
@@ -2553,9 +2611,9 @@
                 border-left: none !important;
                 border-top: 1.5px solid #cbd5e1 !important;
                 border-radius: 20px 20px 0 0 !important;
-                padding: 10px 16px 20px 16px !important;
+                padding: 10px 16px calc(20px + env(safe-area-inset-bottom)) 16px !important;
                 box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.22) !important;
-                z-index: 95 !important;
+                z-index: 1100 !important;
                 transform: translate3d(0, 0, 0) !important;
                 opacity: 1 !important;
                 pointer-events: auto !important;
@@ -2568,7 +2626,7 @@
                 pointer-events: none !important;
                 width: 100% !important;
                 min-width: 100% !important;
-                padding: 10px 16px 20px 16px !important;
+                padding: 10px 16px calc(20px + env(safe-area-inset-bottom)) 16px !important;
             }
             .bottom-sheet-handle {
                 display: block;
@@ -2600,64 +2658,93 @@
                 gap: 8px;
             }
 
-            /* Thanh dock cố định ở mép dưới màn hình Mobile */
+            /* THANH DOCK ĐÁY CỐ ĐỊNH TRÊN MOBILE: BẮT BUỘC LUÔN LUÔN HIỂN THỊ (PHÒNG THI & XEM LẠI) */
             .bottom-bar,
-            .bottom-bar.visible {
+            .bottom-bar.visible,
+            .bottom-dock {
                 position: fixed !important;
                 bottom: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
+                z-index: 1000 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
                 transform: translate3d(0, 0, 0) !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                max-height: 64px !important;
-                height: 58px !important;
-                padding: 8px 10px !important;
+                max-height: none !important;
+                min-height: 52px !important;
+                height: auto !important;
+                padding: 7px 8px calc(10px + env(safe-area-inset-bottom)) 8px !important;
                 border-radius: 0 !important;
                 border: none !important;
                 border-top: 1.5px solid #cbd5e1 !important;
                 background: rgba(255, 255, 255, 0.98) !important;
-                box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08) !important;
+                backdrop-filter: blur(14px) !important;
+                -webkit-backdrop-filter: blur(14px) !important;
+                box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.12) !important;
                 opacity: 1 !important;
                 pointer-events: auto !important;
-                z-index: 80 !important;
-                gap: 6px;
+                visibility: visible !important;
+                overflow: visible !important;
+                box-sizing: border-box !important;
+                gap: 4px !important;
             }
             .bottom-bar-left {
-                flex: 0 0 auto;
-                gap: 5px;
+                flex: 0 0 auto !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 4px !important;
             }
             .btn-bottom-nav {
-                padding: 7px 9px;
-                font-size: 12px;
+                padding: 6px 8px !important;
+                font-size: 11.5px !important;
+                border-radius: 6px !important;
             }
             .bottom-bar-center {
-                flex: 1;
-                justify-content: center;
-                gap: 6px;
-                min-width: 0;
+                flex: 1 1 auto !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 4px !important;
+                min-width: 0 !important;
             }
             .bottom-timer {
-                font-size: 14.5px;
+                font-size: 13.5px !important;
+                font-weight: 700 !important;
             }
             .bottom-counter {
                 display: none !important;
             }
             .bottom-bar-right {
-                flex: 0 0 auto;
-                gap: 6px;
+                flex: 0 0 auto !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 4px !important;
             }
             .btn-bottom-dock-expand {
-                padding: 7px 10px;
-                font-size: 12px;
-                gap: 5px;
+                padding: 6px 8px !important;
+                font-size: 11.5px !important;
+                gap: 4px !important;
+                border-radius: 6px !important;
             }
             .btn-bottom-dock-expand .dock-label-text {
-                display: none;
+                display: none !important;
             }
             .btn-bottom-submit {
-                padding: 7px 11px;
-                font-size: 12px;
+                padding: 6px 10px !important;
+                font-size: 11.5px !important;
+                border-radius: 6px !important;
+                white-space: nowrap !important;
+            }
+            .btn-bottom-exit {
+                background: #475569 !important;
+                color: #ffffff !important;
+                border: none !important;
+            }
+            .btn-bottom-exit:hover {
+                background: #334155 !important;
             }
         }
     </style>
@@ -2706,7 +2793,7 @@
             </div>
             <span class="exam-title" id="main-title">Trang chủ</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="header-right-tools" style="display: flex; align-items: center; gap: 8px;">
             <button onclick="openApiKeyModal()" style="background: #ffffff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #334155; display: flex; align-items: center; gap: 6px; transition: 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#ffffff'" title="Cài đặt Gemini API Key">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                 <span id="header-key-label">Gemini Key</span>
@@ -3069,7 +3156,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="subject-grid" id="subject-grid"></div>
+                <div class="subject-grid exam-list-container" id="subject-grid"></div>
             </div>
 
             <!-- VÙNG CHI TIẾT ĐỀ THI -->
@@ -3495,10 +3582,10 @@
         </div>
 
         <!-- THANH ĐIỀU HƯỚNG ĐÁY (ADAPTIVE BOTTOM DOCK) -->
-        <div id="bottom-bar" class="bottom-bar" aria-hidden="true" inert>
+        <div id="bottom-bar" class="bottom-bar bottom-dock">
             <div class="bottom-bar-left">
-                <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">&lsaquo; Câu trước</button>
-                <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Câu tiếp &rsaquo;</button>
+                <button id="btn-bottom-prev" class="btn-bottom-nav" onclick="prevQuestion()" title="Câu trước">&lsaquo; Trước</button>
+                <button id="btn-bottom-next" class="btn-bottom-nav" onclick="nextQuestion()" title="Câu tiếp">Sau &rsaquo;</button>
             </div>
             <div class="bottom-bar-center">
                 <span id="bottom-bar-timer" class="bottom-timer">
@@ -4623,7 +4710,11 @@
                 'tsa': 'Môn TSA Bách Khoa', 
                 'other': 'Các Môn Khác' 
             };
-            document.getElementById('main-title').innerText = "Phòng luyện đề - " + (titleMap[sub] || 'Tất cả');
+            const isMobile = window.innerWidth <= 768;
+            const subTitle = titleMap[sub] || 'Tất cả';
+            const cleanSubName = subTitle.replace(/^Môn\s+/i, '');
+            document.getElementById('main-title').innerText = isMobile ? `Luyện đề: ${cleanSubName}` : `Phòng luyện đề - ${subTitle}`;
+            document.getElementById('main-title').title = "Phòng luyện đề - " + subTitle;
             
             document.getElementById('grid-container').style.display = 'block';
             document.getElementById('detail-view-panel').style.display = 'none';
@@ -7600,9 +7691,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             }
             // inert: ngăn focus bàn phím / đọc màn hình vào phần đang ẩn
             panel.inert = navDockCollapsed;
-            bar.inert = mobile ? false : !navDockCollapsed;
+            bar.inert = false;
             panel.setAttribute('aria-hidden', navDockCollapsed ? 'true' : 'false');
-            bar.setAttribute('aria-hidden', (mobile || navDockCollapsed) ? 'false' : 'true');
+            bar.setAttribute('aria-hidden', 'false');
         }
 
         function toggleNavDock(force) {
@@ -7675,18 +7766,33 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const nextBtn = document.getElementById('btn-bottom-next');
             const submitBtn = document.getElementById('btn-submit');
 
-            if (prevBtn) prevBtn.disabled = idx <= 0;
+            if (prevBtn) {
+                prevBtn.disabled = idx <= 0;
+                prevBtn.innerHTML = `&lsaquo; Trước`;
+            }
             if (nextBtn) {
                 nextBtn.style.display = 'inline-flex';
                 nextBtn.disabled = idx >= total - 1;
-                nextBtn.innerText = 'Câu tiếp ›';
+                nextBtn.innerHTML = `Sau &rsaquo;`;
                 nextBtn.onclick = () => nextQuestion();
             }
 
             if (currentSession.isSubmitted) {
-                if (submitBtn) submitBtn.style.display = 'none';
+                if (submitBtn) {
+                    submitBtn.style.display = 'inline-flex';
+                    submitBtn.innerText = 'Thoát';
+                    submitBtn.title = 'Thoát về phòng luyện đề';
+                    submitBtn.classList.add('btn-bottom-exit');
+                    submitBtn.onclick = () => exitToDashboard();
+                }
             } else {
-                if (submitBtn) submitBtn.style.display = 'inline-flex';
+                if (submitBtn) {
+                    submitBtn.style.display = 'inline-flex';
+                    submitBtn.innerText = 'Nộp bài';
+                    submitBtn.title = 'Nộp bài thi';
+                    submitBtn.classList.remove('btn-bottom-exit');
+                    submitBtn.onclick = () => submitExam();
+                }
             }
 
             const timer = document.getElementById('bottom-bar-timer');
