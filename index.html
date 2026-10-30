@@ -180,8 +180,8 @@
         .home-feature-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: #0f172a; }
         .home-feature-body { font-size: 12.5px; color: #64748b; line-height: 1.55; }
 
-        @media (max-width: 820px) {
-            .stat-grid, .home-actions, .home-features-grid { grid-template-columns: 1fr; }
+        @media (max-width: 820px) and (min-width: 769px) {
+            .home-features-grid { grid-template-columns: 1fr; }
         }
 
         /* VIEW TRANSITIONS */
@@ -1948,6 +1948,718 @@
             border-radius: 50%;
             background: #f59e0b;
         }
+
+        /* ======================================================================
+           TÍNH NĂNG LƯU TIẾN TRÌNH & LÀM TIẾP (RESUME EXAM) & BADGE NHÁP
+           ====================================================================== */
+        .subject-card-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+        .badge-draft-resume {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fcd34d;
+            box-shadow: 0 1px 3px rgba(245, 158, 11, 0.14);
+            white-space: nowrap;
+        }
+        .draft-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.28);
+            animation: draftPulse 1.6s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+        @keyframes draftPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.7; }
+        }
+        .subject-card-title {
+            color: #0f172a;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            line-height: 1.45;
+            font-weight: 700;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .detail-draft-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 18px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1.5px solid #fcd34d;
+            margin-bottom: 20px;
+        }
+        .detail-draft-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .detail-draft-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .detail-draft-sub {
+            font-size: 12.5px;
+            color: #b45309;
+        }
+        .detail-draft-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* MODAL 3 TÙY CHỌN THOÁT & MODAL KHÔI PHỤC BÀI THI DỞ */
+        .session-flow-card {
+            width: 440px;
+            max-width: 94vw;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 18px;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.22);
+            overflow: hidden;
+            animation: dialogCardPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            padding: 24px;
+        }
+        .session-flow-summary {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin: 14px 0 18px 0;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .session-flow-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .session-flow-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+        .btn-flow-opt {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            border: 1.5px solid transparent;
+        }
+        .btn-flow-opt:active {
+            transform: scale(0.99);
+        }
+        .btn-flow-primary {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .btn-flow-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .btn-flow-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .btn-flow-danger:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        .btn-flow-neutral {
+            background: #f1f5f9;
+            color: #334155;
+            border-color: #cbd5e1;
+        }
+        .btn-flow-neutral:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* ======================================================================
+           ACCORDION CỐ VẤN AI & BOTTOM SHEET ĐIỀU HƯỚNG
+           ====================================================================== */
+        .ai-advisor-accordion-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: #f3e8ff;
+            color: #6d28d9;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .ai-advisor-summary-inline {
+            display: none;
+            font-size: 12px;
+            font-weight: 500;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dock-progress-badge {
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+        .nav-sheet-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.48);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 85;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity;
+        }
+        .bottom-sheet-handle {
+            display: none;
+            width: 42px;
+            height: 5px;
+            border-radius: 999px;
+            background: #cbd5e1;
+            margin: 0 auto 10px auto;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        /* ======================================================================
+           PHẦN 2 & 3: TỐI ƯU HÓA GIAO DIỆN MOBILE-FIRST (@media max-width: 768px)
+           ====================================================================== */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 14px;
+                gap: 8px;
+            }
+            header .logo-area {
+                gap: 8px;
+                min-width: 0;
+                flex: 1;
+            }
+            .logo-text {
+                font-size: 19px;
+            }
+            .exam-title {
+                font-size: 13px;
+                padding-left: 8px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #header-key-label {
+                display: none;
+            }
+            #cloud-sync-badge span {
+                display: none;
+            }
+            #cloud-sync-badge {
+                padding: 6px 8px;
+            }
+            header.zen-quiz-mode {
+                padding: 8px 12px;
+            }
+            .zen-exit-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            /* 1. TRANG CHỦ (DASHBOARD MOBILE) */
+            #home-view {
+                padding: 14px 12px 24px 12px;
+            }
+            .welcome-banner {
+                padding: 14px 16px;
+                margin-bottom: 12px;
+                border-radius: 12px;
+            }
+            .welcome-badge {
+                font-size: 10px;
+                padding: 3px 8px;
+                margin-bottom: 6px;
+            }
+            .welcome-banner h1 {
+                font-size: 17px;
+                margin-bottom: 4px;
+            }
+            .welcome-banner p {
+                font-size: 12px;
+                line-height: 1.45;
+            }
+
+            /* Cụm 3 thẻ thống kê: 1 hàng ngang 3 cột nhỏ gọn, font số to, nhãn nhỏ bên dưới, <= 15% chiều cao màn hình */
+            .stat-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+                margin-bottom: 12px !important;
+                max-height: 15vh;
+            }
+            .stat-card {
+                padding: 10px 6px !important;
+                border-radius: 10px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                gap: 3px !important;
+                max-height: 15vh;
+            }
+            .stat-num {
+                order: 1;
+                font-size: 22px !important;
+                font-weight: 800 !important;
+                line-height: 1.05 !important;
+            }
+            .stat-card-top {
+                order: 2;
+                justify-content: center !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                text-transform: none !important;
+                letter-spacing: -0.01em !important;
+                color: #64748b !important;
+                line-height: 1.2 !important;
+            }
+            .stat-icon-box,
+            .stat-subtext {
+                display: none !important;
+            }
+
+            /* 3 nút hành động: Nút 1 full 100% trên cùng, 2 nút phụ 50/50 bên dưới */
+            .home-actions {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+                margin-bottom: 16px !important;
+            }
+            .home-actions .home-act-btn.primary-dark {
+                grid-column: 1 / -1 !important;
+                width: 100% !important;
+                padding: 14px 16px !important;
+                border-radius: 12px !important;
+            }
+            .home-actions .home-act-btn:not(.primary-dark) {
+                padding: 11px 10px !important;
+                border-radius: 10px !important;
+                gap: 6px !important;
+                justify-content: center !important;
+            }
+            .home-actions .home-act-btn:not(.primary-dark) .act-left {
+                gap: 8px !important;
+                min-width: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            .home-actions .home-act-btn:not(.primary-dark) .act-icon {
+                width: 30px !important;
+                height: 30px !important;
+                border-radius: 7px !important;
+            }
+            .home-actions .home-act-btn:not(.primary-dark) .act-title {
+                font-size: 12.5px !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .home-actions .home-act-btn:not(.primary-dark) .act-desc,
+            .home-actions .home-act-btn:not(.primary-dark) .act-arrow {
+                display: none !important;
+            }
+            .home-features-panel {
+                padding: 16px 14px;
+            }
+            .home-features-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px;
+            }
+            .home-feature-item {
+                padding: 12px 14px;
+            }
+
+            /* 2. TỦ SÁCH ĐỀ THI (DANH SÁCH 10 MÔN - LƯỚI 2 CỘT TINH GIẢN) */
+            #portal-view {
+                padding: 14px 12px 24px 12px !important;
+            }
+            .subject-portal-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .subject-portal-card {
+                border-radius: 12px !important;
+            }
+            .portal-desc,
+            .portal-btn,
+            .portal-badge {
+                display: none !important;
+            }
+            .portal-banner {
+                padding: 12px 12px !important;
+            }
+            .portal-banner h3 {
+                font-size: 13.5px !important;
+                gap: 7px !important;
+                line-height: 1.25;
+            }
+            .portal-banner-icon {
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 6px !important;
+                flex-shrink: 0;
+            }
+            .portal-body {
+                padding: 9px 12px !important;
+            }
+            .portal-footer {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+                border-top: none !important;
+                justify-content: flex-start !important;
+            }
+            .portal-count {
+                display: inline-flex;
+                align-items: center;
+                padding: 3px 9px;
+                border-radius: 999px;
+                font-size: 11.5px !important;
+                font-weight: 700;
+                background: #f1f5f9;
+                color: #334155;
+                border: 1px solid #e2e8f0;
+            }
+
+            /* 3. PHÒNG LUYỆN ĐỀ (GIAO DIỆN THEO MÔN) */
+            .sidebar {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 40;
+                box-shadow: 4px 0 20px rgba(15, 23, 42, 0.12);
+            }
+            .dashboard-content {
+                padding: 14px 12px 24px 12px !important;
+            }
+            /* Cố vấn AI dạng Accordion thu gọn trên mobile */
+            .ai-advisor-card {
+                padding: 10px 14px !important;
+                margin-bottom: 12px !important;
+                border-radius: 10px !important;
+            }
+            .ai-advisor-header {
+                cursor: pointer;
+                user-select: none;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+            .ai-advisor-title {
+                font-size: 13px !important;
+                flex: 1;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .ai-advisor-title span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .ai-advisor-accordion-toggle {
+                display: inline-flex !important;
+            }
+            .ai-advisor-card:not(.mobile-accordion-collapsed) .ai-advisor-accordion-toggle {
+                transform: rotate(180deg);
+            }
+            .ai-advisor-card.mobile-accordion-collapsed .ai-advisor-header {
+                border-bottom: none !important;
+                padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
+            }
+            .ai-advisor-card.mobile-accordion-collapsed .ai-advisor-content,
+            .ai-advisor-card.mobile-accordion-collapsed .ai-advisor-empty,
+            .ai-advisor-card.mobile-accordion-collapsed .ai-advisor-actions-row {
+                display: none !important;
+            }
+            .ai-advisor-actions-row {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 8px;
+                padding-bottom: 8px;
+                border-bottom: 1px dashed #e9d5ff;
+            }
+
+            /* Ẩn hoàn toàn nút Tạo Đề Gộp trên mobile */
+            #combine-action-area {
+                display: none !important;
+            }
+
+            /* Thanh tìm kiếm đề giãn full-width 100% */
+            .top-action-bar {
+                padding: 10px 12px !important;
+                margin-bottom: 14px !important;
+                gap: 8px !important;
+            }
+            .top-action-bar > div:first-child {
+                width: 100% !important;
+                min-width: 0 !important;
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            .search-box-wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                flex: 1 1 100% !important;
+            }
+
+            /* Danh sách thẻ đề thi: 1 cột duy nhất (Vertical list) */
+            .subject-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .subject-card {
+                padding: 14px 16px !important;
+                border-radius: 12px !important;
+            }
+            .subject-card h3,
+            .subject-card-title {
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-size: 15px !important;
+                line-height: 1.4 !important;
+                margin: 4px 0 8px 0 !important;
+            }
+
+            /* Chi tiết đề thi trên mobile */
+            #detail-view-panel {
+                padding: 16px 14px !important;
+            }
+            .detail-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .detail-header > div:last-child {
+                flex-direction: row !important;
+                align-items: center !important;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            /* 4. PHÒNG THI & CHẾ ĐỘ XEM LẠI: BOTTOM SHEET & DOCK CỐ ĐỊNH */
+            #quiz-view .question-panel {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+            }
+            #quiz-view.context-mode .question-panel {
+                flex-direction: column !important;
+            }
+            #quiz-view.context-mode .reading-context {
+                flex: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                border-right: none !important;
+                border-bottom: 2px solid #e2e8f0 !important;
+                padding: 16px 14px !important;
+                max-height: 38vh;
+                overflow-y: auto;
+            }
+            #quiz-view .q-container,
+            #quiz-view.context-mode .q-container {
+                flex: 1 1 auto !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 16px 14px 90px 14px !important;
+                overflow-y: auto;
+            }
+
+            /* Backdrop overlay khi mở Bottom Sheet */
+            .nav-sheet-backdrop {
+                display: block;
+            }
+            .nav-sheet-backdrop.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* Bottom Sheet (#nav-panel) trên Mobile */
+            .nav-panel {
+                position: fixed !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                height: auto !important;
+                max-height: 70vh !important;
+                border-left: none !important;
+                border-top: 1.5px solid #cbd5e1 !important;
+                border-radius: 20px 20px 0 0 !important;
+                padding: 10px 16px 20px 16px !important;
+                box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.22) !important;
+                z-index: 95 !important;
+                transform: translate3d(0, 0, 0) !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                will-change: transform, opacity;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
+            }
+            .nav-panel.docked-bottom {
+                transform: translate3d(0, 105%, 0) !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                padding: 10px 16px 20px 16px !important;
+            }
+            .bottom-sheet-handle {
+                display: block;
+            }
+            .nav-panel-topbar {
+                margin-bottom: 8px;
+                justify-content: space-between;
+                align-items: center;
+            }
+            /* Cuộn nội bộ mượt mà cho cả chế độ làm bài và chế độ xem lại (Review Mode) */
+            .nav-panel #score-result-area {
+                flex-shrink: 0 !important;
+            }
+            .nav-panel .nav-scroll-body,
+            .nav-panel.is-submitted .nav-scroll-body {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                max-height: calc(70vh - 110px);
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            .nav-panel:not(.is-submitted) #nav-grid {
+                overflow: visible !important;
+                height: auto !important;
+                flex: none !important;
+            }
+            .grid-numbers {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 8px;
+            }
+
+            /* Thanh dock cố định ở mép dưới màn hình Mobile */
+            .bottom-bar,
+            .bottom-bar.visible {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                transform: translate3d(0, 0, 0) !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: 64px !important;
+                height: 58px !important;
+                padding: 8px 10px !important;
+                border-radius: 0 !important;
+                border: none !important;
+                border-top: 1.5px solid #cbd5e1 !important;
+                background: rgba(255, 255, 255, 0.98) !important;
+                box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08) !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                z-index: 80 !important;
+                gap: 6px;
+            }
+            .bottom-bar-left {
+                flex: 0 0 auto;
+                gap: 5px;
+            }
+            .btn-bottom-nav {
+                padding: 7px 9px;
+                font-size: 12px;
+            }
+            .bottom-bar-center {
+                flex: 1;
+                justify-content: center;
+                gap: 6px;
+                min-width: 0;
+            }
+            .bottom-timer {
+                font-size: 14.5px;
+            }
+            .bottom-counter {
+                display: none !important;
+            }
+            .bottom-bar-right {
+                flex: 0 0 auto;
+                gap: 6px;
+            }
+            .btn-bottom-dock-expand {
+                padding: 7px 10px;
+                font-size: 12px;
+                gap: 5px;
+            }
+            .btn-bottom-dock-expand .dock-label-text {
+                display: none;
+            }
+            .btn-bottom-submit {
+                padding: 7px 11px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2382,6 +3094,7 @@
                             <button onclick="deleteCurrentSubject()" style="background:none; border:none; color:#ef4444; font-size:12px; text-decoration:underline; cursor:pointer;">Xóa đề này</button>
                         </div>
                     </div>
+                    <div id="detail-draft-banner-area"></div>
                     <div class="detail-actions">
                         <button class="d-btn btn-practice" onclick="openSessionConfig('practice')">Luyện Tập</button>
                         <button class="d-btn btn-exam" onclick="openSessionConfig('exam')">Thi Thử</button>
@@ -2751,9 +3464,14 @@
                 </div>
             </div>
             
+            <!-- LỚP NỀN TỐI PHỦ MỜ KHI MỞ BOTTOM SHEET TRÊN MOBILE -->
+            <div id="nav-sheet-backdrop" class="nav-sheet-backdrop" onclick="toggleNavDock(true)"></div>
+            
             <div class="nav-panel" id="nav-panel">
+                <div class="bottom-sheet-handle" onclick="toggleNavDock(true)" title="Chạm để đóng bảng câu hỏi"></div>
                 <div class="nav-panel-topbar">
-                    <button class="btn-dock-toggle" onclick="toggleNavDock()" title="Thu bảng điều hướng xuống thanh đáy">
+                    <span style="font-size: 12.5px; font-weight: 800; color: #475569; letter-spacing: 0.03em; text-transform: uppercase;">Điều hướng câu hỏi</span>
+                    <button class="btn-dock-toggle" onclick="toggleNavDock(true)" title="Thu bảng điều hướng xuống thanh đáy">
                         <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
                         <span>Thu xuống đáy</span>
                     </button>
@@ -2790,9 +3508,10 @@
                 <span id="bottom-bar-counter" class="bottom-counter">Câu 1/0</span>
             </div>
             <div class="bottom-bar-right">
-                <button class="btn-bottom-dock-expand" onclick="toggleNavDock(false)" title="Bung lại bảng điều hướng">
+                <button class="btn-bottom-dock-expand" id="btn-bottom-dock-expand" onclick="toggleNavDock()" title="Mở / Đóng bảng điều hướng câu hỏi">
                     <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                    <span>Bảng câu hỏi</span>
+                    <span class="dock-label-text">Bảng câu hỏi</span>
+                    <span id="bottom-dock-progress" class="dock-progress-badge">0/0</span>
                 </button>
                 <button id="btn-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
             </div>
@@ -2870,6 +3589,69 @@
         </div>
     </div>
 
+    <!-- MODAL XÁC NHẬN THOÁT PHÒNG THI (3 TÙY CHỌN: LƯU & THOÁT / THOÁT KHÔNG LƯU / Ở LẠI LÀM TIẾP) -->
+    <div id="exit-exam-modal" class="custom-dialog-backdrop" style="display: none;" onclick="if(event.target===this) resolveExitExamModal('stay')">
+        <div class="session-flow-card">
+            <div class="custom-dialog-header" style="margin-bottom: 8px;">
+                <div class="custom-dialog-icon" style="background: #eff6ff; border-color: #bfdbfe; color: #2563eb;">
+                    <svg class="icon-svg lg" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                </div>
+                <div>
+                    <h3 class="custom-dialog-title">Tạm dừng & Thoát phòng thi?</h3>
+                    <div style="font-size: 12.5px; color: #64748b; margin-top: 2px;">Bạn có thể lưu tiến trình để làm tiếp bất cứ lúc nào</div>
+                </div>
+            </div>
+            <div class="session-flow-summary" id="exit-modal-summary"></div>
+            <div class="session-flow-actions">
+                <button type="button" class="btn-flow-opt btn-flow-primary" onclick="resolveExitExamModal('save_exit')">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    <span>Lưu & Thoát</span>
+                </button>
+                <button type="button" class="btn-flow-opt btn-flow-danger" onclick="resolveExitExamModal('discard_exit')">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    <span>Thoát không lưu</span>
+                </button>
+                <button type="button" class="btn-flow-opt btn-flow-neutral" onclick="resolveExitExamModal('stay')">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Ở lại làm tiếp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KHÔI PHỤC BÀI THI ĐANG LÀM DỞ (LÀM TIẾP / LÀM LẠI TỪ ĐẦU) -->
+    <div id="resume-draft-modal" class="custom-dialog-backdrop" style="display: none;" onclick="if(event.target===this) resolveResumeDraftModal('cancel')">
+        <div class="session-flow-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div class="custom-dialog-header" style="margin-bottom: 0;">
+                    <div class="custom-dialog-icon" style="background: #fffbeb; border-color: #fde68a; color: #d97706;">
+                        <svg class="icon-svg lg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="custom-dialog-title">Khôi phục bài đang làm dở</h3>
+                        <div style="font-size: 12.5px; color: #64748b; margin-top: 2px;" id="resume-modal-subtitle">Phát hiện dữ liệu nháp đã lưu của đề thi này</div>
+                    </div>
+                </div>
+                <button type="button" onclick="resolveResumeDraftModal('cancel')" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; padding: 2px 6px;">✕</button>
+            </div>
+            <div class="session-flow-summary" id="resume-modal-summary"></div>
+            <div class="session-flow-actions">
+                <button type="button" class="btn-flow-opt btn-flow-primary" onclick="resolveResumeDraftModal('resume')">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Làm tiếp</span>
+                </button>
+                <button type="button" class="btn-flow-opt btn-flow-danger" onclick="resolveResumeDraftModal('restart')">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <span>Làm lại từ đầu</span>
+                </button>
+                <button type="button" class="btn-flow-opt btn-flow-neutral" onclick="resolveResumeDraftModal('detail')" style="font-size: 13px; padding: 10px 14px;">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>Xem chi tiết & lịch sử đề thi</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // MÃ CẤU HÌNH FIREBASE LẤY TỪ ẢNH CỦA MÀY
         const firebaseConfig = {
@@ -2941,6 +3723,7 @@
                 library = {};
                 cachedAiAdvisor = {};
                 cachedExamHistory = {};
+                guestDrafts = {};
                 activeDetailKey = null;
                 guestGeminiApiKey = '';
                 guestGeminiModel = 'gemini-3.8-flash';
@@ -3022,6 +3805,21 @@
                 }, (error) => {
                     console.error("Lỗi Realtime Database (exam_history):", error);
                 });
+
+                // 4. Lắng nghe realtime dữ liệu Bản nháp đang làm dở (drafts)
+                cloudDB.ref('drafts').on('value', (snapshot) => {
+                    if (window.isGuestMode) return;
+                    cachedDrafts = snapshot.val() || {};
+                    persistLocalDrafts(cachedDrafts);
+                    if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                        renderDashboardGrid();
+                        if (activeDetailKey && library[activeDetailKey] && document.getElementById('detail-view-panel') && document.getElementById('detail-view-panel').style.display !== 'none') {
+                            renderDetailDraftBanner(activeDetailKey);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Lỗi Realtime Database (drafts):", error);
+                });
             } catch (syncErr) {
                 console.error("Lỗi thiết lập listeners Firebase:", syncErr);
             }
@@ -3032,6 +3830,7 @@
                 try {
                     cloudDB.ref('ai_advisor').off();
                     cloudDB.ref('exam_history').off();
+                    cloudDB.ref('drafts').off();
                 } catch(e) {}
             }
             cloudListenersInitialized = false;
@@ -3274,9 +4073,135 @@
             }
         };
 
-        // Cache cho Cố vấn AI và Lịch sử thi
+        // Cache cho Cố vấn AI, Lịch sử thi và Bản nháp (Drafts)
         let cachedAiAdvisor = {};
         let cachedExamHistory = {};
+        let cachedDrafts = {};
+        let guestDrafts = {};
+        const LOCAL_DRAFTS_STORAGE_KEY = 'bntz_exam_drafts';
+
+        function loadLocalDrafts() {
+            if (window.isGuestMode) return {};
+            try {
+                const raw = localStorage.getItem(LOCAL_DRAFTS_STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && typeof parsed === 'object') {
+                        cachedDrafts = parsed;
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn("Lỗi đọc localStorage drafts:", e);
+            }
+            return cachedDrafts;
+        }
+
+        function persistLocalDrafts(draftsObj) {
+            if (window.isGuestMode) return;
+            try {
+                localStorage.setItem(LOCAL_DRAFTS_STORAGE_KEY, JSON.stringify(draftsObj || {}));
+            } catch (e) {
+                console.warn("Lỗi lưu localStorage drafts:", e);
+            }
+        }
+
+        loadLocalDrafts();
+
+        function getExamDraft(examKey) {
+            if (!examKey) return null;
+            if (window.isGuestMode) {
+                return guestDrafts[examKey] || null;
+            }
+            const d = cachedDrafts[examKey] || (library[examKey] && library[examKey].draft) || null;
+            if (!d || typeof d !== 'object') return null;
+            return d;
+        }
+
+        async function saveExamDraft(examKey, draftData) {
+            if (!examKey || !draftData) return;
+            if (window.isGuestMode) {
+                guestDrafts[examKey] = draftData;
+                return;
+            }
+            cachedDrafts[examKey] = draftData;
+            persistLocalDrafts(cachedDrafts);
+
+            if (library[examKey]) {
+                library[examKey].draft = draftData;
+                try {
+                    const db = await openDB();
+                    const tx = db.transaction(storeName, "readwrite");
+                    const store = tx.objectStore(storeName);
+                    store.put({ id: examKey, data: library[examKey] });
+                } catch (err) {
+                    console.warn("Lỗi lưu draft vào IndexedDB:", err);
+                }
+            }
+
+            if (isCloudActive && cloudDB) {
+                try {
+                    await cloudDB.ref('drafts/' + examKey).set(draftData);
+                } catch (e) {
+                    console.error("Lỗi đồng bộ draft lên Firebase:", e);
+                }
+            }
+        }
+
+        async function deleteExamDraft(examKey) {
+            if (!examKey) return;
+            if (window.isGuestMode) {
+                delete guestDrafts[examKey];
+                return;
+            }
+            delete cachedDrafts[examKey];
+            persistLocalDrafts(cachedDrafts);
+
+            if (library[examKey] && library[examKey].draft) {
+                delete library[examKey].draft;
+                try {
+                    const db = await openDB();
+                    const tx = db.transaction(storeName, "readwrite");
+                    const store = tx.objectStore(storeName);
+                    store.put({ id: examKey, data: library[examKey] });
+                } catch (err) {
+                    console.warn("Lỗi xóa draft trong IndexedDB:", err);
+                }
+            }
+
+            if (isCloudActive && cloudDB) {
+                try {
+                    await cloudDB.ref('drafts/' + examKey).remove();
+                } catch (e) {
+                    console.error("Lỗi xóa draft trên Firebase:", e);
+                }
+            }
+        }
+
+        function buildCurrentDraftPayload() {
+            const totalQ = (currentSession.questions && currentSession.questions.length) || 0;
+            let answeredCount = 0;
+            for (let i = 0; i < totalQ; i++) {
+                if (checkAnswered(i)) answeredCount++;
+            }
+            return {
+                examKey: currentSession.subjectKey || '',
+                subject: currentSession.subject || '',
+                title: currentSession.title || (library[currentSession.subjectKey] ? library[currentSession.subjectKey].title : 'Đề thi'),
+                mode: currentSession.mode || 'practice',
+                questions: currentSession.questions || [],
+                answers: { ...(currentSession.answers || {}) },
+                bookmarks: { ...(currentSession.bookmarks || {}) },
+                currentIndex: currentSession.currentIndex || 0,
+                totalSeconds: typeof currentSession.totalSeconds === 'number' ? currentSession.totalSeconds : 0,
+                initialTotalSeconds: currentSession.initialTotalSeconds || currentSession.totalSeconds || 0,
+                questionTimeSpent: { ...(currentSession.questionTimeSpent || {}) },
+                hintsOpened: { ...(currentSession.hintsOpened || {}) },
+                answeredCount: answeredCount,
+                totalQuestions: totalQ,
+                updatedAt: Date.now()
+            };
+        }
 
         function applyViewTransition(el) {
             if (!el) return;
@@ -3328,6 +4253,7 @@
 
         async function deleteFromDB(key) {
             delete library[key];
+            await deleteExamDraft(key);
             if (window.isGuestMode) return;
             try {
                 const db = await openDB();
@@ -4732,6 +5658,18 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             }
         }
 
+        window.aiAdvisorMobileExpanded = window.aiAdvisorMobileExpanded || {};
+
+        function toggleAiAdvisorAccordion(sCode, e) {
+            if (window.innerWidth > 768) return;
+            if (e && e.target && e.target.closest('button')) return;
+            const card = e && e.currentTarget ? e.currentTarget.closest('.ai-advisor-card') : document.querySelector('#ai-advisor-container .ai-advisor-card');
+            if (!card) return;
+            const willCollapse = !card.classList.contains('mobile-accordion-collapsed');
+            card.classList.toggle('mobile-accordion-collapsed', willCollapse);
+            if (sCode) window.aiAdvisorMobileExpanded[sCode] = !willCollapse;
+        }
+
         function renderAiAdvisorWidget(subject) {
             const container = document.getElementById('ai-advisor-container');
             if (!container) return;
@@ -4748,19 +5686,22 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             const matrix = SUBJECT_CURRICULUM_MATRIX[sCode] || { name: subjectMap[sCode] || sCode.toUpperCase() };
             const overviewText = advisor ? (advisor.subject_overview || advisor.adviceText) : null;
             const advisorLoading = getAiTaskState('advisor:' + sCode) === 'loading';
+            const isCollapsedClass = window.aiAdvisorMobileExpanded[sCode] ? '' : 'mobile-accordion-collapsed';
+            const chevronHtml = `<span class="ai-advisor-accordion-toggle" aria-hidden="true"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>`;
 
             if (overviewText) {
                 container.innerHTML = `
-                    <div class="ai-advisor-card">
-                        <div class="ai-advisor-header">
+                    <div class="ai-advisor-card ${isCollapsedClass}">
+                        <div class="ai-advisor-header" onclick="toggleAiAdvisorAccordion('${sCode}', event)">
                             <div class="ai-advisor-title">
                                 <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <span>Cố vấn AI · Chuyên Đề Cần Bổ Sung (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:${advisorLoading ? 'inline-flex' : 'none'}; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
-                            <div style="display:flex; align-items:center; gap:12px;">
+                            ${chevronHtml}
+                            <div class="ai-advisor-actions-row" style="display:flex; align-items:center; gap:12px;">
                                 <span class="ai-advisor-meta" style="display:inline-flex; align-items:center; gap:4px;"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Cập nhật: ${advisor.updatedTimeStr || 'Vừa xong'} (${advisor.analyzedAttemptsCount || 1} bài làm gần nhất)</span>
                                 <button onclick="triggerManualAiAdvisor('${sCode}')" style="background:#7c3aed; color:white; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
                                     <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -4774,15 +5715,16 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     </div>`;
             } else if (advisorLoading) {
                 container.innerHTML = `
-                    <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
-                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
+                    <div class="ai-advisor-card ${isCollapsedClass}" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
+                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;" onclick="toggleAiAdvisorAccordion('${sCode}', event)">
                             <div class="ai-advisor-title">
                                 <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <span>Cố vấn AI · Đang phân tích (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:inline-flex; align-items:center; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích ngầm...
                                 </span>
                             </div>
+                            ${chevronHtml}
                         </div>
                         <div class="ai-advisor-empty" style="padding: 18px 10px;">
                             <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:#6d28d9; font-size:14px; font-weight:600;">
@@ -4793,15 +5735,16 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     </div>`;
             } else {
                 container.innerHTML = `
-                    <div class="ai-advisor-card" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
-                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;">
+                    <div class="ai-advisor-card ${isCollapsedClass}" style="background: #faf5ff; border: 1.5px dashed #c4b5fd;">
+                        <div class="ai-advisor-header" style="border-bottom: 1px dashed #e9d5ff;" onclick="toggleAiAdvisorAccordion('${sCode}', event)">
                             <div class="ai-advisor-title">
                                 <svg class="icon-svg icon-svg-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                <span>Chuyên Đề Cần Bổ Sung Cấp Tốc (${matrix.name})</span>
+                                <span>Cố vấn AI · Chuyên Đề Cần Bổ Sung (${matrix.name})</span>
                                 <span id="ai-advisor-loading-indicator" style="display:${advisorLoading ? 'inline-flex' : 'none'}; font-size:12px; font-weight:normal; color:#7c3aed; margin-left:8px;">
                                     <span class="ai-spinner" style="display:inline-block; width:14px; height:14px; border-width:2px; vertical-align:middle; margin-right:4px;"></span> Đang phân tích...
                                 </span>
                             </div>
+                            ${chevronHtml}
                         </div>
                         <div class="ai-advisor-empty">
                             <div style="margin-bottom: 10px; color: #7c3aed; display: flex; justify-content: center;">
@@ -5335,11 +6278,22 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 else if (s === 'su') tintClass = 'sc-su';
                 else if (s === 'tin') tintClass = 'sc-tin';
 
+                const draft = getExamDraft(key);
+                let draftBadgeHtml = '';
+                if (draft) {
+                    const draftTotalQ = (draft.questions && draft.questions.length) || (data.questions ? data.questions.length : 0);
+                    const draftCurQ = draftTotalQ > 0 ? Math.min(Math.max(1, (draft.currentIndex || 0) + 1), draftTotalQ) : 1;
+                    draftBadgeHtml = `<span class="badge-draft-resume"><span class="draft-pulse-dot"></span>Đang làm dở (Câu ${draftCurQ}/${draftTotalQ})</span>`;
+                }
+
                 grid.innerHTML += `
                     <div class="subject-card ${tintClass}" onclick="handleCardClick('${key}', event)">
                         <input type="checkbox" class="card-checkbox combine-checkbox" data-key="${key}" onclick="updateCombineCount(event)">
-                        <div>${getSubjectBadge(data.subject)}</div>
-                        <h3 style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title || data.name || 'Chưa đặt tên'}</h3>
+                        <div class="subject-card-top-row">
+                            ${getSubjectBadge(data.subject)}
+                            ${draftBadgeHtml}
+                        </div>
+                        <h3 class="subject-card-title" style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title || data.name || 'Chưa đặt tên'}</h3>
                         <p style="font-size: 13px; color: #64748b; margin: 0; margin-top: auto;">${data.questions ? data.questions.length : 0} câu | Đã làm: ${historyCount} lần</p>
                     </div>`;
             }
@@ -5378,8 +6332,227 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     updateCombineCount();
                 }
             } else {
+                const draft = getExamDraft(key);
+                if (draft) {
+                    openResumeDraftModal(key);
+                } else {
+                    openDetailView(key);
+                }
+            }
+        }
+
+        let pendingResumeExamKey = null;
+
+        function countDraftAnswered(draft) {
+            if (!draft) return 0;
+            const qs = Array.isArray(draft.questions) ? draft.questions : [];
+            const ansMap = draft.answers || {};
+            if (qs.length === 0) return Object.keys(ansMap).length;
+            let cnt = 0;
+            for (let i = 0; i < qs.length; i++) {
+                const ans = ansMap[i];
+                if (ans === undefined || ans === null) continue;
+                const q = qs[i] || {};
+                if (q.type === 'true_false') {
+                    if (q.options && Object.keys(ans).length === q.options.length) cnt++;
+                } else if (q.type === 'short_answer') {
+                    if (ans.toString().trim() !== '') cnt++;
+                } else if (q.type === 'multiple_response') {
+                    if (Object.values(ans).some(v => v === true)) cnt++;
+                } else if (q.type === 'fill_in_the_blanks') {
+                    if (q.options && Object.keys(ans).length === q.options.length && Object.values(ans).every(v => (v || '').toString().trim() !== '')) cnt++;
+                } else {
+                    cnt++;
+                }
+            }
+            return cnt;
+        }
+
+        function openResumeDraftModal(key) {
+            const data = library[key];
+            const draft = getExamDraft(key);
+            if (!data || !draft) {
+                openDetailView(key);
+                return;
+            }
+            pendingResumeExamKey = key;
+            const modal = document.getElementById('resume-draft-modal');
+            const descEl = document.getElementById('resume-modal-desc');
+            const summaryEl = document.getElementById('resume-modal-summary');
+            const totalQ = (draft.questions && draft.questions.length) || (data.questions ? data.questions.length : 0);
+            const curQ = totalQ > 0 ? Math.min(Math.max(1, (draft.currentIndex || 0) + 1), totalQ) : 1;
+            const answeredCount = countDraftAnswered(draft);
+            const bookmarkCount = draft.bookmarks ? Object.values(draft.bookmarks).filter(Boolean).length : 0;
+            const modeLabel = draft.mode === 'exam' ? 'Thi thử (Đếm ngược)' : 'Luyện tập';
+            const timeLabel = draft.mode === 'exam'
+                ? `Còn ${formatClock(draft.totalSeconds || 0)}`
+                : `Đã làm ${formatClock(draft.totalSeconds || 0)}`;
+
+            if (descEl) {
+                descEl.innerHTML = `Đề <strong>${escapeHtml(data.title || 'Đề thi')}</strong> đang có phiên làm dở đã lưu. Bạn muốn tiếp tục làm từ vị trí đang dừng hay bắt đầu lại từ đầu?`;
+            }
+            if (summaryEl) {
+                summaryEl.innerHTML = `
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Vị trí đang dừng</span>
+                        <span class="session-flow-summary-val" style="color:#d97706;">Câu ${curQ}/${totalQ}</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Tiến độ đã chọn</span>
+                        <span class="session-flow-summary-val">${answeredCount}/${totalQ} câu${bookmarkCount > 0 ? ` · ${bookmarkCount} cờ` : ''}</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Chế độ</span>
+                        <span class="session-flow-summary-val">${modeLabel}</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Đồng hồ</span>
+                        <span class="session-flow-summary-val">${timeLabel}</span>
+                    </div>`;
+            }
+            if (modal) {
+                modal.style.display = 'flex';
+                requestAnimationFrame(() => modal.classList.add('active'));
+            }
+        }
+
+        function closeResumeDraftModal() {
+            const modal = document.getElementById('resume-draft-modal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 180);
+        }
+
+        async function resolveResumeDraftModal(action) {
+            const key = pendingResumeExamKey;
+            closeResumeDraftModal();
+            if (!key || !library[key]) return;
+
+            if (action === 'resume') {
+                resumeExamFromDraft(key);
+            } else if (action === 'restart') {
+                const oldDraft = getExamDraft(key);
+                await deleteExamDraft(key);
+                renderDashboardGrid();
+                startFreshExamDirectly(key, oldDraft);
+            } else if (action === 'detail') {
                 openDetailView(key);
             }
+        }
+
+        function resumeExamFromDraft(key) {
+            const data = library[key];
+            const draft = getExamDraft(key);
+            if (!data || !draft) return;
+
+            activeDetailKey = key;
+            const qList = (Array.isArray(draft.questions) && draft.questions.length > 0)
+                ? draft.questions
+                : [...(data.questions || [])];
+            const safeIdx = qList.length > 0
+                ? Math.min(Math.max(0, parseInt(draft.currentIndex) || 0), qList.length - 1)
+                : 0;
+            const restoredMode = draft.mode || 'practice';
+            let restoredSeconds = typeof draft.totalSeconds === 'number' ? draft.totalSeconds : (restoredMode === 'exam' ? 3600 : 0);
+            if (restoredMode === 'exam' && restoredSeconds <= 0) {
+                restoredSeconds = draft.initialTotalSeconds || 3600;
+            }
+
+            currentSession = {
+                mode: restoredMode,
+                subjectKey: key,
+                subject: data.subject || draft.subject || 'other',
+                title: data.title || draft.title || 'Đề thi',
+                questions: qList,
+                answers: { ...(draft.answers || {}) },
+                bookmarks: { ...(draft.bookmarks || {}) },
+                currentIndex: safeIdx,
+                totalSeconds: restoredSeconds,
+                initialTotalSeconds: draft.initialTotalSeconds || restoredSeconds,
+                intervalTotal: null,
+                isSubmitted: false,
+                scoreCard: {},
+                questionTimeSpent: { ...(draft.questionTimeSpent || {}) },
+                hintsOpened: { ...(draft.hintsOpened || {}) }
+            };
+            saveActiveExamSession();
+
+            launchQuizView(currentSession.subject);
+            startTimers();
+            renderNavGrid();
+            renderQuestion();
+        }
+
+        function startFreshExamDirectly(key, prevDraft) {
+            const data = library[key];
+            if (!data) return;
+            activeDetailKey = key;
+            const freshMode = (prevDraft && prevDraft.mode) ? prevDraft.mode : 'exam';
+            const freshSeconds = freshMode === 'exam'
+                ? ((prevDraft && prevDraft.initialTotalSeconds > 0) ? prevDraft.initialTotalSeconds : 3600)
+                : 0;
+
+            currentSession = {
+                mode: freshMode,
+                subjectKey: key,
+                subject: data.subject || 'other',
+                title: data.title || 'Đề thi',
+                questions: [...(data.questions || [])],
+                answers: {},
+                bookmarks: {},
+                currentIndex: 0,
+                totalSeconds: freshSeconds,
+                initialTotalSeconds: freshSeconds,
+                intervalTotal: null,
+                isSubmitted: false,
+                scoreCard: {},
+                questionTimeSpent: {},
+                hintsOpened: {}
+            };
+            saveActiveExamSession();
+
+            launchQuizView(currentSession.subject);
+            startTimers();
+            renderNavGrid();
+            renderQuestion();
+        }
+
+        function renderDetailDraftBanner(key) {
+            const area = document.getElementById('detail-draft-banner-area');
+            if (!area) return;
+            const draft = getExamDraft(key);
+            const data = library[key];
+            if (!draft || !data) {
+                area.innerHTML = '';
+                return;
+            }
+            const totalQ = (draft.questions && draft.questions.length) || (data.questions ? data.questions.length : 0);
+            const curQ = totalQ > 0 ? Math.min(Math.max(1, (draft.currentIndex || 0) + 1), totalQ) : 1;
+            const ansCount = countDraftAnswered(draft);
+            const timeStr = formatClock(draft.totalSeconds || 0);
+            area.innerHTML = `
+                <div class="detail-draft-banner">
+                    <div class="detail-draft-banner-info">
+                        <div class="detail-draft-banner-title">
+                            <span class="draft-pulse-dot"></span>
+                            <span>Đang làm dở (Câu ${curQ}/${totalQ})</span>
+                        </div>
+                        <div class="detail-draft-banner-sub">Đã trả lời ${ansCount}/${totalQ} câu · Đồng hồ: ${timeStr} (${draft.mode === 'exam' ? 'Thi thử' : 'Luyện tập'})</div>
+                    </div>
+                    <div class="detail-draft-banner-actions">
+                        <button onclick="resumeExamFromDraft('${key}')" style="background:#d97706; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 6px rgba(217,119,6,0.25);">
+                            <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <span>Làm tiếp</span>
+                        </button>
+                        <button onclick="discardDraftFromDetail('${key}')" style="background:#fff; color:#b91c1c; border:1px solid #fecaca; padding:8px 12px; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">Xóa nháp</button>
+                    </div>
+                </div>`;
+        }
+
+        async function discardDraftFromDetail(key) {
+            await deleteExamDraft(key);
+            renderDetailDraftBanner(key);
+            renderDashboardGrid();
         }
 
         // --- GỘP ĐỀ 2 BƯỚC ---
@@ -5481,6 +6654,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             } else {
                 document.getElementById('detail-best-score').style.display = 'none';
             }
+
+            // Hiển thị banner bản nháp nếu đề này đang có bài làm dở
+            renderDetailDraftBanner(key);
 
             // TẦNG 2: Hiển thị Báo cáo chiến thuật & Đánh giá năng lực với cơ chế đóng/mở thông minh
             const expandTier2 = (window.justFinishedExam === true);
@@ -5757,6 +6933,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             }
 
             closeSessionConfig();
+            if (activeDetailKey) {
+                await deleteExamDraft(activeDetailKey);
+            }
             
             currentSession = { 
                 mode: cfgMode, 
@@ -5768,6 +6947,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 bookmarks: {}, 
                 currentIndex: 0, 
                 totalSeconds: timeSeconds, 
+                initialTotalSeconds: timeSeconds,
                 intervalTotal: null, 
                 isSubmitted: false, 
                 scoreCard: {},
@@ -5898,28 +7078,94 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             }
         }
 
-        // --- QUIZ LOGIC ---
-        async function exitToDashboard() { 
-            let shouldExit = currentSession.isSubmitted;
-            if (!shouldExit) {
-                shouldExit = await showCustomConfirm({
-                    title: "Thoát phòng luyện đề",
-                    message: "Bài làm hiện tại của bạn chưa được nộp. Bạn có chắc chắn muốn thoát ra ngoài không?",
-                    confirmText: "Thoát ngay",
-                    cancelText: "Làm tiếp",
-                    subCode: currentSession.subject
-                });
+        // --- QUIZ LOGIC & 3-OPTION EXIT MODAL ---
+        function openExitExamModal() {
+            const modal = document.getElementById('exit-exam-modal');
+            const summaryEl = document.getElementById('exit-modal-summary');
+            const totalQ = (currentSession.questions && currentSession.questions.length) || 0;
+            const curQ = totalQ > 0 ? Math.min(Math.max(1, (currentSession.currentIndex || 0) + 1), totalQ) : 1;
+            let answeredCount = 0;
+            for (let i = 0; i < totalQ; i++) {
+                if (checkAnswered(i)) answeredCount++;
             }
-            if (shouldExit) { 
-                clearInterval(currentSession.intervalTotal); 
-                clearActiveExamSession();
-                if (currentSession.isSubmitted && currentSession.subjectKey && library[currentSession.subjectKey]) {
-                    navToDashboard(currentSession.subject || 'all');
-                    openDetailView(currentSession.subjectKey);
-                } else {
-                    navToDashboard(currentSession.subject || 'all'); 
+            const bookmarkCount = currentSession.bookmarks
+                ? Object.values(currentSession.bookmarks).filter(Boolean).length
+                : 0;
+            const timeLabel = currentSession.mode === 'exam'
+                ? `Còn ${formatClock(currentSession.totalSeconds || 0)}`
+                : `Đã làm ${formatClock(currentSession.totalSeconds || 0)}`;
+
+            if (summaryEl) {
+                summaryEl.innerHTML = `
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Câu đang dừng</span>
+                        <span class="session-flow-summary-val" style="color:var(--tsa-blue);">Câu ${curQ}/${totalQ}</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Đã chọn đáp án</span>
+                        <span class="session-flow-summary-val">${answeredCount}/${totalQ} câu</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Đánh dấu cờ</span>
+                        <span class="session-flow-summary-val">${bookmarkCount} câu</span>
+                    </div>
+                    <div class="session-flow-summary-item">
+                        <span class="session-flow-summary-label">Đồng hồ</span>
+                        <span class="session-flow-summary-val">${timeLabel}</span>
+                    </div>`;
+            }
+            if (modal) {
+                modal.style.display = 'flex';
+                requestAnimationFrame(() => modal.classList.add('active'));
+            }
+        }
+
+        function closeExitExamModal() {
+            const modal = document.getElementById('exit-exam-modal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 180);
+        }
+
+        async function resolveExitExamModal(action) {
+            closeExitExamModal();
+            if (action === 'stay') return;
+
+            if (action === 'save_exit') {
+                if (currentSession.subjectKey) {
+                    const draftPayload = buildCurrentDraftPayload();
+                    await saveExamDraft(currentSession.subjectKey, draftPayload);
                 }
-            } 
+            } else if (action === 'discard_exit') {
+                if (currentSession.subjectKey) {
+                    await deleteExamDraft(currentSession.subjectKey);
+                }
+            }
+
+            if ( !navDockCollapsed && isMobileViewport() ) {
+                toggleNavDock(true);
+            }
+            clearInterval(currentSession.intervalTotal);
+            clearActiveExamSession();
+            navToDashboard(currentSession.subject || 'all');
+        }
+
+        async function exitToDashboard() { 
+            if (!currentSession.isSubmitted) {
+                openExitExamModal();
+                return;
+            }
+            if (!navDockCollapsed && isMobileViewport()) {
+                toggleNavDock(true);
+            }
+            clearInterval(currentSession.intervalTotal); 
+            clearActiveExamSession();
+            if (currentSession.isSubmitted && currentSession.subjectKey && library[currentSession.subjectKey]) {
+                navToDashboard(currentSession.subject || 'all');
+                openDetailView(currentSession.subjectKey);
+            } else {
+                navToDashboard(currentSession.subject || 'all'); 
+            }
         }
 
         function startTimers() {
@@ -5996,7 +7242,15 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
                 if (idx === currentSession.currentIndex) box.classList.add('active');
                 if (currentSession.bookmarks[idx]) box.classList.add('bookmarked');
-                box.onclick = () => { currentSession.currentIndex = idx; renderQuestion(); renderNavGrid(); };
+                box.onclick = () => {
+                    currentSession.currentIndex = idx;
+                    saveActiveExamSession();
+                    renderQuestion();
+                    renderNavGrid();
+                    if (isMobileViewport() && !navDockCollapsed) {
+                        toggleNavDock(true);
+                    }
+                };
                 return box;
             };
 
@@ -6022,6 +7276,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 grid.appendChild(createNumBox(i));
                 i++;
             }
+            syncBottomBar();
         }
 
         function renderQuestion() {
@@ -6324,21 +7579,30 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if (window.MathJax) MathJax.typesetPromise([contextArea, area]);
         }
 
-        // --- ADAPTIVE DOCK: BẢNG ĐIỀU HƯỚNG THÍCH ỨNG ---
+        // --- ADAPTIVE DOCK & MOBILE BOTTOM SHEET ---
         let navDockCollapsed = false;
         let lastQuestionHadContext = null;
+
+        function isMobileViewport() {
+            return window.innerWidth <= 768;
+        }
 
         function applyNavDock() {
             const panel = document.getElementById('nav-panel');
             const bar = document.getElementById('bottom-bar');
+            const backdrop = document.getElementById('nav-sheet-backdrop');
             if (!panel || !bar) return;
+            const mobile = isMobileViewport();
             panel.classList.toggle('docked-bottom', navDockCollapsed);
-            bar.classList.toggle('visible', navDockCollapsed);
+            bar.classList.toggle('visible', navDockCollapsed || mobile);
+            if (backdrop) {
+                backdrop.classList.toggle('active', !navDockCollapsed && mobile);
+            }
             // inert: ngăn focus bàn phím / đọc màn hình vào phần đang ẩn
             panel.inert = navDockCollapsed;
-            bar.inert = !navDockCollapsed;
+            bar.inert = mobile ? false : !navDockCollapsed;
             panel.setAttribute('aria-hidden', navDockCollapsed ? 'true' : 'false');
-            bar.setAttribute('aria-hidden', navDockCollapsed ? 'false' : 'true');
+            bar.setAttribute('aria-hidden', (mobile || navDockCollapsed) ? 'false' : 'true');
         }
 
         function toggleNavDock(force) {
@@ -6347,7 +7611,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function resetNavDockState() {
-            navDockCollapsed = false;
+            navDockCollapsed = isMobileViewport();
             lastQuestionHadContext = null;
             const qv = document.getElementById('quiz-view');
             if (qv) qv.classList.add('dock-instant');
@@ -6355,11 +7619,16 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if (qv) { void qv.offsetWidth; requestAnimationFrame(() => qv.classList.remove('dock-instant')); }
         }
 
-        // Chỉ tự động đổi chế độ khi loại câu hỏi (có/không ngữ liệu) thay đổi,
-        // nhờ vậy lựa chọn thủ công của người dùng được giữ nguyên giữa các câu cùng loại.
+        // Chỉ tự động đổi chế độ khi loại câu hỏi (có/không ngữ liệu) thay đổi trên Desktop,
+        // còn trên Mobile Bottom Sheet luôn đóng mặc định và chỉ mở khi người dùng bấm thanh dock.
         function syncAdaptiveDock(hasContext) {
             const qv = document.getElementById('quiz-view');
             if (qv) qv.classList.toggle('context-mode', hasContext);
+            if (isMobileViewport()) {
+                lastQuestionHadContext = hasContext;
+                applyNavDock();
+                return;
+            }
             if (lastQuestionHadContext === hasContext) return;
             const firstRender = (lastQuestionHadContext === null);
             lastQuestionHadContext = hasContext;
@@ -6375,6 +7644,13 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             }
         }
 
+        window.addEventListener('resize', () => {
+            const qv = document.getElementById('quiz-view');
+            if (qv && qv.style.display !== 'none') {
+                applyNavDock();
+            }
+        });
+
         function formatClock(sec) {
             sec = Math.max(0, sec || 0);
             return `${Math.floor(sec / 60)}:${(sec % 60).toString().padStart(2, '0')}`;
@@ -6385,6 +7661,16 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const idx = currentSession.currentIndex || 0;
             const counter = document.getElementById('bottom-bar-counter');
             if (counter) counter.innerText = `Câu ${idx + 1}/${total}`;
+
+            const dockProg = document.getElementById('bottom-dock-progress');
+            if (dockProg) {
+                let answeredCount = 0;
+                for (let i = 0; i < total; i++) {
+                    if (checkAnswered(i)) answeredCount++;
+                }
+                dockProg.innerText = `${answeredCount}/${total}`;
+            }
+
             const prevBtn = document.getElementById('btn-bottom-prev');
             const nextBtn = document.getElementById('btn-bottom-next');
             const submitBtn = document.getElementById('btn-submit');
@@ -6836,7 +8122,15 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
         function updateSA(val) { if (currentSession.isSubmitted) return; if (val.trim() === '') delete currentSession.answers[currentSession.currentIndex]; else currentSession.answers[currentSession.currentIndex] = val; saveActiveExamSession(); renderNavGrid(); }
         function selectBlank(bIdx, val) { if (currentSession.isSubmitted) return; let ans = currentSession.answers[currentSession.currentIndex] || {}; ans[bIdx] = val; currentSession.answers[currentSession.currentIndex] = ans; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
         function toggleBookmark() { if (currentSession.isSubmitted) return; currentSession.bookmarks[currentSession.currentIndex] = !currentSession.bookmarks[currentSession.currentIndex]; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
-        function jumpToQuestion(idx) { currentSession.currentIndex = idx; saveActiveExamSession(); renderQuestion(); renderNavGrid(); }
+        function jumpToQuestion(idx) {
+            currentSession.currentIndex = idx;
+            saveActiveExamSession();
+            renderQuestion();
+            renderNavGrid();
+            if (isMobileViewport() && !navDockCollapsed) {
+                toggleNavDock(true);
+            }
+        }
         function prevQuestion() { if (currentSession.currentIndex > 0) jumpToQuestion(currentSession.currentIndex - 1); }
         function nextQuestion() { if (currentSession.currentIndex < currentSession.questions.length - 1) jumpToQuestion(currentSession.currentIndex + 1); }
         function reviewAll() { jumpToQuestion(0); }
@@ -7062,6 +8356,9 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             
             clearInterval(currentSession.intervalTotal);
             currentSession.isSubmitted = true;
+            if (currentSession.subjectKey) {
+                await deleteExamDraft(currentSession.subjectKey);
+            }
             if (currentSession.mode !== 'review') {
                 window.justFinishedExam = true;
             }
@@ -7332,6 +8629,24 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 return;
             }
 
+            const exitExamModal = document.getElementById('exit-exam-modal');
+            if (exitExamModal && (exitExamModal.classList.contains('active') || exitExamModal.style.display === 'flex')) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    resolveExitExamModal('stay');
+                }
+                return;
+            }
+
+            const resumeDraftModal = document.getElementById('resume-draft-modal');
+            if (resumeDraftModal && (resumeDraftModal.classList.contains('active') || resumeDraftModal.style.display === 'flex')) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    resolveResumeDraftModal('cancel');
+                }
+                return;
+            }
+
             const lightbox = document.getElementById('image-lightbox-modal');
             if (lightbox && (lightbox.classList.contains('active') || lightbox.style.display === 'flex')) {
                 if (e.key === 'Escape') {
@@ -7343,6 +8658,12 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             const quizView = document.getElementById('quiz-view');
             if (!quizView || quizView.style.display === 'none') return;
+
+            if (e.key === 'Escape' && isMobileViewport() && !navDockCollapsed) {
+                e.preventDefault();
+                toggleNavDock(true);
+                return;
+            }
 
             const activeEl = document.activeElement;
             const tag = activeEl ? activeEl.tagName : '';
