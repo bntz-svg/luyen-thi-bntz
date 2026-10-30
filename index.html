@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -185,7 +185,7 @@
         }
 
         /* VIEW TRANSITIONS */
-        .view-transition { animation: viewFadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .view-transition { animation: viewFadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
         @keyframes viewFadeInUp {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -2557,86 +2557,106 @@
                 justify-content: space-between;
             }
 
-            /* 4. PHÒNG THI & CHẾ ĐỘ XEM LẠI: BOTTOM SHEET & DOCK CỐ ĐỊNH */
-            #quiz-view .question-panel {
-                flex-direction: column !important;
-                overflow-y: auto !important;
-                padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+            /* 4. PHÒNG THI & XEM LẠI (MOBILE): Header đỉnh - vùng câu hỏi giữa - Dock đáy.
+               Dock nằm TRONG luồng flex của #quiz-view (luôn dính đáy, không cần padding bù),
+               Bottom Sheet (#nav-panel) trượt lên bên trong .main-workspace. */
+            body {
+                height: 100vh;
+                height: 100dvh;
             }
+            #quiz-view {
+                overflow: hidden !important;
+            }
+            #quiz-view .main-workspace {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                position: relative !important;
+                overflow: hidden !important;
+            }
+            /* Một vùng cuộn duy nhất: chỉ xuất hiện thanh cuộn khi nội dung thực sự dài hơn khung */
+            #quiz-view .question-panel,
             #quiz-view.context-mode .question-panel {
                 flex-direction: column !important;
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                height: 100% !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
             }
             #quiz-view.context-mode .reading-context {
-                flex: none !important;
+                flex: 0 0 auto !important;
                 max-width: 100% !important;
                 width: 100% !important;
                 border-right: none !important;
                 border-bottom: 2px solid #e2e8f0 !important;
-                padding: 16px 14px !important;
+                padding: 14px 14px !important;
                 max-height: 38vh;
                 overflow-y: auto;
             }
             #quiz-view .q-container,
             #quiz-view.context-mode .q-container {
-                flex: 1 1 auto !important;
+                flex: 1 0 auto !important;
                 max-width: 100% !important;
                 width: 100% !important;
-                padding: 16px 14px calc(95px + env(safe-area-inset-bottom)) 14px !important;
-                overflow-y: visible !important;
-            }
-            #quiz-view .q-container-inner {
-                padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+                padding: 14px 14px 16px 14px !important;
+                overflow: visible !important;
             }
 
-            /* Backdrop overlay khi mở Bottom Sheet */
+            /* Lớp nền tối + Bottom Sheet nằm gọn trong vùng làm việc, ngay phía trên Dock */
             .nav-sheet-backdrop {
                 display: block;
-                z-index: 1050 !important;
+                position: absolute !important;
+                inset: 0 !important;
+                z-index: 40 !important;
             }
             .nav-sheet-backdrop.active {
                 opacity: 1;
                 pointer-events: auto;
             }
-
-            /* Bottom Sheet (#nav-panel) trên Mobile */
             .nav-panel {
-                position: fixed !important;
+                position: absolute !important;
                 left: 0 !important;
                 right: 0 !important;
                 bottom: 0 !important;
                 width: 100% !important;
                 min-width: 100% !important;
                 height: auto !important;
-                max-height: 70vh !important;
+                max-height: min(70vh, 100%) !important;
                 border-left: none !important;
                 border-top: 1.5px solid #cbd5e1 !important;
                 border-radius: 20px 20px 0 0 !important;
-                padding: 10px 16px calc(20px + env(safe-area-inset-bottom)) 16px !important;
+                padding: 10px 16px 14px 16px !important;
                 box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.22) !important;
-                z-index: 1100 !important;
+                z-index: 50 !important;
                 transform: translate3d(0, 0, 0) !important;
                 opacity: 1 !important;
+                visibility: visible !important;
                 pointer-events: auto !important;
                 will-change: transform, opacity;
-                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0s linear 0s !important;
             }
             .nav-panel.docked-bottom {
                 transform: translate3d(0, 105%, 0) !important;
                 opacity: 0 !important;
+                visibility: hidden !important;
                 pointer-events: none !important;
                 width: 100% !important;
                 min-width: 100% !important;
-                padding: 10px 16px calc(20px + env(safe-area-inset-bottom)) 16px !important;
+                padding: 10px 16px 14px 16px !important;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0s linear 0.3s !important;
             }
             .bottom-sheet-handle {
                 display: block;
             }
             .nav-panel-topbar {
-                margin-bottom: 8px;
-                justify-content: space-between;
-                align-items: center;
+                display: none !important;
             }
-            /* Cuộn nội bộ mượt mà cho cả chế độ làm bài và chế độ xem lại (Review Mode) */
+            /* Đã có đồng hồ + nút Nộp bài trên Dock nên không lặp lại trong sheet */
+            .nav-panel #timer-submit-area {
+                display: none !important;
+            }
             .nav-panel #score-result-area {
                 flex-shrink: 0 !important;
             }
@@ -2644,8 +2664,9 @@
             .nav-panel.is-submitted .nav-scroll-body {
                 flex: 1 1 auto !important;
                 min-height: 0 !important;
-                max-height: calc(70vh - 110px);
+                display: block !important;
                 overflow-y: auto !important;
+                overflow-x: hidden !important;
                 -webkit-overflow-scrolling: touch;
             }
             .nav-panel:not(.is-submitted) #nav-grid {
@@ -2658,54 +2679,47 @@
                 gap: 8px;
             }
 
-            /* THANH DOCK ĐÁY CỐ ĐỊNH TRÊN MOBILE: BẮT BUỘC LUÔN LUÔN HIỂN THỊ (PHÒNG THI & XEM LẠI) */
-            .bottom-bar,
-            .bottom-bar.visible,
-            .bottom-dock {
-                position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                z-index: 1000 !important;
+            /* DOCK ĐÁY: luôn hiển thị ở mọi trạng thái (làm bài / xem lại), nằm cuối cột flex */
+            #quiz-view .bottom-bar,
+            #quiz-view .bottom-bar.visible {
+                position: relative !important;
+                inset: auto !important;
+                flex: 0 0 auto !important;
+                z-index: 60 !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                transform: translate3d(0, 0, 0) !important;
+                transform: none !important;
                 width: 100% !important;
                 max-width: 100% !important;
                 max-height: none !important;
-                min-height: 52px !important;
+                min-height: 54px !important;
                 height: auto !important;
-                padding: 7px 8px calc(10px + env(safe-area-inset-bottom)) 8px !important;
+                padding: 7px 8px calc(8px + env(safe-area-inset-bottom)) 8px !important;
                 border-radius: 0 !important;
                 border: none !important;
                 border-top: 1.5px solid #cbd5e1 !important;
-                background: rgba(255, 255, 255, 0.98) !important;
-                backdrop-filter: blur(14px) !important;
-                -webkit-backdrop-filter: blur(14px) !important;
-                box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.12) !important;
+                background: #ffffff !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.1) !important;
                 opacity: 1 !important;
                 pointer-events: auto !important;
                 visibility: visible !important;
                 overflow: visible !important;
-                box-sizing: border-box !important;
                 gap: 4px !important;
             }
             .bottom-bar-left {
                 flex: 0 0 auto !important;
-                display: flex !important;
-                align-items: center !important;
                 gap: 4px !important;
             }
             .btn-bottom-nav {
-                padding: 6px 8px !important;
-                font-size: 11.5px !important;
+                padding: 7px 9px !important;
+                font-size: 12px !important;
                 border-radius: 6px !important;
             }
             .bottom-bar-center {
                 flex: 1 1 auto !important;
-                display: flex !important;
-                align-items: center !important;
                 justify-content: center !important;
                 gap: 4px !important;
                 min-width: 0 !important;
@@ -2719,13 +2733,11 @@
             }
             .bottom-bar-right {
                 flex: 0 0 auto !important;
-                display: flex !important;
-                align-items: center !important;
                 gap: 4px !important;
             }
             .btn-bottom-dock-expand {
-                padding: 6px 8px !important;
-                font-size: 11.5px !important;
+                padding: 7px 9px !important;
+                font-size: 12px !important;
                 gap: 4px !important;
                 border-radius: 6px !important;
             }
@@ -2733,8 +2745,8 @@
                 display: none !important;
             }
             .btn-bottom-submit {
-                padding: 6px 10px !important;
-                font-size: 11.5px !important;
+                padding: 7px 10px !important;
+                font-size: 12px !important;
                 border-radius: 6px !important;
                 white-space: nowrap !important;
             }
@@ -3556,10 +3568,10 @@
             
             <div class="nav-panel" id="nav-panel">
                 <div class="bottom-sheet-handle" onclick="toggleNavDock(true)" title="Chạm để đóng bảng câu hỏi"></div>
+                <!-- NUT THU XUONG DAY TREN PC (TINH GON, KHONG CO TIEU DE LON) -->
                 <div class="nav-panel-topbar">
-                    <span style="font-size: 12.5px; font-weight: 800; color: #475569; letter-spacing: 0.03em; text-transform: uppercase;">Điều hướng câu hỏi</span>
-                    <button class="btn-dock-toggle" onclick="toggleNavDock(true)" title="Thu bảng điều hướng xuống thanh đáy">
-                        <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+                    <button type="button" class="btn-dock-toggle" onclick="toggleNavDock(true)" title="Thu bảng điều hướng xuống thanh đáy">
+                        <svg class="icon-svg" style="width:13px;height:13px;" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
                         <span>Thu xuống đáy</span>
                     </button>
                 </div>
@@ -4721,6 +4733,8 @@
             
             isCombineMode = false;
             filterSubject(sub);
+            const dashContent = document.querySelector('#dashboard-view .dashboard-content');
+            if (dashContent) dashContent.scrollTop = 0; // thẻ đề đầu tiên luôn nằm trọn dưới Header
         }
 
         function renderHomeStats() {
@@ -7670,7 +7684,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if (window.MathJax) MathJax.typesetPromise([contextArea, area]);
         }
 
-        // --- ADAPTIVE DOCK & MOBILE BOTTOM SHEET ---
+        // --- DOCK ĐÁY & BOTTOM SHEET (CHỈ MOBILE) ---
+        // Desktop (> 768px): cột phải (#nav-panel) luôn hiển thị cố định, Dock đáy luôn ẩn.
+        // Mobile (<= 768px): #nav-panel là Bottom Sheet (mặc định đóng), Dock đáy luôn hiển thị.
         let navDockCollapsed = false;
         let lastQuestionHadContext = null;
 
@@ -7682,18 +7698,38 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const panel = document.getElementById('nav-panel');
             const bar = document.getElementById('bottom-bar');
             const backdrop = document.getElementById('nav-sheet-backdrop');
+            const expandBtn = document.getElementById('btn-bottom-dock-expand');
             if (!panel || !bar) return;
             const mobile = isMobileViewport();
-            panel.classList.toggle('docked-bottom', navDockCollapsed);
-            bar.classList.toggle('visible', navDockCollapsed || mobile);
-            if (backdrop) {
-                backdrop.classList.toggle('active', !navDockCollapsed && mobile);
+
+            if (mobile) {
+                // Tren Mobile: navDockCollapsed = true la sheet dong; dock day luon hien thi co dinh o chan trang
+                const sheetClosed = navDockCollapsed;
+                panel.classList.toggle('docked-bottom', sheetClosed);
+                bar.classList.add('visible');
+                if (backdrop) {
+                    backdrop.classList.toggle('active', !sheetClosed);
+                }
+                panel.inert = sheetClosed;
+                bar.inert = false;
+                panel.setAttribute('aria-hidden', sheetClosed ? 'true' : 'false');
+                bar.setAttribute('aria-hidden', 'false');
+                if (expandBtn) expandBtn.title = "Mở / Đóng bảng câu hỏi";
+            } else {
+                // Tren Desktop: navDockCollapsed = true la cot phai thu lai, dock day floating island noi len;
+                // navDockCollapsed = false la cot phai mo ra, dock day an di.
+                const isCollapsed = navDockCollapsed;
+                panel.classList.toggle('docked-bottom', isCollapsed);
+                bar.classList.toggle('visible', isCollapsed);
+                if (backdrop) {
+                    backdrop.classList.remove('active');
+                }
+                panel.inert = isCollapsed;
+                bar.inert = !isCollapsed;
+                panel.setAttribute('aria-hidden', isCollapsed ? 'true' : 'false');
+                bar.setAttribute('aria-hidden', isCollapsed ? 'false' : 'true');
+                if (expandBtn) expandBtn.title = isCollapsed ? "Mở lại bảng câu hỏi (cột bên phải)" : "Thu bảng điều hướng xuống thanh đáy";
             }
-            // inert: ngăn focus bàn phím / đọc màn hình vào phần đang ẩn
-            panel.inert = navDockCollapsed;
-            bar.inert = false;
-            panel.setAttribute('aria-hidden', navDockCollapsed ? 'true' : 'false');
-            bar.setAttribute('aria-hidden', 'false');
         }
 
         function toggleNavDock(force) {
@@ -7702,40 +7738,43 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function resetNavDockState() {
-            navDockCollapsed = isMobileViewport();
             lastQuestionHadContext = null;
+            navDockCollapsed = isMobileViewport();
             const qv = document.getElementById('quiz-view');
             if (qv) qv.classList.add('dock-instant');
             applyNavDock();
             if (qv) { void qv.offsetWidth; requestAnimationFrame(() => qv.classList.remove('dock-instant')); }
         }
 
-        // Chỉ tự động đổi chế độ khi loại câu hỏi (có/không ngữ liệu) thay đổi trên Desktop,
-        // còn trên Mobile Bottom Sheet luôn đóng mặc định và chỉ mở khi người dùng bấm thanh dock.
+        // Tu dong thich ung bo cuc (Adaptive Dock):
+        // Tren PC: cau co ngu lieu -> tu dong thu cot phai xuong day de toi uu khong gian doc 2 cot;
+        //          cau don khong ngu lieu -> tu dong mo lai cot phai.
         function syncAdaptiveDock(hasContext) {
             const qv = document.getElementById('quiz-view');
             if (qv) qv.classList.toggle('context-mode', hasContext);
+
             if (isMobileViewport()) {
+                // Tren Mobile: giu nguyen co che bottom sheet (dong san), dock day co dinh
                 lastQuestionHadContext = hasContext;
                 applyNavDock();
                 return;
             }
-            if (lastQuestionHadContext === hasContext) return;
-            const firstRender = (lastQuestionHadContext === null);
-            lastQuestionHadContext = hasContext;
-            if (firstRender && qv) {
-                qv.classList.add('dock-instant');
-                navDockCollapsed = hasContext;
-                applyNavDock();
-                void qv.offsetWidth;
-                requestAnimationFrame(() => qv.classList.remove('dock-instant'));
-            } else {
+
+            // Tren PC: Tu dong chuyen doi khi sang loai cau co context hoac khong context
+            if (lastQuestionHadContext !== hasContext) {
+                lastQuestionHadContext = hasContext;
                 navDockCollapsed = hasContext;
                 applyNavDock();
             }
         }
 
+        let wasMobileViewport = isMobileViewport();
         window.addEventListener('resize', () => {
+            const nowMobile = isMobileViewport();
+            if (nowMobile !== wasMobileViewport) {
+                wasMobileViewport = nowMobile;
+                navDockCollapsed = nowMobile; // vào mobile: sheet đóng; sang desktop: cột phải luôn mở
+            }
             const qv = document.getElementById('quiz-view');
             if (qv && qv.style.display !== 'none') {
                 applyNavDock();
