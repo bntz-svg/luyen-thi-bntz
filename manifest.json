@@ -1,0 +1,63 @@
+{
+  "name": "bntz - Hệ Thống Luyện Thi TSA",
+  "short_name": "bntz",
+  "description": "Nền tảng luyện thi đánh giá tư duy TSA và đánh giá năng lực thông minh bntz với trợ lý AI và đồng bộ đám mây",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#0033a0",
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tủ sách đề thi",
+      "short_name": "Đề thi",
+      "description": "Mở danh sách các môn thi và bộ đề",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

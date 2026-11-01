@@ -1,9 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Luyện Thi bntz</title>
+    <!-- PWA & MOBILE APP METAS -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0033a0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="bntz">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="bntz">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
     <!-- MathJax -->
     <script>
         window.MathJax = {
@@ -2806,6 +2819,10 @@
             <span class="exam-title" id="main-title">Trang chủ</span>
         </div>
         <div class="header-right-tools" style="display: flex; align-items: center; gap: 8px;">
+            <button id="btn-pwa-install" onclick="triggerPWAInstall()" style="display: none; background: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7; padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 700; align-items: center; gap: 6px; transition: 0.15s;" title="Cài đặt bntz về màn hình chính">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Cài đặt App</span>
+            </button>
             <button onclick="openApiKeyModal()" style="background: #ffffff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #334155; display: flex; align-items: center; gap: 6px; transition: 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#ffffff'" title="Cài đặt Gemini API Key">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                 <span id="header-key-label">Gemini Key</span>
@@ -8902,6 +8919,75 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             new MutationObserver(sync).observe(scoreArea, { attributes: true, attributeFilter: ['style'] });
             sync();
         })();
+    </script>
+
+    <!-- PWA SERVICE WORKER REGISTRATION & INSTALLATION HANDLER -->
+    <script>
+        (function initPWA() {
+            // 1. Dang ky Service Worker cho bntz
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(reg => {
+                            console.log('[PWA] Service Worker registered with scope:', reg.scope);
+                            reg.addEventListener('updatefound', () => {
+                                const newWorker = reg.installing;
+                                if (newWorker) {
+                                    newWorker.addEventListener('statechange', () => {
+                                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                            console.log('[PWA] Ban cap nhat ung dung moi da san sang');
+                                        }
+                                    });
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            console.warn('[PWA] Service Worker registration failed:', err);
+                        });
+                });
+            }
+
+            // 2. Lang nghe su kien beforeinstallprompt
+            window.deferredPWAInstallPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                window.deferredPWAInstallPrompt = e;
+                console.log('[PWA] beforeinstallprompt event captured');
+                
+                // Hien thi nut Cai dat App tren header neu chua o che do standalone
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                const installBtn = document.getElementById('btn-pwa-install');
+                if (installBtn && !isStandalone) {
+                    installBtn.style.display = 'inline-flex';
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                window.deferredPWAInstallPrompt = null;
+                const installBtn = document.getElementById('btn-pwa-install');
+                if (installBtn) installBtn.style.display = 'none';
+                console.log('[PWA] App successfully installed');
+            });
+        })();
+
+        function triggerPWAInstall() {
+            if (window.deferredPWAInstallPrompt) {
+                window.deferredPWAInstallPrompt.prompt();
+                window.deferredPWAInstallPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        const installBtn = document.getElementById('btn-pwa-install');
+                        if (installBtn) installBtn.style.display = 'none';
+                    }
+                    window.deferredPWAInstallPrompt = null;
+                });
+            } else {
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert({
+                        title: "C\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng bntz",
+                        message: "\u0110\u1ec3 c\u00e0i \u0111\u1eb7t bntz l\u00e0m \u1ee9ng d\u1ee5ng \u0111\u1ed9c l\u1eadp tr\u00ean m\u00e0n h\u00ecnh ch\u00ednh:\n\n- Tr\u00ean Chrome Android: B\u1ea5m menu 3 ch\u1ea5m (\u22ee) \u1edf g\u00f3c tr\u00ean ph\u1ea3i -> ch\u1ecdn 'C\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng' (Install app).\n- Tr\u00ean Safari iPhone/iPad: B\u1ea5m n\u00fat Chia s\u1ebb -> ch\u1ecdn 'Th\u00eam v\u00e0o MH ch\u00ednh' (Add to Home Screen)."
+                    });
+                }
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002277"/>
+      <stop offset="100%" stop-color="#0033a0"/>
+    </linearGradient>
+    <linearGradient id="gemini-star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="45%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+
+  <!-- NỀN CHUẨN MASKABLE & ANY (FULL BLEED) -->
+  <rect width="512" height="512" fill="url(#bg-grad)"/>
+
+  <!-- VÒNG TRÒN AN TOÀN TRANG TRÍ MỜ -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+
+  <!-- LOGO CỤM CHÍNH (NẰM TRONG VÙNG SAFE ZONE 80%) -->
+  <g filter="url(#glow)">
+    <!-- NGÔI SAO GEMINI 4 CÁNH (DẠNG VECTOR CHUẨN) -->
+    <!-- Dịch chuyển tâm về (256, 185) với bán kính 80 -->
+    <path fill="url(#gemini-star-grad)" d="
+      M 256 105 
+      C 256 149.18 220.18 185 176 185 
+      C 220.18 185 256 220.82 256 265 
+      C 256 220.82 291.82 185 336 185 
+      C 291.82 185 256 149.18 256 105 Z"/>
+
+    <!-- ĐIỂM SÁNG TRUNG TÂM NGÔI SAO -->
+    <circle cx="256" cy="185" r="7" fill="#ffffff" opacity="0.85"/>
+  </g>
+
+  <!-- CHỮ THƯƠNG HIỆU bntz -->
+  <text x="256" y="360" 
+        text-anchor="middle" 
+        fill="#ffffff" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" 
+        font-size="94" 
+        font-weight="900" 
+        letter-spacing="-3px">bntz</text>
+
+  <!-- BADGE PHỤ "LUYỆN THI TSA" -->
+  <g transform="translate(166, 396)">
+    <rect width="180" height="32" rx="16" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <text x="90" y="21.5" 
+          text-anchor="middle" 
+          fill="#ffffff" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" 
+          font-size="13" 
+          font-weight="800" 
+          letter-spacing="2.5px">LUYỆN THI TSA</text>
+  </g>
+</svg>
