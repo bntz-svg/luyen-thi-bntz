@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,8 @@
     <title>Hệ Thống Luyện Thi bntz</title>
     <!-- PWA & MOBILE APP METAS -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0033a0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-navbutton-color" content="#ffffff">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="bntz">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1510,6 +1511,34 @@
             border-bottom: 1px solid #fbcfe8;
             padding-bottom: 10px;
             margin-bottom: 10px;
+        }
+        .score-action-btns {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #fbcfe8;
+        }
+        .btn-export-exam {
+            background: #ffffff;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 1px 3px rgba(190, 18, 60, 0.06);
+        }
+        .btn-export-exam:hover {
+            background: #ffe4e6;
+            color: #9f1239;
+            border-color: #fda4af;
+            transform: translateY(-1px);
         }
         .score-val-large {
             color: #be123c;
@@ -3630,6 +3659,44 @@
                     <span id="bottom-dock-progress" class="dock-progress-badge">0/0</span>
                 </button>
                 <button id="btn-submit" class="btn-bottom-submit" onclick="submitExam()" title="Nộp bài thi">Nộp bài</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XUAT DU LIEU BAI THI CHO AI (MARKDOWN EXPORT) -->
+    <div id="export-exam-modal" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 99999;" onclick="if(event.target === this) closeExportExamModal()">
+        <div class="modal-content" style="max-width: 760px; width: 94%; max-height: 90vh; display: flex; flex-direction: column; padding: 20px 22px; border-radius: 14px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.28); background: #ffffff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 34px; height: 34px; border-radius: 8px; background: #fff1f2; color: #be123c; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg class="icon-svg" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 700;">Xu&#7845;t d&#7919; li&#7875;u b&#224;i l&#224;m (Markdown)</h3>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">C&#7845;u tr&#250;c chu&#7849;n k&#232;m &#273;&#7873;, &#273;&#225;p &#225;n &amp; th&#7901;i gian &#273;&#7875; g&#7917;i ChatGPT, Claude ho&#7837;c Gemini ph&#226;n t&#237;ch</div>
+                    </div>
+                </div>
+                <button type="button" onclick="closeExportExamModal()" style="background: none; border: none; font-size: 22px; color: #94a3b8; cursor: pointer; padding: 0 6px; line-height: 1;" title="&#272;&#243;ng">&times;</button>
+            </div>
+            
+            <div style="flex: 1; min-height: 220px; display: flex; flex-direction: column; margin-bottom: 14px; position: relative; overflow: hidden;">
+                <textarea id="export-markdown-textarea" readonly style="flex: 1; width: 100%; min-height: 280px; max-height: 54vh; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12.5px; line-height: 1.6; resize: none; background: #f8fafc; color: #1e293b; white-space: pre; overflow-y: auto;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0;">
+                <span id="export-copy-hint" style="font-size: 12px; color: #059669; font-weight: 700; display: none;">
+                    &#10003; &#272;&#227; sao ch&#233;p v&#224;o b&#7897; nh&#7899; t&#7841;m! B&#7841;n c&#243; th&#7875; d&#225;n (Ctrl+V) v&#224;o AI ngay.
+                </span>
+                <div style="display: flex; gap: 8px; margin-left: auto;">
+                    <button type="button" onclick="downloadExamMarkdown()" class="score-filter-pill" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; background: #ffffff; color: #334155; border: 1.5px solid #cbd5e1; cursor: pointer;">
+                        <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>T&#7843;i file .md</span>
+                    </button>
+                    <button type="button" id="btn-copy-export" onclick="copyExportMarkdown()" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 12.5px; font-weight: 700; background: #be123c; color: #ffffff; border: none; border-radius: 7px; cursor: pointer; box-shadow: 0 2px 6px rgba(190, 18, 60, 0.25);">
+                        <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span id="btn-copy-export-label">Sao ch&#233;p nhanh</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -8421,6 +8488,12 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                         <div style="display:flex; justify-content:space-between;"><span>Phần II (Đúng/Sai 4 ý):</span> <strong>${thptScores.p2.pts.toFixed(2)}đ (${thptScores.p2.fullRightQ}/${thptScores.p2.maxQ})</strong></div>
                         <div style="display:flex; justify-content:space-between;"><span>Phần III (Trả lời ngắn):</span> <strong>${thptScores.p3.pts.toFixed(2)}đ (${thptScores.p3.rightQ}/${thptScores.p3.maxQ})</strong></div>
                     </div>
+                    <div class="score-action-btns">
+                        <button type="button" class="btn-export-exam" onclick="openExportExamModal()" title="Xuất dữ liệu bài làm dạng Markdown để gửi AI phân tích">
+                            <svg class="icon-svg" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>Xuất dữ liệu cho AI</span>
+                        </button>
+                    </div>
                 </div>`;
             } else {
                 finalScoreVal = totalQ > 0 ? ((normalEarnedPoints / totalQ) * 10).toFixed(2) : "0.00";
@@ -8435,6 +8508,12 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                             <div>Đúng: <strong style="color:#0f172a;">${correctCount}/${totalQ}</strong></div>
                             <div>Tỉ lệ: <strong style="color:#059669;">${pct}%</strong></div>
                         </div>
+                    </div>
+                    <div class="score-action-btns">
+                        <button type="button" class="btn-export-exam" onclick="openExportExamModal()" title="Xuất dữ liệu bài làm dạng Markdown để gửi AI phân tích">
+                            <svg class="icon-svg" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>Xuất dữ liệu cho AI</span>
+                        </button>
                     </div>
                 </div>`;
             }
@@ -8478,6 +8557,290 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 fullScoreHtml,
                 normalEarnedPoints
             };
+        }
+
+                // ======================================================================
+        // TINH NANG XUAT DU LIEU BAI LAM (MARKDOWN EXPORT FOR AI PROMPTING)
+        // ======================================================================
+
+        // ======================================================================
+        // TÍNH NĂNG XUẤT DỮ LIỆU BÀI LÀM (MARKDOWN EXPORT CHO AI PROMPTING)
+        // ======================================================================
+
+        // ======================================================================
+        // TÍNH NĂNG XUẤT DỮ LIỆU BÀI LÀM (MARKDOWN EXPORT CHO AI PROMPTING)
+        // ======================================================================
+
+        function formatUserAnswerText(q, userAns) {
+            if (userAns === undefined || userAns === null || userAns === '') {
+                return 'Chưa làm (Bỏ trống)';
+            }
+            const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const tfLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+            if (q.type === 'multiple_choice') {
+                const num = Number(userAns);
+                if (!isNaN(num) && letters[num]) {
+                    return letters[num];
+                }
+                return String(userAns).toUpperCase();
+            }
+            if (q.type === 'short_answer') {
+                return String(userAns);
+            }
+            if (q.type === 'true_false') {
+                if (typeof userAns === 'object' && userAns !== null) {
+                    const keys = Object.keys(userAns).sort();
+                    if (keys.length === 0) return 'Chưa làm (Bỏ trống)';
+                    return keys.map(k => {
+                        const val = userAns[k];
+                        const cleanVal = (val === 'Đ' || val === true || val === 'D' || String(val).toUpperCase() === 'Đ') ? 'Đúng' : 'Sai';
+                        const numK = parseInt(k, 10);
+                        const label = (!isNaN(numK) && tfLetters[numK]) ? tfLetters[numK] : k;
+                        return `${label}) ${cleanVal}`;
+                    }).join(' | ');
+                }
+                return String(userAns);
+            }
+            if (q.type === 'multiple_response') {
+                if (typeof userAns === 'object' && userAns !== null) {
+                    const selected = Object.keys(userAns).filter(k => userAns[k]).map(Number).sort((a,b)=>a-b);
+                    if (selected.length === 0) return 'Chưa làm (Bỏ trống)';
+                    return selected.map(idx => letters[idx] || (idx + 1)).join(', ');
+                }
+                return String(userAns);
+            }
+            if (q.type === 'fill_in_the_blanks') {
+                if (typeof userAns === 'object' && userAns !== null) {
+                    return Object.keys(userAns).map(k => `[${k}]: ${userAns[k]}`).join(' | ');
+                }
+                return String(userAns);
+            }
+            return String(userAns);
+        }
+
+        function formatRightAnswerText(q, rightAns) {
+            if (rightAns === undefined || rightAns === null) return 'Chưa có thông tin';
+            const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const tfLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+            if (q.type === 'multiple_choice') {
+                const num = Number(rightAns);
+                if (!isNaN(num) && letters[num]) {
+                    return letters[num];
+                }
+                return String(rightAns).toUpperCase();
+            }
+            if (q.type === 'short_answer') {
+                return String(rightAns);
+            }
+            if (q.type === 'true_false') {
+                if (typeof rightAns === 'object' && rightAns !== null) {
+                    const keys = Object.keys(rightAns).sort();
+                    return keys.map(k => {
+                        const val = rightAns[k];
+                        const cleanVal = (val === 'Đ' || val === true || val === 'D' || String(val).toUpperCase() === 'Đ') ? 'Đúng' : 'Sai';
+                        const numK = parseInt(k, 10);
+                        const label = (!isNaN(numK) && tfLetters[numK]) ? tfLetters[numK] : k;
+                        return `${label}) ${cleanVal}`;
+                    }).join(' | ');
+                }
+                return String(rightAns);
+            }
+            if (q.type === 'multiple_response') {
+                if (Array.isArray(rightAns)) {
+                    return rightAns.map(v => typeof v === 'number' ? (letters[v] || v) : v).join(', ');
+                }
+                return String(rightAns);
+            }
+            if (q.type === 'fill_in_the_blanks') {
+                if (typeof rightAns === 'object' && rightAns !== null) {
+                    return Object.keys(rightAns).map(k => `[${k}]: ${rightAns[k]}`).join(' | ');
+                }
+                return String(rightAns);
+            }
+            return String(rightAns);
+        }
+
+        function generateExamMarkdown() {
+            if (!currentSession || !currentSession.questions) return "";
+            const totalQ = currentSession.questions.length;
+            const scoreResult = recalculateCurrentScore();
+            const { correctCount, wrongQs, finalScoreVal } = scoreResult;
+            const timeSpentMap = { ...(currentSession.questionTimeSpent || {}) };
+            const totalActiveSeconds = Object.values(timeSpentMap).reduce((a, b) => a + b, 0);
+            const avgSecondsPerQ = totalQ > 0 ? Math.round(totalActiveSeconds / totalQ) : 0;
+            
+            let answeredCount = 0;
+            for (let i = 0; i < totalQ; i++) {
+                if (checkAnswered(i)) answeredCount++;
+            }
+            const unAnsweredCount = totalQ - answeredCount;
+            const wrongCount = totalQ - correctCount - unAnsweredCount;
+            
+            const title = currentSession.title || "Bài luyện thi";
+            const sub = currentSession.subject ? (subjectMap[currentSession.subject.toLowerCase()] || currentSession.subject.toUpperCase()) : "TSA / THPT";
+
+            let md = `# DỮ LIỆU BÀI LÀM: ${title}\n`;
+            md += `- **Môn thi:** ${sub}\n`;
+            md += `- **Điểm số đạt được:** ${finalScoreVal} / 10.0\n`;
+            const pct = totalQ > 0 ? ((correctCount / totalQ) * 100).toFixed(1) : "0.0";
+            md += `- **Số câu làm đúng:** ${correctCount}/${totalQ} câu (${pct}%)\n`;
+            md += `- **Số câu làm sai:** ${wrongCount} câu\n`;
+            md += `- **Số câu bỏ qua:** ${unAnsweredCount} câu\n`;
+            const totalMin = Math.floor(totalActiveSeconds / 60);
+            const totalSec = totalActiveSeconds % 60;
+            const timeStr = totalMin > 0 ? `${totalMin}m ${totalSec}s` : `${totalSec}s`;
+            md += `- **Tổng thời gian hoàn thành:** ${timeStr} (${totalActiveSeconds} giây)\n`;
+            md += `- **Thời gian trung bình mỗi câu:** ${avgSecondsPerQ} giây/câu\n\n`;
+            md += `---\n\n`;
+            md += `## YÊU CẦU CHO AI:\n`;
+            md += `> "Dưới đây là chi tiết bài làm của tôi trong kỳ thi. Hãy phân tích các câu tôi làm sai hoặc làm quá thời gian (> 3 phút) hoặc làm vội (< 20s). Chỉ ra lỗ hổng kiến thức, bẫy đề thi và hướng dẫn phương pháp giải tối ưu nhất."\n\n`;
+            md += `---\n\n`;
+            md += `## CHI TIẾT TỪNG CÂU HỎI:\n\n`;
+
+            let lastContext = "";
+            currentSession.questions.forEach((q, idx) => {
+                const isCorrect = currentSession.scoreCard ? currentSession.scoreCard[idx] : false;
+                const isAnswered = checkAnswered(idx);
+                const timeSec = timeSpentMap[idx] || 0;
+                
+                let statusTag = "";
+                if (!isAnswered) {
+                    statusTag = "⚠️ BỎ TRỐNG (CHƯA LÀM)";
+                } else if (isCorrect) {
+                    statusTag = "✅ ĐÚNG";
+                } else {
+                    statusTag = "❌ SAI";
+                }
+                
+                let timeTag = `${timeSec}s`;
+                if (timeSec > 0 && timeSec < 20) timeTag += " [LÀM VỘI <20s]";
+                else if (timeSec >= 180) timeTag += " [SA LẦY >3p]";
+                
+                md += `### Câu ${idx + 1} (${statusTag} · Thời gian dừng: ${timeTag})\n\n`;
+                
+                // Ngữ liệu nếu có
+                if (q.context && q.context.trim() !== "") {
+                    if (q.context.trim() === lastContext.trim()) {
+                        md += `*(Dùng chung bài đọc/ngữ liệu với câu trước)*\n\n`;
+                    } else {
+                        md += `**[Bài đọc / Ngữ liệu gốc]:**\n> ${q.context.replace(/\n/g, '\n> ')}\n\n`;
+                        lastContext = q.context;
+                    }
+                }
+                
+                // Nội dung câu hỏi
+                md += `**Câu hỏi:** ${q.text || ""}\n\n`;
+                
+                // Danh sách lựa chọn
+                if (q.type === 'multiple_choice' || q.type === 'multiple_response') {
+                    if (q.options && q.options.length > 0) {
+                        md += `**Các lựa chọn:**\n`;
+                        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+                        q.options.forEach((opt, oIdx) => {
+                            const ltr = letters[oIdx] || `${oIdx + 1}`;
+                            md += `- **${ltr}.** ${opt}\n`;
+                        });
+                        md += `\n`;
+                    }
+                } else if (q.type === 'true_false') {
+                    if (q.options && q.options.length > 0) {
+                        md += `**Các mệnh đề / nhận định:**\n`;
+                        const letters = ['a', 'b', 'c', 'd', 'e', 'f'];
+                        q.options.forEach((opt, oIdx) => {
+                            const ltr = letters[oIdx] || `${oIdx + 1}`;
+                            md += `- **${ltr})** ${opt}\n`;
+                        });
+                        md += `\n`;
+                    }
+                }
+                
+                // Đáp án của học sinh
+                const userAns = currentSession.answers ? currentSession.answers[idx] : undefined;
+                const userAnsFormatted = formatUserAnswerText(q, userAns);
+                md += `- **Học sinh chọn:** ${userAnsFormatted}\n`;
+                
+                // Đáp án đúng
+                const rightAnsFormatted = formatRightAnswerText(q, q.correct_answer);
+                md += `- **Đáp án đúng:** ${rightAnsFormatted}\n`;
+                
+                if (q.explanation && q.explanation.trim() !== "") {
+                    md += `- **Giải thích / Lời giải:** ${q.explanation}\n`;
+                }
+                
+                md += `\n---\n\n`;
+            });
+            
+            return md;
+        }
+
+        function openExportExamModal() {
+            if (!currentSession || !currentSession.questions) {
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert({ title: "Chưa có dữ liệu bài làm", message: "Vui lòng hoàn thành hoặc mở bài thi cần xem lại trước khi xuất dữ liệu." });
+                }
+                return;
+            }
+            const md = generateExamMarkdown();
+            const txtArea = document.getElementById('export-markdown-textarea');
+            if (txtArea) txtArea.value = md;
+            const hint = document.getElementById('export-copy-hint');
+            if (hint) hint.style.display = 'none';
+            const copyLabel = document.getElementById('btn-copy-export-label');
+            if (copyLabel) copyLabel.innerText = 'Sao chép nhanh';
+            const modal = document.getElementById('export-exam-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeExportExamModal() {
+            const modal = document.getElementById('export-exam-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function copyExportMarkdown() {
+            const txtArea = document.getElementById('export-markdown-textarea');
+            if (!txtArea) return;
+            const text = txtArea.value;
+            let copied = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    copied = true;
+                } catch (e) { copied = false; }
+            }
+            if (!copied) {
+                txtArea.select();
+                txtArea.setSelectionRange(0, 99999);
+                try {
+                    copied = document.execCommand('copy');
+                } catch (e) { copied = false; }
+            }
+            
+            const hint = document.getElementById('export-copy-hint');
+            const copyLabel = document.getElementById('btn-copy-export-label');
+            if (hint) hint.style.display = 'inline-block';
+            if (copyLabel) copyLabel.innerText = '✓ Đã sao chép';
+            setTimeout(() => {
+                if (copyLabel) copyLabel.innerText = 'Sao chép nhanh';
+            }, 3000);
+        }
+
+        function downloadExamMarkdown() {
+            const txtArea = document.getElementById('export-markdown-textarea');
+            if (!txtArea) return;
+            const text = txtArea.value;
+            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const rawTitle = (currentSession && currentSession.title) ? currentSession.title : 'de_thi';
+            const safeTitle = rawTitle.replace(/[^a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]/g, '_').substring(0, 35);
+            const d = new Date();
+            const dateStr = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`;
+            a.href = url;
+            a.download = `BaiLam_${safeTitle}_${dateStr}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function filterWrongQuestionsList(filterType) {
@@ -8820,6 +9183,13 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             const quizView = document.getElementById('quiz-view');
             if (!quizView || quizView.style.display === 'none') return;
+
+            const expModal = document.getElementById('export-exam-modal');
+            if (e.key === 'Escape' && expModal && expModal.style.display === 'flex') {
+                e.preventDefault();
+                closeExportExamModal();
+                return;
+            }
 
             if (e.key === 'Escape' && isMobileViewport() && !navDockCollapsed) {
                 e.preventDefault();
