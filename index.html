@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -1540,6 +1540,272 @@
             border-color: #fda4af;
             transform: translateY(-1px);
         }
+
+        /* ======================================================================
+           PHÂN QUYỀN TRUY CẬP THEO MÔN & CÔNG TẮC ADMIN MỞ ĐỀ CHO KHÁCH
+           ====================================================================== */
+        .admin-guest-toggle-wrap {
+            display: inline-flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 5px 11px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .admin-guest-toggle-wrap:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .toggle-switch-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            margin: 0;
+        }
+        .toggle-switch-label-text {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+        }
+        .toggle-switch-container input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+        .toggle-switch-slider {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 18px;
+            background-color: #cbd5e1;
+            border-radius: 20px;
+            transition: background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        .toggle-switch-slider::before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 2px;
+            bottom: 2px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toggle-switch-container input:checked + .toggle-switch-slider {
+            background-color: #10b981;
+        }
+        .toggle-switch-container input:checked + .toggle-switch-slider::before {
+            transform: translateX(16px);
+        }
+        .toggle-switch-container input:focus-visible + .toggle-switch-slider {
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35);
+        }
+
+        /* Badge hiển thị trên thẻ đề bị khóa */
+        .badge-guest-locked {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #b91c1c;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            padding: 2px 7px;
+            line-height: 1.4;
+        }
+        .subject-card.card-locked-guest {
+            border-color: #fed7aa;
+            background: #fffdfb;
+        }
+        .subject-card.card-locked-guest:hover {
+            border-color: #fb7185;
+            background: #fff1f2;
+        }
+
+        /* Banner thông báo trên đỉnh danh sách đề khi môn bị khóa với khách */
+        .guest-locked-subject-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #9f1239;
+            flex-wrap: wrap;
+        }
+        .btn-banner-unlock-pin {
+            background: #be123c;
+            color: #ffffff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(190, 18, 60, 0.2);
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .btn-banner-unlock-pin:hover {
+            background: #9f1239;
+            transform: translateY(-1px);
+        }
+
+        .portal-lock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #be123c;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 4px;
+            padding: 1px 6px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            #dashboard-view {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+            .dashboard-content {
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 12px 10px calc(24px + env(safe-area-inset-bottom)) 10px !important;
+                overflow-x: hidden !important;
+            }
+            .dashboard-container {
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .dashboard-top-bar {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                gap: 6px !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin-bottom: 12px !important;
+            }
+            .dashboard-top-bar .btn-back {
+                padding: 5px 8px !important;
+                font-size: 11.5px !important;
+                gap: 4px !important;
+                min-height: 32px !important;
+            }
+            .dashboard-top-bar .btn-back-portal span {
+                display: none !important;
+            }
+            .dashboard-top-bar .btn-back-portal::after {
+                content: "Tủ sách";
+                font-size: 11.5px;
+                font-weight: 600;
+            }
+            .dashboard-top-right-actions {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                margin-left: auto !important;
+            }
+            .admin-guest-toggle-wrap {
+                padding: 3px 6px !important;
+            }
+            .toggle-switch-label-text {
+                font-size: 11px !important;
+            }
+            .toggle-switch-slider {
+                width: 28px !important;
+                height: 16px !important;
+            }
+            .toggle-switch-slider::before {
+                width: 12px !important;
+                height: 12px !important;
+            }
+            .toggle-switch-container input:checked + .toggle-switch-slider::before {
+                transform: translateX(12px) !important;
+            }
+            .guest-locked-subject-banner {
+                font-size: 12px;
+                padding: 8px 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .guest-locked-subject-banner .btn-banner-unlock-pin {
+                width: 100%;
+                justify-content: center;
+            }
+            .top-action-bar {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                padding: 10px 12px !important;
+                gap: 8px !important;
+            }
+            .top-action-bar > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            #current-filter-title {
+                white-space: normal !important;
+                font-size: 14px !important;
+            }
+            .search-box-wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                flex: 1 1 100% !important;
+            }
+            .search-input-field {
+                width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+            #combine-action-area {
+                width: 100% !important;
+            }
+            #combine-action-area button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .ai-advisor-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+        }
+
         .score-val-large {
             color: #be123c;
             font-weight: 900;
@@ -2437,9 +2703,22 @@
                 left: 0;
                 z-index: 40;
                 box-shadow: 4px 0 20px rgba(15, 23, 42, 0.12);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.collapsed {
+                display: none !important;
             }
             .dashboard-content {
                 padding: 14px 12px 24px 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                overflow-x: hidden !important;
+            }
+            .dashboard-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
             }
             /* Cố vấn AI dạng Accordion thu gọn trên mobile */
             .ai-advisor-card {
@@ -3184,16 +3463,28 @@
 
         <div class="dashboard-content">
             <div class="dashboard-container" id="grid-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <button class="btn-back" onclick="navToSubjectPortal()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                                <div class="dashboard-top-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-back btn-back-portal" onclick="navToSubjectPortal()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                         <svg class="icon-svg" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                         <span>Quay lại Tủ sách môn</span>
                     </button>
-                    <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; background: #f8fafc; border: 1px solid var(--border-color);">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        <span>Trang chủ</span>
-                    </button>
+                    <div class="dashboard-top-right-actions">
+                        <!-- NÚT GẠT ADMIN: MỞ ĐỀ CHO KHÁCH (CHỈ HIỂN THỊ KHI ĐÃ NHẬP PIN ADMIN) -->
+                        <div id="admin-guest-toggle-wrap" class="admin-guest-toggle-wrap" style="display: none;">
+                            <label class="toggle-switch-container" title="Bật/Tắt quyền mở đề phân môn này cho tài khoản Khách">
+                                <span class="toggle-switch-label-text">Mở đề cho Khách</span>
+                                <input type="checkbox" id="admin-guest-toggle-input" onchange="handleAdminGuestToggleChange(this.checked)">
+                                <span class="toggle-switch-slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-back" onclick="navToHome()" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; background: #f8fafc; border: 1px solid var(--border-color);">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Trang chủ</span>
+                        </button>
+                    </div>
                 </div>
+                <!-- BANNER THÔNG BÁO CHO TÀI KHOẢN KHÁCH NẾU MÔN BỊ KHÓA -->
+                <div id="guest-locked-subject-banner" class="guest-locked-subject-banner" style="display: none;"></div>
                 <!-- WIDGET CỐ VẤN AI THEO MÔN -->
                 <div id="ai-advisor-container"></div>
                 <div class="top-action-bar">
@@ -3896,14 +4187,15 @@
             }
         }
 
-        function enterGuestMode() {
+        async function enterGuestMode() {
             const wasAlreadyGuest = (window.isGuestMode === true);
             window.isGuestMode = true;
+            sessionStorage.removeItem('bntz_pin_authorized');
             detachCloudListeners();
             renderGuestCloudBadge();
 
             if (!wasAlreadyGuest) {
-                library = {};
+                try { library = await getAllFromDB(); } catch {}
                 cachedAiAdvisor = {};
                 cachedExamHistory = {};
                 guestDrafts = {};
@@ -3915,6 +4207,7 @@
 
             updateHeaderKeyStatus();
             updateAiKeyStatusBar();
+            updateAdminGuestToggleUI(currentFilter);
 
             const lockScreen = document.getElementById('pin-lock-screen');
             const errEl = document.getElementById('pin-error-msg');
@@ -3928,8 +4221,13 @@
                 navToHome();
             } else {
                 renderHomeStats();
+                if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                    renderDashboardGrid();
+                }
             }
         }
+
+        
 
         // --- CÁC HÀM LẮNG NGHE REALTIME DATABASE (CHỈ CHẠY KHI ĐÃ ĐĂNG NHẬP ADMIN) ---
         function initCloudListeners() {
@@ -4062,6 +4360,8 @@
                 try { library = await getAllFromDB(); } catch (dbErr) {}
                 updateHeaderKeyStatus();
                 updateAiKeyStatusBar();
+                updateAdminGuestToggleUI(currentFilter);
+                if (window._pendingLockedExamKey && library[window._pendingLockedExamKey]) { const k = window._pendingLockedExamKey; window._pendingLockedExamKey = null; openDetailView(k); }
                 renderHomeStats();
                 if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
                     renderDashboardGrid();
@@ -4264,7 +4564,7 @@
         const LOCAL_DRAFTS_STORAGE_KEY = 'bntz_exam_drafts';
 
         function loadLocalDrafts() {
-            if (window.isGuestMode) return {};
+            // unblocked guest read
             try {
                 const raw = localStorage.getItem(LOCAL_DRAFTS_STORAGE_KEY);
                 if (raw) {
@@ -4426,7 +4726,7 @@
         }
 
         async function getAllFromDB() {
-            if (window.isGuestMode) return {};
+            // unblocked guest read
             const db = await openDB();
             return new Promise((resolve, reject) => {
                 const req = db.transaction(storeName, "readonly").objectStore(storeName).getAll();
@@ -4860,7 +5160,13 @@
 
             for (const [subKey, countVal] of Object.entries(counts)) {
                 const el = document.getElementById(`portal-count-${subKey}`);
-                if (el) el.innerText = `${countVal} đề thi`;
+                if (el) {
+                    if (isGuestSubjectLocked(subKey)) {
+                        el.innerHTML = `${countVal} đề thi <span class="portal-lock-badge" title="Cần mã PIN Admin để làm bài">🔒 Khóa</span>`;
+                    } else {
+                        el.innerText = `${countVal} đề thi`;
+                    }
+                }
             }
         }
 
@@ -6404,6 +6710,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             document.getElementById('detail-view-panel').style.display = 'none';
 
             renderAiAdvisorWidget(sub);
+            updateAdminGuestToggleUI(sub);
             renderDashboardGrid();
         }
 
@@ -6475,11 +6782,18 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     draftBadgeHtml = `<span class="badge-draft-resume"><span class="draft-pulse-dot"></span>Đang làm dở (Câu ${draftCurQ}/${draftTotalQ})</span>`;
                 }
 
+                const isLockedForGuest = isGuestSubjectLocked(data.subject);
+                let lockBadgeHtml = '';
+                if (isLockedForGuest) {
+                    lockBadgeHtml = `<span class="badge-guest-locked" title="Chỉ dành cho Admin (Cần mã PIN)"><svg class="icon-svg" style="width:11px;height:11px;vertical-align:-1px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Cần mã PIN</span>`;
+                }
+
                 grid.innerHTML += `
-                    <div class="subject-card ${tintClass}" onclick="handleCardClick('${key}', event)">
+                    <div class="subject-card ${tintClass} ${isLockedForGuest ? 'card-locked-guest' : ''}" onclick="handleCardClick('${key}', event)">
                         <input type="checkbox" class="card-checkbox combine-checkbox" data-key="${key}" onclick="updateCombineCount(event)">
                         <div class="subject-card-top-row">
                             ${getSubjectBadge(data.subject)}
+                            ${lockBadgeHtml}
                             ${draftBadgeHtml}
                         </div>
                         <h3 class="subject-card-title" style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title || data.name || 'Chưa đặt tên'}</h3>
@@ -6514,6 +6828,13 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function handleCardClick(key, e) {
+            const data = library[key];
+            if (!data) return;
+            if (isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = key;
+                promptGuestExamLocked(data.subject, data.title || data.name);
+                return;
+            }
             if (isCombineMode) {
                 if (e.target.tagName !== 'INPUT') {
                     const cb = e.currentTarget.querySelector('.card-checkbox');
@@ -6633,6 +6954,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const data = library[key];
             const draft = getExamDraft(key);
             if (!data || !draft) return;
+            if (isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = key;
+                promptGuestExamLocked(data.subject, data.title);
+                return;
+            }
 
             activeDetailKey = key;
             const qList = (Array.isArray(draft.questions) && draft.questions.length > 0)
@@ -6675,6 +7001,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         function startFreshExamDirectly(key, prevDraft) {
             const data = library[key];
             if (!data) return;
+            if (isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = key;
+                promptGuestExamLocked(data.subject, data.title);
+                return;
+            }
             activeDetailKey = key;
             const freshMode = (prevDraft && prevDraft.mode) ? prevDraft.mode : 'exam';
             const freshSeconds = freshMode === 'exam'
@@ -6777,6 +7108,19 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 return;
             }
 
+            
+            if (!isUserAdmin()) {
+                let hasLocked = false;
+                checkboxes.forEach(cb => {
+                    let k = cb.getAttribute('data-key');
+                    if (library[k] && isGuestSubjectLocked(library[k].subject)) hasLocked = true;
+                });
+                if (hasLocked) {
+                    await showCustomAlert({ title: 'Äá» gá»™p chá»©a phÃ¢n mÃ´n khÃ³a', message: 'Trong cÃ¡c Ä‘á» báº¡n chá»n cÃ³ phÃ¢n mÃ´n Ä‘ang khÃ³a vá»›i tÃ i khoáº£n KhÃ¡ch. Vui lÃ²ng bá» chá»n hoáº·c má»Ÿ khÃ³a báº±ng mÃ£ PIN!' });
+                    return;
+                }
+            }
+
             let combinedQuestions = [];
             let combinedTitle = "Đề Gộp (";
             let subjectsSet = new Set();
@@ -6825,6 +7169,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             activeDetailKey = key;
             const data = library[key];
             if (!data) return closeDetailView();
+            if (isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = key;
+                promptGuestExamLocked(data.subject, data.title || data.name);
+                return closeDetailView();
+            }
             
             document.getElementById('grid-container').style.display = 'none';
             const detailPanel = document.getElementById('detail-view-panel');
@@ -7042,6 +7391,12 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         function openSessionConfig(mode) {
             cfgMode = mode;
             let data = library[activeDetailKey];
+            if (!data) return;
+            if (isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = activeDetailKey;
+                promptGuestExamLocked(data.subject, data.title || data.name);
+                return;
+            }
             document.getElementById('cfg-modal-title').innerText = mode === 'practice' ? "Cài đặt Luyện tập" : "Cài đặt Thi thử";
             
             if(mode === 'practice') {
@@ -7124,6 +7479,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             closeSessionConfig();
             if (activeDetailKey) {
                 await deleteExamDraft(activeDetailKey);
+            if (data && isGuestSubjectLocked(data.subject)) {
+                window._pendingLockedExamKey = activeDetailKey;
+                promptGuestExamLocked(data.subject, data.title);
+                return;
+            }
             }
             
             currentSession = { 
@@ -8559,7 +8919,151 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             };
         }
 
-                // ======================================================================
+                        // ======================================================================
+        // PHÂN QUYỀN TRUY CẬP THEO MÔN & CÔNG TẮC ADMIN MỞ ĐỀ CHO KHÁCH
+        // ======================================================================
+
+        const CORE_LOCKED_SUBJECTS = ['toan', 'ly', 'hoa', 'tsa'];
+
+        function normalizeSubjectCode(sub) {
+            if (!sub) return 'other';
+            const s = sub.toString().trim().toLowerCase();
+            if (s.includes('tsa')) return 'tsa';
+            if (s === 'toan' || s.includes('toán')) return 'toan';
+            if (s === 'ly' || s === 'vatly' || s.includes('vật lý') || s.includes('vật lí')) return 'ly';
+            if (s === 'hoa' || s.includes('hóa')) return 'hoa';
+            if (s === 'sinh' || s.includes('sinh')) return 'sinh';
+            if (s === 'anh' || s.includes('tiếng anh') || s.includes('anh')) return 'anh';
+            if (s === 'van' || s.includes('ngữ văn') || s.includes('văn')) return 'van';
+            if (s === 'su' || s.includes('lịch sử') || s.includes('sử')) return 'su';
+            if (s === 'tin' || s.includes('tin học')) return 'tin';
+            return s;
+        }
+
+        function isUserAdmin() {
+            return !window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true';
+        }
+
+        function isGuestSubjectAllowed(subjectCode) {
+            const sCode = normalizeSubjectCode(subjectCode);
+            if (sCode === 'all') return false;
+            // 4 phân môn trọng điểm luôn khóa đối với Khách
+            if (CORE_LOCKED_SUBJECTS.includes(sCode)) {
+                return false;
+            }
+            // Các phân môn còn lại: kiểm tra localStorage (mặc định luôn MỞ nếu Admin chưa gạt TẮT)
+            const savedState = localStorage.getItem('bntz_guest_access_' + sCode);
+            if (savedState === 'false') {
+                return false;
+            }
+            return true;
+        }
+
+        function isGuestSubjectLocked(subjectCode) {
+            if (isUserAdmin()) return false;
+            return !isGuestSubjectAllowed(subjectCode);
+        }
+
+        function updateAdminGuestToggleUI(sub) {
+            const wrap = document.getElementById('admin-guest-toggle-wrap');
+            const banner = document.getElementById('guest-locked-subject-banner');
+            const sCode = normalizeSubjectCode(sub || currentFilter);
+            const isAdmin = isUserAdmin();
+
+            // 1. Quản lý hiển thị nút gạt Admin
+            if (wrap) {
+                // CHỈ hiển thị khi là Admin ĐỒNG THỜI môn này không phải là 4 môn trọng điểm và không phải tab 'all'
+                if (isAdmin && sCode !== 'all' && !CORE_LOCKED_SUBJECTS.includes(sCode)) {
+                    wrap.style.display = 'inline-flex';
+                    const input = document.getElementById('admin-guest-toggle-input');
+                    if (input) {
+                        input.checked = isGuestSubjectAllowed(sCode);
+                    }
+                } else {
+                    // Nếu là Khách hoặc là 4 môn trọng điểm / tab all -> BẮT BUỘC ẨN HOÀN TOÀN
+                    wrap.style.display = 'none';
+                }
+            }
+
+            // 2. Quản lý banner thông báo trên đỉnh danh sách đề đối với Khách
+            if (banner) {
+                if (!isAdmin && sCode !== 'all' && isGuestSubjectLocked(sCode)) {
+                    const sTitle = subjectMap[sCode] || sCode.toUpperCase();
+                    const isCore = CORE_LOCKED_SUBJECTS.includes(sCode);
+                    banner.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <svg class="icon-svg" style="width:16px;height:16px;color:#e11d48;flex-shrink:0;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <span>${isCore ? `Phân môn trọng điểm <strong>${sTitle}</strong> chỉ dành riêng cho Admin/Chủ phòng.` : `Phân môn <strong>${sTitle}</strong> hiện đang tạm khóa đối với Khách.`}</span>
+                        </div>
+                        <button type="button" onclick="openPinUnlockModal('Nhập mã PIN Admin để mở khóa làm bài môn ${sTitle}')" class="btn-banner-unlock-pin">
+                            🔑 Nhập mã PIN mở khóa
+                        </button>
+                    `;
+                    banner.style.display = 'flex';
+                } else {
+                    banner.style.display = 'none';
+                    banner.innerHTML = '';
+                }
+            }
+        }
+
+        function handleAdminGuestToggleChange(isChecked) {
+            const sCode = normalizeSubjectCode(currentFilter);
+            if (CORE_LOCKED_SUBJECTS.includes(sCode) || sCode === 'all') return;
+            
+            localStorage.setItem('bntz_guest_access_' + sCode, isChecked ? 'true' : 'false');
+            
+            // Cập nhật lại UI thẻ đề và banner
+            updateAdminGuestToggleUI(sCode);
+            renderDashboardGrid();
+            renderHomeStats();
+        }
+
+        function openPinUnlockModal(customMsg) {
+            const lockScreen = document.getElementById('pin-lock-screen');
+            const errEl = document.getElementById('pin-error-msg');
+            const pinInput = document.getElementById('pin-input');
+            if (errEl) {
+                errEl.innerText = customMsg || 'Vui lòng nhập mã PIN Admin để mở khóa.';
+                errEl.style.color = '#e11d48';
+            }
+            if (lockScreen) {
+                lockScreen.classList.remove('fade-out');
+                lockScreen.style.display = 'flex';
+            }
+            if (pinInput) {
+                pinInput.value = '';
+                setTimeout(() => pinInput.focus(), 120);
+            }
+        }
+
+        function promptGuestExamLocked(subjectCode, examTitle) {
+            const sCode = normalizeSubjectCode(subjectCode);
+            const sName = subjectMap[sCode] || sCode.toUpperCase();
+            const isCore = CORE_LOCKED_SUBJECTS.includes(sCode);
+            const reason = isCore 
+                ? `Phân môn trọng điểm (<strong>${sName}</strong>) hiện chỉ dành riêng cho Admin/Chủ phòng làm bài.`
+                : `Phân môn <strong>${sName}</strong> hiện đang được Admin cài đặt tạm khóa đối với tài khoản Khách.`;
+                
+            if (typeof showCustomConfirm === 'function') {
+                showCustomConfirm({
+                    title: '🔒 Đề thi yêu cầu Mã PIN Admin',
+                    message: `Bạn đang ở chế độ <strong>Khách</strong>.<br><br>${reason}<br><br>Đề thi: <em>${escapeHtml(examTitle || 'Đề thi')}</em>.<br><br>Bạn có muốn nhập mã PIN Admin để mở khóa và làm bài ngay không?`,
+                    confirmText: 'Nhập mã PIN',
+                    cancelText: 'Để sau',
+                    subCode: sCode
+                }).then(confirmed => {
+                    if (confirmed) {
+                        openPinUnlockModal(`Nhập mã PIN Admin để mở khóa đề thi môn ${sName}`);
+                    }
+                });
+            } else {
+                openPinUnlockModal(`Nhập mã PIN Admin để mở khóa đề thi môn ${sName}`);
+            }
+        }
+
+
+        // ======================================================================
         // TINH NANG XUAT DU LIEU BAI LAM (MARKDOWN EXPORT FOR AI PROMPTING)
         // ======================================================================
 
@@ -9230,8 +9734,8 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             let activeSessionData = null;
             const isAdminAuthorized = !window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true';
 
+            try { library = await getAllFromDB(); } catch {}
             if (isAdminAuthorized) {
-                try { library = await getAllFromDB(); } catch {}
                 // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở của Admin
                 try {
                     const savedSession = sessionStorage.getItem('active_exam_session');
@@ -9241,8 +9745,6 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 } catch (e) {
                     console.warn("Lỗi đọc session bài thi dở:", e);
                 }
-            } else {
-                library = {};
             }
 
             updateHeaderKeyStatus();
