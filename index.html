@@ -4145,6 +4145,25 @@
         let guestGeminiModel = 'gemini-3.8-flash';
         let guestGeminiThinkingLevel = 'MEDIUM';
         const detailedSolutionMemCache = {};
+        const dbName = "TSA_Library_Database_V7"; 
+        const storeName = "library";
+        const subjectMap = { 
+            "toan": "TOÁN", 
+            "ly": "LÝ", 
+            "hoa": "HÓA", 
+            "sinh": "SINH", 
+            "anh": "ANH", 
+            "van": "VĂN", 
+            "su": "SỬ", 
+            "tin": "TIN HỌC", 
+            "tsa": "TSA", 
+            "other": "KHÁC" 
+        };
+        let cachedAiAdvisor = {};
+        let cachedExamHistory = {};
+        let cachedDrafts = {};
+        let guestDrafts = {};
+        window.guestDrafts = guestDrafts;
 
         let cloudDB = null;
         let isCloudActive = false;
@@ -4155,10 +4174,80 @@
                 firebase.initializeApp(firebaseConfig);
             }
             cloudDB = firebase.database();
+            window.cloudDB = cloudDB;
             if (firebase.auth) {
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(e => console.warn("Lỗi cấu hình Session Persistence:", e));
             }
         } catch(e) { console.log("Lỗi khởi tạo Firebase:", e); }
+
+        function canWriteToCloud() {
+            return !window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true' && isCloudActive && !!cloudDB;
+        }
+        window.canWriteToCloud = canWriteToCloud;
+
+        let guestAccessMap = {};
+        window.guestAccessMap = guestAccessMap;
+
+        // Chốt chặn bảo mật đa tầng: Bao bọc cloudDB.ref để khóa cứng toàn bộ lệnh ghi đối với tài khoản Khách
+        if (cloudDB && typeof cloudDB.ref === 'function') {
+            const origRefMethod = cloudDB.ref.bind(cloudDB);
+            cloudDB.ref = function(path) {
+                const ref = origRefMethod(path);
+                const origSet = ref.set ? ref.set.bind(ref) : null;
+                const origUpdate = ref.update ? ref.update.bind(ref) : null;
+                const origRemove = ref.remove ? ref.remove.bind(ref) : null;
+                const origPush = ref.push ? ref.push.bind(ref) : null;
+                const origTransaction = ref.transaction ? ref.transaction.bind(ref) : null;
+
+                if (origSet) {
+                    ref.set = function() {
+                        if (!canWriteToCloud()) {
+                            console.warn(`[Security Guard] Chế độ Khách (Read-Only) - Đã chặn .set() vào Firebase: ${path}`);
+                            return Promise.resolve();
+                        }
+                        return origSet.apply(this, arguments);
+                    };
+                }
+                if (origUpdate) {
+                    ref.update = function() {
+                        if (!canWriteToCloud()) {
+                            console.warn(`[Security Guard] Chế độ Khách (Read-Only) - Đã chặn .update() vào Firebase: ${path}`);
+                            return Promise.resolve();
+                        }
+                        return origUpdate.apply(this, arguments);
+                    };
+                }
+                if (origRemove) {
+                    ref.remove = function() {
+                        if (!canWriteToCloud()) {
+                            console.warn(`[Security Guard] Chế độ Khách (Read-Only) - Đã chặn .remove() vào Firebase: ${path}`);
+                            return Promise.resolve();
+                        }
+                        return origRemove.apply(this, arguments);
+                    };
+                }
+                if (origPush) {
+                    ref.push = function() {
+                        if (!canWriteToCloud()) {
+                            console.warn(`[Security Guard] Chế độ Khách (Read-Only) - Đã chặn .push() vào Firebase: ${path}`);
+                            const fakeKey = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                            return { key: fakeKey, then: (cb) => Promise.resolve(cb ? cb() : undefined) };
+                        }
+                        return origPush.apply(this, arguments);
+                    };
+                }
+                if (origTransaction) {
+                    ref.transaction = function() {
+                        if (!canWriteToCloud()) {
+                            console.warn(`[Security Guard] Chế độ Khách (Read-Only) - Đã chặn .transaction() vào Firebase: ${path}`);
+                            return Promise.resolve({ committed: false, snapshot: null });
+                        }
+                        return origTransaction.apply(this, arguments);
+                    };
+                }
+                return ref;
+            };
+        }
 
         function renderGuestCloudBadge() {
             const badge = document.getElementById('cloud-sync-badge');
@@ -4191,11 +4280,18 @@
             const wasAlreadyGuest = (window.isGuestMode === true);
             window.isGuestMode = true;
             sessionStorage.removeItem('bntz_pin_authorized');
+            sessionStorage.setItem('bntz_guest_mode', 'true');
             detachCloudListeners();
             renderGuestCloudBadge();
 
             if (!wasAlreadyGuest) {
-                try { library = await getAllFromDB(); } catch {}
+                try { 
+                    library = await Promise.race([
+                        getAllFromDB(),
+                        new Promise(r => setTimeout(() => r({}), 1000))
+                    ]); 
+                } catch(e) {}
+                window.library = library;
                 cachedAiAdvisor = {};
                 cachedExamHistory = {};
                 guestDrafts = {};
@@ -4216,6 +4312,10 @@
                 lockScreen.classList.add('fade-out');
                 setTimeout(() => { lockScreen.style.display = 'none'; }, 350);
             }
+
+            // Kích hoạt đồng bộ đọc cấu hình mở đề và kéo đề thi cho Khách
+            initGuestCloudSync();
+            pullCloudLibraryForGuest(currentFilter).catch(() => {});
 
             if (!wasAlreadyGuest) {
                 navToHome();
@@ -4301,6 +4401,23 @@
                 }, (error) => {
                     console.error("Lỗi Realtime Database (drafts):", error);
                 });
+
+                // 5. Lắng nghe realtime dữ liệu Quyền mở đề cho Khách (guest_access)
+                cloudDB.ref('guest_access').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && typeof data === 'object') {
+                        for (const [sub, allowed] of Object.entries(data)) {
+                            const normSub = normalizeSubjectCode(sub);
+                            guestAccessMap[normSub] = (allowed === true || allowed === 'true');
+                            localStorage.setItem('bntz_guest_access_' + normSub, guestAccessMap[normSub] ? 'true' : 'false');
+                        }
+                        if (isUserAdmin()) {
+                            updateAdminGuestToggleUI(currentFilter);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Lỗi Realtime Database (guest_access):", error);
+                });
             } catch (syncErr) {
                 console.error("Lỗi thiết lập listeners Firebase:", syncErr);
             }
@@ -4312,6 +4429,7 @@
                     cloudDB.ref('ai_advisor').off();
                     cloudDB.ref('exam_history').off();
                     cloudDB.ref('drafts').off();
+                    cloudDB.ref('guest_access').off();
                 } catch(e) {}
             }
             cloudListenersInitialized = false;
@@ -4328,6 +4446,110 @@
                 badge.style.background = "#f1f5f9";
                 badge.style.color = "#64748b";
             }
+        }
+
+        // --- CÁC HÀM ĐỒNG BỘ ĐỌC (PULL) CHO TÀI KHOẢN KHÁCH ---
+        let isPullingCloudForGuest = false;
+
+        async function pullCloudLibraryForGuest(targetSubject) {
+            if (!window.isGuestMode || !cloudDB) return;
+            if (isPullingCloudForGuest) return;
+            isPullingCloudForGuest = true;
+
+            try {
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase pull timeout')), 2500));
+                const snapshot = await Promise.race([cloudDB.ref('library').once('value'), timeoutPromise]);
+                const cloudData = snapshot ? snapshot.val() : null;
+                if (!cloudData) {
+                    isPullingCloudForGuest = false;
+                    return;
+                }
+
+                let localDbExams = {};
+                try { localDbExams = await getAllFromDB(); } catch(e) { localDbExams = { ...library }; }
+
+                let updated = false;
+                for (const [key, exam] of Object.entries(cloudData)) {
+                    if (!exam || typeof exam !== 'object') continue;
+                    const s = exam.subject ? normalizeSubjectCode(exam.subject) : '';
+
+                    // Nếu phân môn này bị khóa (OFF) đối với Khách:
+                    if (!isGuestSubjectAllowed(s)) {
+                        // Nếu đề này trước đó đã được kéo về thì xóa sạch trên máy khách (giữ lại đề tự tạo cục bộ nếu có)
+                        if (library[key] && !library[key].isGuestLocalOnly) {
+                            delete library[key];
+                            try {
+                                const db = await openDB();
+                                const tx = db.transaction(storeName, "readwrite");
+                                tx.objectStore(storeName).delete(key);
+                            } catch(e) {}
+                            updated = true;
+                        }
+                        continue;
+                    }
+
+                    // Môn được bật (ON): Kéo về thuần túy nội dung đề thi gốc (câu hỏi, đáp án, ngữ liệu)
+                    // TUYỆT ĐỐI KHÔNG kéo theo bài làm, lịch sử điểm số hay phân tích Cố vấn AI của Admin
+                    const sanitized = {
+                        id: exam.id || key,
+                        title: exam.title || exam.name || 'Đề thi',
+                        subject: exam.subject || 'toan',
+                        duration: exam.duration || 50,
+                        questions: Array.isArray(exam.questions) ? exam.questions : [],
+                        passages: exam.passages || {},
+                        isCustom: !!exam.isCustom,
+                        dateAdded: exam.dateAdded || Date.now(),
+                        history: (localDbExams[key] && localDbExams[key].history) ? localDbExams[key].history : [],
+                        draft: (guestDrafts && guestDrafts[key]) ? guestDrafts[key] : ((localDbExams[key] && localDbExams[key].draft) ? localDbExams[key].draft : null)
+                    };
+
+                    library[key] = sanitized;
+                    try {
+                        const db = await openDB();
+                        const tx = db.transaction(storeName, "readwrite");
+                        tx.objectStore(storeName).put({ id: key, data: sanitized });
+                    } catch(e) {}
+                    updated = true;
+                }
+
+                if (updated) {
+                    renderHomeStats();
+                    if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                        renderDashboardGrid();
+                    }
+                }
+            } catch (err) {
+                console.warn("Lỗi kéo dữ liệu đề thi Cloud cho Khách:", err);
+            } finally {
+                isPullingCloudForGuest = false;
+            }
+        }
+
+        let guestSyncListenerAttached = false;
+        function initGuestCloudSync() {
+            if (!cloudDB || guestSyncListenerAttached) return;
+            guestSyncListenerAttached = true;
+            try {
+                cloudDB.ref('guest_access').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && typeof data === 'object') {
+                        for (const [sub, allowed] of Object.entries(data)) {
+                            const normSub = normalizeSubjectCode(sub);
+                            guestAccessMap[normSub] = (allowed === true || allowed === 'true');
+                            localStorage.setItem('bntz_guest_access_' + normSub, guestAccessMap[normSub] ? 'true' : 'false');
+                        }
+                        if (window.isGuestMode) {
+                            pullCloudLibraryForGuest(currentFilter);
+                            renderHomeStats();
+                            if (document.getElementById('dashboard-view') && document.getElementById('dashboard-view').style.display !== 'none') {
+                                renderDashboardGrid();
+                            }
+                        }
+                    }
+                }, (err) => {
+                    console.warn("Guest access realtime listener error:", err);
+                });
+            } catch(e) {}
         }
 
         // --- 2. MÀN HÌNH KHÓA PIN LIÊN KẾT FIREBASE AUTHENTICATION ---
@@ -4352,6 +4574,7 @@
 
             try {
                 window.isGuestMode = false;
+                sessionStorage.removeItem('bntz_guest_mode');
                 sessionStorage.setItem('bntz_pin_authorized', 'true');
                 if (firebase.auth) {
                     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
@@ -4392,13 +4615,17 @@
 
         function checkPinLockStatus() {
             try { localStorage.removeItem('bntz_pin_authorized'); } catch (e) {}
-            if (window.isGuestMode) return;
             const lockScreen = document.getElementById('pin-lock-screen');
             if (!lockScreen) return;
             const isAuthorized = sessionStorage.getItem('bntz_pin_authorized') === 'true';
+            const isGuest = sessionStorage.getItem('bntz_guest_mode') === 'true';
+
             if (isAuthorized && firebase.auth && firebase.auth().currentUser) {
+                window.isGuestMode = false;
                 lockScreen.style.display = 'none';
                 initCloudListeners();
+            } else if (isGuest) {
+                enterGuestMode();
             } else {
                 lockScreen.style.display = 'flex';
                 lockScreen.classList.remove('fade-out');
@@ -4438,21 +4665,6 @@
         }
 
         checkPinLockStatus();
-
-        const dbName = "TSA_Library_Database_V7"; 
-        const storeName = "library";
-        const subjectMap = { 
-            "toan": "TOÁN", 
-            "ly": "LÝ", 
-            "hoa": "HÓA", 
-            "sinh": "SINH", 
-            "anh": "ANH", 
-            "van": "VĂN", 
-            "su": "SỬ", 
-            "tin": "TIN HỌC", 
-            "tsa": "TSA", 
-            "other": "KHÁC" 
-        };
 
         // MA TRẬN CHUYÊN ĐỀ CHUẨN SGK MỚI (GDPT 2018) & TSA
         const SUBJECT_CURRICULUM_MATRIX = {
@@ -4557,10 +4769,6 @@
         };
 
         // Cache cho Cố vấn AI, Lịch sử thi và Bản nháp (Drafts)
-        let cachedAiAdvisor = {};
-        let cachedExamHistory = {};
-        let cachedDrafts = {};
-        let guestDrafts = {};
         const LOCAL_DRAFTS_STORAGE_KEY = 'bntz_exam_drafts';
 
         function loadLocalDrafts() {
@@ -4605,24 +4813,26 @@
             if (!examKey || !draftData) return;
             if (window.isGuestMode) {
                 guestDrafts[examKey] = draftData;
-                return;
+            } else {
+                cachedDrafts[examKey] = draftData;
+                persistLocalDrafts(cachedDrafts);
             }
-            cachedDrafts[examKey] = draftData;
-            persistLocalDrafts(cachedDrafts);
 
             if (library[examKey]) {
                 library[examKey].draft = draftData;
                 try {
                     const db = await openDB();
-                    const tx = db.transaction(storeName, "readwrite");
-                    const store = tx.objectStore(storeName);
-                    store.put({ id: examKey, data: library[examKey] });
+                    if (db) {
+                        const tx = db.transaction(storeName, "readwrite");
+                        const store = tx.objectStore(storeName);
+                        store.put({ id: examKey, data: library[examKey] });
+                    }
                 } catch (err) {
                     console.warn("Lỗi lưu draft vào IndexedDB:", err);
                 }
             }
 
-            if (isCloudActive && cloudDB) {
+            if (canWriteToCloud()) {
                 try {
                     await cloudDB.ref('drafts/' + examKey).set(draftData);
                 } catch (e) {
@@ -4635,24 +4845,26 @@
             if (!examKey) return;
             if (window.isGuestMode) {
                 delete guestDrafts[examKey];
-                return;
+            } else {
+                delete cachedDrafts[examKey];
+                persistLocalDrafts(cachedDrafts);
             }
-            delete cachedDrafts[examKey];
-            persistLocalDrafts(cachedDrafts);
 
             if (library[examKey] && library[examKey].draft) {
                 delete library[examKey].draft;
                 try {
                     const db = await openDB();
-                    const tx = db.transaction(storeName, "readwrite");
-                    const store = tx.objectStore(storeName);
-                    store.put({ id: examKey, data: library[examKey] });
+                    if (db) {
+                        const tx = db.transaction(storeName, "readwrite");
+                        const store = tx.objectStore(storeName);
+                        store.put({ id: examKey, data: library[examKey] });
+                    }
                 } catch (err) {
                     console.warn("Lỗi xóa draft trong IndexedDB:", err);
                 }
             }
 
-            if (isCloudActive && cloudDB) {
+            if (canWriteToCloud()) {
                 try {
                     await cloudDB.ref('drafts/' + examKey).remove();
                 } catch (e) {
@@ -4693,30 +4905,63 @@
             el.classList.add('view-transition');
         }
 
+        let cachedDBInstance = null;
         function openDB() {
+            if (cachedDBInstance) return Promise.resolve(cachedDBInstance);
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open(dbName, 1);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains(storeName)) db.createObjectStore(storeName, { keyPath: "id" });
-                };
-                request.onsuccess = (e) => resolve(e.target.result);
-                request.onerror = (e) => reject(e.target.error);
+                const timer = setTimeout(() => {
+                    resolve(null);
+                }, 1500);
+                try {
+                    const request = indexedDB.open(dbName, 1);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(storeName)) db.createObjectStore(storeName, { keyPath: "id" });
+                    };
+                    request.onsuccess = (e) => {
+                        clearTimeout(timer);
+                        cachedDBInstance = e.target.result;
+                        cachedDBInstance.onversionchange = () => { cachedDBInstance.close(); cachedDBInstance = null; };
+                        resolve(cachedDBInstance);
+                    };
+                    request.onerror = (e) => {
+                        clearTimeout(timer);
+                        resolve(null);
+                    };
+                    request.onblocked = () => {
+                        clearTimeout(timer);
+                        resolve(request.result);
+                    };
+                } catch(e) {
+                    clearTimeout(timer);
+                    resolve(null);
+                }
             });
         }
         
         async function saveToDB(key, data) {
+            if (window.isGuestMode) {
+                data.isGuestLocalOnly = true;
+            }
             library[key] = data;
-            if (window.isGuestMode) return;
+            window.library = library;
             try {
                 const db = await openDB();
-                const tx = db.transaction(storeName, "readwrite");
-                const store = tx.objectStore(storeName);
-                store.put({ id: key, data: data });
+                if (db) {
+                    await new Promise((resolve) => {
+                        try {
+                            const tx = db.transaction(storeName, "readwrite");
+                            const store = tx.objectStore(storeName);
+                            store.put({ id: key, data: data });
+                            tx.oncomplete = () => resolve();
+                            tx.onerror = () => resolve();
+                        } catch(e) { resolve(); }
+                    });
+                }
             } catch (err) {
                 console.warn("Lỗi lưu IndexedDB:", err);
             }
-            if (isCloudActive && cloudDB) {
+            if (canWriteToCloud()) {
                 try {
                     await cloudDB.ref('library/' + key).set(data);
                 } catch(e) {
@@ -4726,27 +4971,49 @@
         }
 
         async function getAllFromDB() {
-            // unblocked guest read
-            const db = await openDB();
-            return new Promise((resolve, reject) => {
-                const req = db.transaction(storeName, "readonly").objectStore(storeName).getAll();
-                req.onsuccess = (e) => { const res = {}; e.target.result.forEach(i => res[i.id] = i.data); resolve(res); };
-            });
+            try {
+                const db = await openDB();
+                if (!db) return {};
+                return new Promise((resolve) => {
+                    try {
+                        const tx = db.transaction(storeName, "readonly");
+                        const req = tx.objectStore(storeName).getAll();
+                        req.onsuccess = (e) => { 
+                            const res = {}; 
+                            (e.target.result || []).forEach(i => { if (i && i.id) res[i.id] = i.data; }); 
+                            resolve(res); 
+                        };
+                        req.onerror = () => resolve({});
+                    } catch(e) {
+                        resolve({});
+                    }
+                });
+            } catch(err) {
+                return {};
+            }
         }
 
         async function deleteFromDB(key) {
             delete library[key];
+            window.library = library;
             await deleteExamDraft(key);
-            if (window.isGuestMode) return;
             try {
                 const db = await openDB();
-                const tx = db.transaction(storeName, "readwrite");
-                const store = tx.objectStore(storeName);
-                store.delete(key);
+                if (db) {
+                    await new Promise((resolve) => {
+                        try {
+                            const tx = db.transaction(storeName, "readwrite");
+                            const store = tx.objectStore(storeName);
+                            store.delete(key);
+                            tx.oncomplete = () => resolve();
+                            tx.onerror = () => resolve();
+                        } catch(e) { resolve(); }
+                    });
+                }
             } catch (err) {
                 console.warn("Lỗi xóa IndexedDB:", err);
             }
-            if (isCloudActive && cloudDB) {
+            if (canWriteToCloud()) {
                 try {
                     await cloudDB.ref('library/' + key).remove();
                 } catch(e) {
@@ -4756,6 +5023,7 @@
         }
 
         let library = {}; 
+        window.library = library;
         let currentFilter = 'all';
         let activeDetailKey = null; 
         let isCombineMode = false;
@@ -5161,8 +5429,8 @@
             for (const [subKey, countVal] of Object.entries(counts)) {
                 const el = document.getElementById(`portal-count-${subKey}`);
                 if (el) {
-                    if (isGuestSubjectLocked(subKey)) {
-                        el.innerHTML = `${countVal} đề thi <span class="portal-lock-badge" title="Cần mã PIN Admin để làm bài">🔒 Khóa</span>`;
+                    if (!isUserAdmin() && !isGuestSubjectAllowed(subKey)) {
+                        el.innerHTML = `<span style="color:#94a3b8;font-size:12.5px;">Chưa mở</span>`;
                     } else {
                         el.innerText = `${countVal} đề thi`;
                     }
@@ -6608,7 +6876,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 cachedAiAdvisor[sCode] = advisorRecord;
                 setAiTaskState('advisor:' + sCode, 'done');
 
-                if (!window.isGuestMode && isCloudActive && cloudDB) {
+                if (canWriteToCloud()) {
                     try {
                         await cloudDB.ref(`ai_advisor/${sCode}`).set(advisorRecord);
                     } catch (e) {
@@ -6628,7 +6896,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     await saveToDB(targetKey, library[targetKey]);
                 }
 
-                if (!window.isGuestMode && isCloudActive && cloudDB) {
+                if (canWriteToCloud()) {
                     try {
                         if (historyPushKey) {
                             await cloudDB.ref(`exam_history/${sCode}/${historyPushKey}`).update({
@@ -6686,6 +6954,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
         function filterSubject(sub) {
             currentFilter = sub;
+            if (window.isGuestMode && isGuestSubjectAllowed(sub)) {
+                pullCloudLibraryForGuest(sub);
+            }
             const btns = document.querySelectorAll('.subject-tab-btn');
             btns.forEach(b => b.classList.remove('active'));
             let activeBtn = document.getElementById(`tab-${sub}`);
@@ -6735,11 +7006,28 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             if (isCombineMode) { container.classList.add('combine-mode'); } 
             else { container.classList.remove('combine-mode'); }
 
+            // Nếu đang ở tài khoản Khách và phân môn hiện tại đang TẮT (OFF)
+            if (!isUserAdmin() && currentFilter !== 'all' && !isGuestSubjectAllowed(currentFilter)) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; background: #fff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 48px 24px; text-align: center; color: #64748b;">
+                        <div style="margin-bottom: 12px; font-size: 36px;">📚</div>
+                        <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 6px; font-weight: 700;">Hiện chưa có bộ đề nào được mở cho môn này. Vui lòng quay lại sau.</h4>
+                        <p style="font-size: 14px; color: #64748b; margin: 0;">Vui lòng quay lại sau hoặc liên hệ Admin để mở đề luyện tập nhé!</p>
+                    </div>`;
+                updateCombineCount();
+                return;
+            }
+
             let countRendered = 0;
             const normQuery = normalizeStr(currentSearchQuery);
 
             for (const [key, data] of Object.entries(library)) {
                 let s = data.subject ? data.subject.toLowerCase() : '';
+
+                // Đối với Khách: ẩn hoàn toàn các đề thuộc môn chưa được mở
+                if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
+                    continue;
+                }
                 
                 // Lọc theo phân môn
                 if (currentFilter !== 'all') {
@@ -6782,18 +7070,11 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                     draftBadgeHtml = `<span class="badge-draft-resume"><span class="draft-pulse-dot"></span>Đang làm dở (Câu ${draftCurQ}/${draftTotalQ})</span>`;
                 }
 
-                const isLockedForGuest = isGuestSubjectLocked(data.subject);
-                let lockBadgeHtml = '';
-                if (isLockedForGuest) {
-                    lockBadgeHtml = `<span class="badge-guest-locked" title="Chỉ dành cho Admin (Cần mã PIN)"><svg class="icon-svg" style="width:11px;height:11px;vertical-align:-1px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Cần mã PIN</span>`;
-                }
-
                 grid.innerHTML += `
-                    <div class="subject-card ${tintClass} ${isLockedForGuest ? 'card-locked-guest' : ''}" onclick="handleCardClick('${key}', event)">
+                    <div class="subject-card ${tintClass}" onclick="handleCardClick('${key}', event)">
                         <input type="checkbox" class="card-checkbox combine-checkbox" data-key="${key}" onclick="updateCombineCount(event)">
                         <div class="subject-card-top-row">
                             ${getSubjectBadge(data.subject)}
-                            ${lockBadgeHtml}
                             ${draftBadgeHtml}
                         </div>
                         <h3 class="subject-card-title" style="color: #0f172a; margin-top: 5px; margin-bottom: 12px; font-size: 16px; line-height: 1.45; font-weight: 700;">${data.title || data.name || 'Chưa đặt tên'}</h3>
@@ -6830,9 +7111,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         function handleCardClick(key, e) {
             const data = library[key];
             if (!data) return;
-            if (isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = key;
-                promptGuestExamLocked(data.subject, data.title || data.name);
+            if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
                 return;
             }
             if (isCombineMode) {
@@ -6954,9 +7233,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             const data = library[key];
             const draft = getExamDraft(key);
             if (!data || !draft) return;
-            if (isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = key;
-                promptGuestExamLocked(data.subject, data.title);
+            if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
                 return;
             }
 
@@ -7001,9 +7278,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         function startFreshExamDirectly(key, prevDraft) {
             const data = library[key];
             if (!data) return;
-            if (isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = key;
-                promptGuestExamLocked(data.subject, data.title);
+            if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
                 return;
             }
             activeDetailKey = key;
@@ -7113,10 +7388,10 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 let hasLocked = false;
                 checkboxes.forEach(cb => {
                     let k = cb.getAttribute('data-key');
-                    if (library[k] && isGuestSubjectLocked(library[k].subject)) hasLocked = true;
+                    if (library[k] && !isGuestSubjectAllowed(library[k].subject)) hasLocked = true;
                 });
                 if (hasLocked) {
-                    await showCustomAlert({ title: 'Äá» gá»™p chá»©a phÃ¢n mÃ´n khÃ³a', message: 'Trong cÃ¡c Ä‘á» báº¡n chá»n cÃ³ phÃ¢n mÃ´n Ä‘ang khÃ³a vá»›i tÃ i khoáº£n KhÃ¡ch. Vui lÃ²ng bá» chá»n hoáº·c má»Ÿ khÃ³a báº±ng mÃ£ PIN!' });
+                    await showCustomAlert({ title: "\u0110\u1EC1 g\u1ED9p ch\u01B0a ph\u00E2n m\u00F4n ch\u01B0a m\u1EDF", message: "Trong c\u00E1c \u0111\u1EC1 b\u1EA1n ch\u1ECDn c\u00F3 m\u00F4n hi\u1EC7n ch\u01B0a m\u1EDF cho t\u00E0i kho\u1EA3n Kh\u00E1ch. Vui l\u00F2ng b\u1ECF ch\u1ECDn \u0111\u1EC3 ti\u1EBFp t\u1EE5c!", subCode: 'other' });
                     return;
                 }
             }
@@ -7169,9 +7444,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             activeDetailKey = key;
             const data = library[key];
             if (!data) return closeDetailView();
-            if (isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = key;
-                promptGuestExamLocked(data.subject, data.title || data.name);
+            if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
                 return closeDetailView();
             }
             
@@ -7392,9 +7665,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             cfgMode = mode;
             let data = library[activeDetailKey];
             if (!data) return;
-            if (isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = activeDetailKey;
-                promptGuestExamLocked(data.subject, data.title || data.name);
+            if (!isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
                 return;
             }
             document.getElementById('cfg-modal-title').innerText = mode === 'practice' ? "Cài đặt Luyện tập" : "Cài đặt Thi thử";
@@ -7420,9 +7691,8 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
 
         function closeSessionConfig() { document.getElementById('config-session-modal').style.display = 'none'; }
 
-        // --- SESSION STORAGE PERSISTENCE (CHỐNG VĂNG KHI F5 - CHỈ ÁP DỤNG CHO ADMIN) ---
+        // --- SESSION STORAGE PERSISTENCE (CHỐNG VĂNG KHI F5 CHO CẢ ADMIN VÀ KHÁCH) ---
         function saveActiveExamSession() {
-            if (window.isGuestMode) return;
             if (!currentSession || !currentSession.questions || currentSession.questions.length === 0) return;
             try {
                 const sessionCopy = { ...currentSession, intervalTotal: null };
@@ -7433,7 +7703,6 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
         }
 
         function clearActiveExamSession() {
-            if (window.isGuestMode) return;
             try {
                 sessionStorage.removeItem('active_exam_session');
             } catch (e) {}
@@ -7479,11 +7748,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             closeSessionConfig();
             if (activeDetailKey) {
                 await deleteExamDraft(activeDetailKey);
-            if (data && isGuestSubjectLocked(data.subject)) {
-                window._pendingLockedExamKey = activeDetailKey;
-                promptGuestExamLocked(data.subject, data.title);
-                return;
-            }
+                if (data && !isUserAdmin() && !isGuestSubjectAllowed(data.subject)) {
+                    return;
+                }
             }
             
             currentSession = { 
@@ -8947,15 +9214,24 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
         function isGuestSubjectAllowed(subjectCode) {
             const sCode = normalizeSubjectCode(subjectCode);
             if (sCode === 'all') return false;
-            // 4 phân môn trọng điểm luôn khóa đối với Khách
+
+            // 1. Kiểm tra cấu hình realtime từ Firebase (nếu đã tải về)
+            if (guestAccessMap[sCode] !== undefined) {
+                return guestAccessMap[sCode] === true;
+            }
+
+            // 2. Kiểm tra bộ nhớ cache cục bộ localStorage
+            const savedState = localStorage.getItem('bntz_guest_access_' + sCode);
+            if (savedState !== null) {
+                return savedState === 'true';
+            }
+
+            // 3. Quy tắc mặc định ban đầu:
+            // 4 phân môn trọng điểm (Toán, Lý, Hóa, TSA) mặc định KHÓA (false) đối với Khách
             if (CORE_LOCKED_SUBJECTS.includes(sCode)) {
                 return false;
             }
-            // Các phân môn còn lại: kiểm tra localStorage (mặc định luôn MỞ nếu Admin chưa gạt TẮT)
-            const savedState = localStorage.getItem('bntz_guest_access_' + sCode);
-            if (savedState === 'false') {
-                return false;
-            }
+            // Tất cả các phân môn còn lại mặc định MỞ (true) đối với Khách
             return true;
         }
 
@@ -8970,48 +9246,41 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             const sCode = normalizeSubjectCode(sub || currentFilter);
             const isAdmin = isUserAdmin();
 
-            // 1. Quản lý hiển thị nút gạt Admin
+            // 1. Quản lý hiển thị nút gạt Admin (CHỈ hiển thị khi đã mở khóa PIN Admin và sCode !== 'all')
             if (wrap) {
-                // CHỈ hiển thị khi là Admin ĐỒNG THỜI môn này không phải là 4 môn trọng điểm và không phải tab 'all'
-                if (isAdmin && sCode !== 'all' && !CORE_LOCKED_SUBJECTS.includes(sCode)) {
+                if (isAdmin && sCode !== 'all') {
                     wrap.style.display = 'inline-flex';
                     const input = document.getElementById('admin-guest-toggle-input');
                     if (input) {
                         input.checked = isGuestSubjectAllowed(sCode);
                     }
                 } else {
-                    // Nếu là Khách hoặc là 4 môn trọng điểm / tab all -> BẮT BUỘC ẨN HOÀN TOÀN
                     wrap.style.display = 'none';
                 }
             }
 
-            // 2. Quản lý banner thông báo trên đỉnh danh sách đề đối với Khách
+            // 2. Banner cảnh báo: Khách không hiển thị banner đỏ gây phiền hà nữa
             if (banner) {
-                if (!isAdmin && sCode !== 'all' && isGuestSubjectLocked(sCode)) {
-                    const sTitle = subjectMap[sCode] || sCode.toUpperCase();
-                    const isCore = CORE_LOCKED_SUBJECTS.includes(sCode);
-                    banner.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <svg class="icon-svg" style="width:16px;height:16px;color:#e11d48;flex-shrink:0;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                            <span>${isCore ? `Phân môn trọng điểm <strong>${sTitle}</strong> chỉ dành riêng cho Admin/Chủ phòng.` : `Phân môn <strong>${sTitle}</strong> hiện đang tạm khóa đối với Khách.`}</span>
-                        </div>
-                        <button type="button" onclick="openPinUnlockModal('Nhập mã PIN Admin để mở khóa làm bài môn ${sTitle}')" class="btn-banner-unlock-pin">
-                            🔑 Nhập mã PIN mở khóa
-                        </button>
-                    `;
-                    banner.style.display = 'flex';
-                } else {
-                    banner.style.display = 'none';
-                    banner.innerHTML = '';
-                }
+                banner.style.display = 'none';
+                banner.innerHTML = '';
             }
         }
 
-        function handleAdminGuestToggleChange(isChecked) {
+        async function handleAdminGuestToggleChange(isChecked) {
             const sCode = normalizeSubjectCode(currentFilter);
-            if (CORE_LOCKED_SUBJECTS.includes(sCode) || sCode === 'all') return;
+            if (sCode === 'all') return;
             
+            guestAccessMap[sCode] = isChecked;
             localStorage.setItem('bntz_guest_access_' + sCode, isChecked ? 'true' : 'false');
+            
+            // Đồng bộ lên Firebase để máy khách nhận được ngay lập tức
+            if (canWriteToCloud()) {
+                try {
+                    await cloudDB.ref('guest_access/' + sCode).set(isChecked);
+                } catch (e) {
+                    console.error("Lỗi cập nhật quyền Khách lên Firebase:", e);
+                }
+            }
             
             // Cập nhật lại UI thẻ đề và banner
             updateAdminGuestToggleUI(sCode);
@@ -9453,7 +9722,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     wrongQuestions: wrongQuestionsList
                 };
 
-                if (!window.isGuestMode && isCloudActive && cloudDB && examSub) {
+                if (canWriteToCloud() && examSub) {
                     try {
                         const pushRef = await cloudDB.ref(`exam_history/${examSub}`).push(historyRecord);
                         currentSession.lastHistoryPushKey = pushRef.key;
@@ -9590,7 +9859,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     buildWrongQuestionRecord(currentSession.questions[qIdx] || {}, qIdx, currentSession.answers[qIdx], timeSpentMap[qIdx] || 0)
                 );
 
-                if (!window.isGuestMode && isCloudActive && cloudDB && examSub) {
+                if (canWriteToCloud() && examSub) {
                     try {
                         if (currentSession.lastHistoryPushKey) {
                             await cloudDB.ref(`exam_history/${examSub}/${currentSession.lastHistoryPushKey}`).update({
@@ -9732,11 +10001,12 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             checkPinLockStatus();
 
             let activeSessionData = null;
-            const isAdminAuthorized = !window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true';
+            const hasAuthorizedAccess = (!window.isGuestMode && sessionStorage.getItem('bntz_pin_authorized') === 'true') || 
+                                        (window.isGuestMode && sessionStorage.getItem('bntz_guest_mode') === 'true');
 
             try { library = await getAllFromDB(); } catch {}
-            if (isAdminAuthorized) {
-                // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở của Admin
+            if (hasAuthorizedAccess) {
+                // Chống văng về trang chủ khi F5: Kiểm tra session bài thi đang làm dở
                 try {
                     const savedSession = sessionStorage.getItem('active_exam_session');
                     if (savedSession) {
@@ -9749,8 +10019,8 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
             updateHeaderKeyStatus();
 
-            // Khôi phục phiên làm bài nếu có trong sessionStorage (chỉ khi đã xác thực Admin)
-            if (isAdminAuthorized && activeSessionData && activeSessionData.questions && activeSessionData.questions.length > 0) {
+            // Khôi phục phiên làm bài nếu có trong sessionStorage
+            if (hasAuthorizedAccess && activeSessionData && activeSessionData.questions && activeSessionData.questions.length > 0) {
                 currentSession = activeSessionData;
                 currentSession.intervalTotal = null;
                 launchQuizView(currentSession.subject);
