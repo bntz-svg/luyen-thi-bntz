@@ -4457,13 +4457,14 @@
             isPullingCloudForGuest = true;
 
             try {
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase pull timeout')), 2500));
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase pull timeout')), 15000));
                 const snapshot = await Promise.race([cloudDB.ref('library').once('value'), timeoutPromise]);
                 const cloudData = snapshot ? snapshot.val() : null;
                 if (!cloudData) {
                     isPullingCloudForGuest = false;
                     return;
                 }
+                console.log("[Guest Sync] Đã kéo thành công dữ liệu đề thi Cloud cho Khách.");
 
                 let localDbExams = {};
                 try { localDbExams = await getAllFromDB(); } catch(e) { localDbExams = { ...library }; }
