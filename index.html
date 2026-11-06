@@ -5175,7 +5175,7 @@
                     const parts = [];
                     for (let i = 0; i < n; i++) {
                         const v = ca[i] !== undefined ? ca[i] : ca[i.toString()];
-                        parts.push(`${String.fromCharCode(97 + i)}) ${v === 'T' ? 'Đúng' : (v === 'F' ? 'Sai' : '?')}`);
+                        parts.push(`${String.fromCharCode(97 + i)}) ${normalizeTrueFalseValue(v)}`);
                     }
                     return parts.join(' &nbsp;·&nbsp; ');
                 }
@@ -6299,86 +6299,165 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
-        function renderMarkdownTables(text) {
-            if (!text || typeof text !== 'string' || !text.includes('|')) return text;
-            
-            const lines = text.split('\n');
-            const outputLines = [];
+        // ======================================================================
+        // BỘ RENDER CHUỖI NỘI DUNG VỚI BẢNG MARKDOWN & XUỐNG DÒNG CHUẨN
+        // ======================================================================
+
+        function renderContentWithMarkdown(rawText) {
+            if (!rawText) return '';
+            const str = String(rawText).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            const lines = str.split('\n');
+            const segments = [];
+            let currentTextLines = [];
             let i = 0;
-            
-            const parseRowCells = (rowStr) => {
-                let cleaned = rowStr.trim();
-                if (cleaned.startsWith('|')) cleaned = cleaned.slice(1);
-                if (cleaned.endsWith('|')) cleaned = cleaned.slice(0, -1);
-                return cleaned.split('|').map(c => c.trim());
+
+            const isSepRow = (lineStr) => {
+                if (!lineStr || !lineStr.includes('|')) return false;
+                let parts = lineStr.trim().split('|');
+                if (parts[0].trim() === '') parts.shift();
+                if (parts.length > 0 && parts[parts.length - 1].trim() === '') parts.pop();
+                if (parts.length === 0) return false;
+                return parts.every(c => /^\s*:?-{1,}:?\s*$/.test(c));
             };
-            
+
+            const parseCells = (rowStr) => {
+                let parts = rowStr.trim().split('|');
+                if (parts[0].trim() === '') parts.shift();
+                if (parts.length > 0 && parts[parts.length - 1].trim() === '') parts.pop();
+                return parts.map(c => c.trim());
+            };
+
             while (i < lines.length) {
-                const line = lines[i].trim();
-                if (line.includes('|') && i + 1 < lines.length) {
-                    const nextLine = lines[i + 1].trim();
-                    const isSep = /^\|?\s*:?-+:?\s*(\|(\s*:?-+:?\s*))+\|?$/.test(nextLine);
-                    if (isSep) {
-                        const headerCells = parseRowCells(line);
-                        const sepCells = parseRowCells(nextLine);
-                        if (headerCells.length >= 2 && sepCells.length >= 2) {
-                            const alignments = sepCells.map(s => {
-                                const left = s.startsWith(':');
-                                const right = s.endsWith(':');
-                                if (left && right) return 'center';
-                                if (right) return 'right';
-                                if (left) return 'left';
-                                return 'left';
-                            });
-                            
-                            i += 2;
-                            const bodyRows = [];
-                            while (i < lines.length) {
-                                const rowLine = lines[i].trim();
-                                if (!rowLine || !rowLine.includes('|') || /^\|?\s*:?-+:?\s*(\|(\s*:?-+:?\s*))+\|?$/.test(rowLine)) {
-                                    break;
-                                }
-                                bodyRows.push(parseRowCells(rowLine));
-                                i++;
-                            }
-                            
-                            let tableHtml = '<div class="table-responsive"><table class="bntz-markdown-table"><thead><tr>';
-                            headerCells.forEach((hCell, idx) => {
-                                const align = alignments[idx] || 'left';
-                                tableHtml += `<th style="text-align: ${align};">${hCell}</th>`;
-                            });
-                            tableHtml += '</tr></thead><tbody>';
-                            
-                            bodyRows.forEach(rowCells => {
-                                tableHtml += '<tr>';
-                                for (let c = 0; c < headerCells.length; c++) {
-                                    const cellVal = rowCells[c] !== undefined ? rowCells[c] : '';
-                                    const align = alignments[c] || 'left';
-                                    tableHtml += `<td style="text-align: ${align};">${cellVal}</td>`;
-                                }
-                                tableHtml += '</tr>';
-                            });
-                            tableHtml += '</tbody></table></div>';
-                            
-                            outputLines.push(tableHtml);
-                            continue;
+                const line = lines[i];
+                const nextLine = (i + 1 < lines.length) ? lines[i + 1] : null;
+
+                // BƯỚC 1: Quét khối bảng Markdown (| ... |\n|---|...) trước khi đụng vào các ký tự xuống dòng
+                if (line.includes('|') && nextLine && isSepRow(nextLine)) {
+                    const headerCells = parseCells(line);
+                    const sepCells = parseCells(nextLine);
+
+                    if (headerCells.length >= 1 && sepCells.length >= 1) {
+                        if (currentTextLines.length > 0) {
+                            segments.push({ type: 'text', content: currentTextLines.join('\n') });
+                            currentTextLines = [];
                         }
+
+                        const alignments = sepCells.map(s => {
+                            const t = s.trim();
+                            const left = t.startsWith(':');
+                            const right = t.endsWith(':');
+                            if (left && right) return 'center';
+                            if (right) return 'right';
+                            if (left) return 'left';
+                            return 'left';
+                        });
+
+                        i += 2; // Bỏ qua hàng tiêu đề và phân cách
+                        const bodyRows = [];
+                        while (i < lines.length) {
+                            const rowLine = lines[i];
+                            if (!rowLine.trim() || !rowLine.includes('|') || isSepRow(rowLine)) {
+                                break;
+                            }
+                            bodyRows.push(parseCells(rowLine));
+                            i++;
+                        }
+
+                        // Dựng bảng HTML chuẩn: thead, tbody, kẻ viền (border 1px solid #cbd5e1), padding thoáng đãng, zebra striping
+                        let tableHtml = '<div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 14px 0;">';
+                        tableHtml += '<table class="bntz-markdown-table" style="width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; font-size: 14px; line-height: 1.6; background: #ffffff;">';
+                        
+                        tableHtml += '<thead><tr>';
+                        headerCells.forEach((hCell, hIdx) => {
+                            const align = alignments[hIdx] || 'left';
+                            tableHtml += `<th style="background: #f1f5f9; color: #0f172a; font-weight: 700; padding: 10px 14px; border: 1px solid #cbd5e1; text-align: ${align}; white-space: nowrap;">${escapeHtml(hCell)}</th>`;
+                        });
+                        tableHtml += '</tr></thead>';
+
+                        tableHtml += '<tbody>';
+                        bodyRows.forEach((rCells, rIdx) => {
+                            const zebraBg = (rIdx % 2 === 1) ? 'background: #f8fafc;' : 'background: #ffffff;';
+                            tableHtml += `<tr style="${zebraBg}">`;
+                            for (let c = 0; c < headerCells.length; c++) {
+                                const cellVal = rCells[c] !== undefined ? rCells[c] : '';
+                                const align = alignments[c] || 'left';
+                                tableHtml += `<td style="padding: 9px 14px; border: 1px solid #cbd5e1; color: #334155; text-align: ${align};">${escapeHtml(cellVal)}</td>`;
+                            }
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table></div>';
+
+                        segments.push({ type: 'table', content: tableHtml });
+                        continue;
                     }
                 }
-                outputLines.push(lines[i]);
+
+                currentTextLines.push(line);
                 i++;
             }
-            return outputLines.join('\n');
+
+            if (currentTextLines.length > 0) {
+                segments.push({ type: 'text', content: currentTextLines.join('\n') });
+            }
+
+            // BƯỚC 2: Toàn bộ phần văn bản nằm NGOÀI bảng mới được áp dụng replace(/\n/g, '<br>')
+            // Bảo vệ công thức toán học không bị chèn <br> bên trong làm gãy cú pháp MathJax
+            let result = '';
+            segments.forEach((seg) => {
+                if (seg.type === 'table') {
+                    result += seg.content;
+                } else {
+                    const mathTokens = [];
+                    let safeText = seg.content;
+
+                    // 1. $$ ... $$
+                    safeText = safeText.replace(/\$\$([\s\S]*?)\$\$/g, (m) => {
+                        const id = `___MATH_DISP_D_${mathTokens.length}___`;
+                        mathTokens.push({ id, content: m });
+                        return id;
+                    });
+                    // 2. \[ ... \]
+                    safeText = safeText.replace(/\\\[([\s\S]*?)\\\]/g, (m) => {
+                        const id = `___MATH_DISP_B_${mathTokens.length}___`;
+                        mathTokens.push({ id, content: m });
+                        return id;
+                    });
+                    // 3. \( ... \)
+                    safeText = safeText.replace(/\\\(([\s\S]*?)\\\)/g, (m) => {
+                        const id = `___MATH_INL_P_${mathTokens.length}___`;
+                        mathTokens.push({ id, content: m });
+                        return id;
+                    });
+                    // 4. $ ... $
+                    safeText = safeText.replace(/(^|[^\$])\$([^\$\n]+?)\$(?!\$)/g, (m, prefix, math) => {
+                        const id = `___MATH_INL_D_${mathTokens.length}___`;
+                        mathTokens.push({ id, content: '$' + math + '$' });
+                        return prefix + id;
+                    });
+
+                    let formatted = escapeHtml(safeText).replace(/\n\n+/g, '<br><br>').replace(/\n/g, '<br>');
+
+                    mathTokens.forEach(t => {
+                        formatted = formatted.replace(t.id, escapeHtml(t.content));
+                    });
+
+                    result += formatted;
+                }
+            });
+
+            // Xóa các <br> thừa sát ngay trước hoặc sau bảng
+            result = result.replace(/<br>\s*(<div class="table-responsive")/g, '$1');
+            result = result.replace(/(<\/div>)\s*<br>/g, '$1');
+
+            return result;
         }
 
+        // Tương thích ngược
         function renderFormattedContent(rawText) {
-            if (!rawText) return '';
-            const escaped = escapeHtml(rawText);
-            const withTables = renderMarkdownTables(escaped);
-            let html = withTables.replace(/\n\n+/g, '<br><br>').replace(/\n/g, '<br>');
-            html = html.replace(/<br>\s*(<div class="table-responsive">)/g, '$1');
-            html = html.replace(/(<\/div>)\s*<br>/g, '$1');
-            return html;
+            return renderContentWithMarkdown(rawText);
+        }
+        function renderMarkdownTables(text) {
+            return renderContentWithMarkdown(text);
         }
 
         function handleSearchExam(query) {
@@ -8412,6 +8491,18 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 html += `<div class="short-ans-wrapper"><input type="text" ${disabledStr} class="short-ans-input" placeholder="Nhập đáp án..." value="${currentSession.answers[idx] || ''}" oninput="updateSA(this.value)" autocomplete="off"></div>`;
             }
 
+            // Lời giải / Hướng dẫn giải chi tiết của đề gốc (hiển thị khi ở chế độ xem lại sau khi nộp bài)
+            if (currentSession.isSubmitted && q.explanation && q.explanation.trim() !== '') {
+                html += `
+                <div class="exam-explanation-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #2563eb; border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-size: 14px; line-height: 1.6; color: #1e293b;">
+                    <div style="font-weight: 700; color: #1d4ed8; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <svg class="icon-svg icon-sm" viewBox="0 0 24 24" style="stroke: #1d4ed8;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        <span>Lời giải / Hướng dẫn giải chi tiết:</span>
+                    </div>
+                    <div class="exam-explanation-content">${renderContentWithMarkdown(q.explanation)}</div>
+                </div>`;
+            }
+
             // TẦNG 3: Chẩn đoán lỗi sai AI (AI Diagnostics) & AI Giải Chi Tiết Theo Yêu Cầu
             if (currentSession.isSubmitted) {
                 const isRight = currentSession.scoreCard && currentSession.scoreCard[idx];
@@ -8526,7 +8617,9 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             syncAdaptiveDock(hasContext);
             syncBottomBar();
 
-            if (window.MathJax) MathJax.typesetPromise([contextArea, area]);
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(err => console.warn('MathJax error:', err));
+            }
         }
 
         // --- DOCK ĐÁY & BOTTOM SHEET (CHỈ MOBILE) ---
@@ -9093,8 +9186,8 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                     </div>
                 </div>`;
 
-            if (window.MathJax) {
-                MathJax.typesetPromise([container]);
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([container]).catch(e => console.warn('MathJax sol error:', e));
             }
         }
 
