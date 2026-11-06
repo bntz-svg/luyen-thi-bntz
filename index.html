@@ -359,6 +359,51 @@
         
         .q-number { font-weight: bold; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; }
         .q-content { font-size: 16px; line-height: 1.8; margin-bottom: 20px; font-weight: 500; }
+        
+        /* BẢNG MARKDOWN TRONG NỘI DUNG CÂU HỎI & NGỮ LIỆU */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 14px 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        }
+        .bntz-markdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: left;
+        }
+        .bntz-markdown-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            white-space: nowrap;
+        }
+        .bntz-markdown-table td {
+            padding: 9px 14px;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .bntz-markdown-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+        .bntz-markdown-table tr:hover td {
+            background: #f1f5f9;
+        }
+        .reading-context-inner .table-responsive,
+        .q-content .table-responsive {
+            margin: 10px 0;
+        }
+
         .q-image { max-width: 100%; margin: 15px 0; border: 1px solid #eee; display: none; }
         .context-image, .q-image {
             cursor: zoom-in;
@@ -5033,6 +5078,7 @@
         let currentAiExtractedData = null;
         
         let currentSession = { mode: '', subjectKey: '', subject: '', questions: [], answers: {}, bookmarks: {}, currentIndex: 0, totalSeconds: 0, intervalTotal: null, isSubmitted: false, scoreCard: {}, questionTimeSpent: {}, hintsOpened: {} };
+        Object.defineProperty(window, 'currentSession', { get() { return currentSession; }, set(v) { currentSession = v; }, configurable: true });
         let cfgMode = '';
         
         // --- SOCRATIC HINT CACHE & TIME HELPERS ---
@@ -6058,11 +6104,11 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                     html += `
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; color: #475569;">
                             <strong style="color: #0f172a; display: block; margin-bottom: 4px;">Ngữ liệu chung:</strong>
-                            ${escapeHtml(q.context).replace(/\n/g, '<br>')}
+                            ${renderFormattedContent(q.context)}
                         </div>`;
                 }
 
-                html += `<div style="font-size: 14.5px; line-height: 1.6; color: #1e293b; margin-bottom: 12px; font-weight: 500;">${escapeHtml(q.text).replace(/\n/g, '<br>')}</div>`;
+                html += `<div style="font-size: 14.5px; line-height: 1.6; color: #1e293b; margin-bottom: 12px; font-weight: 500;">${renderFormattedContent(q.text)}</div>`;
 
                 if (q.type === 'multiple_choice' && Array.isArray(q.options)) {
                     html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-bottom: 10px;">`;
@@ -6126,7 +6172,7 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 if (q.explanation && q.explanation.trim() !== "") {
                     html += `
                         <div class="ai-preview-explanation">
-                            <strong>Lời giải / Giải thích:</strong> ${q.explanation.replace(/\n/g, '<br>')}
+                            <strong>Lời giải / Giải thích:</strong> ${renderFormattedContent(q.explanation)}
                         </div>`;
                 }
 
@@ -6253,6 +6299,88 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
+        function renderMarkdownTables(text) {
+            if (!text || typeof text !== 'string' || !text.includes('|')) return text;
+            
+            const lines = text.split('\n');
+            const outputLines = [];
+            let i = 0;
+            
+            const parseRowCells = (rowStr) => {
+                let cleaned = rowStr.trim();
+                if (cleaned.startsWith('|')) cleaned = cleaned.slice(1);
+                if (cleaned.endsWith('|')) cleaned = cleaned.slice(0, -1);
+                return cleaned.split('|').map(c => c.trim());
+            };
+            
+            while (i < lines.length) {
+                const line = lines[i].trim();
+                if (line.includes('|') && i + 1 < lines.length) {
+                    const nextLine = lines[i + 1].trim();
+                    const isSep = /^\|?\s*:?-+:?\s*(\|(\s*:?-+:?\s*))+\|?$/.test(nextLine);
+                    if (isSep) {
+                        const headerCells = parseRowCells(line);
+                        const sepCells = parseRowCells(nextLine);
+                        if (headerCells.length >= 2 && sepCells.length >= 2) {
+                            const alignments = sepCells.map(s => {
+                                const left = s.startsWith(':');
+                                const right = s.endsWith(':');
+                                if (left && right) return 'center';
+                                if (right) return 'right';
+                                if (left) return 'left';
+                                return 'left';
+                            });
+                            
+                            i += 2;
+                            const bodyRows = [];
+                            while (i < lines.length) {
+                                const rowLine = lines[i].trim();
+                                if (!rowLine || !rowLine.includes('|') || /^\|?\s*:?-+:?\s*(\|(\s*:?-+:?\s*))+\|?$/.test(rowLine)) {
+                                    break;
+                                }
+                                bodyRows.push(parseRowCells(rowLine));
+                                i++;
+                            }
+                            
+                            let tableHtml = '<div class="table-responsive"><table class="bntz-markdown-table"><thead><tr>';
+                            headerCells.forEach((hCell, idx) => {
+                                const align = alignments[idx] || 'left';
+                                tableHtml += `<th style="text-align: ${align};">${hCell}</th>`;
+                            });
+                            tableHtml += '</tr></thead><tbody>';
+                            
+                            bodyRows.forEach(rowCells => {
+                                tableHtml += '<tr>';
+                                for (let c = 0; c < headerCells.length; c++) {
+                                    const cellVal = rowCells[c] !== undefined ? rowCells[c] : '';
+                                    const align = alignments[c] || 'left';
+                                    tableHtml += `<td style="text-align: ${align};">${cellVal}</td>`;
+                                }
+                                tableHtml += '</tr>';
+                            });
+                            tableHtml += '</tbody></table></div>';
+                            
+                            outputLines.push(tableHtml);
+                            continue;
+                        }
+                    }
+                }
+                outputLines.push(lines[i]);
+                i++;
+            }
+            return outputLines.join('\n');
+        }
+
+        function renderFormattedContent(rawText) {
+            if (!rawText) return '';
+            const escaped = escapeHtml(rawText);
+            const withTables = renderMarkdownTables(escaped);
+            let html = withTables.replace(/\n\n+/g, '<br><br>').replace(/\n/g, '<br>');
+            html = html.replace(/<br>\s*(<div class="table-responsive">)/g, '$1');
+            html = html.replace(/(<\/div>)\s*<br>/g, '$1');
+            return html;
+        }
+
         function handleSearchExam(query) {
             currentSearchQuery = (query || '').trim();
             const clearBtn = document.getElementById('btn-clear-search');
@@ -6275,6 +6403,9 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
+            // Markdown tables
+            out = renderMarkdownTables(out);
+
             // Inline code
             out = out.replace(/`([^`]+)`/g, '<code style="background:#f1f5f9; color:#0f172a; padding:1px 5px; border-radius:4px; font-size:12px; font-family:monospace; border:1px solid #e2e8f0;">$1</code>');
             // Bold
@@ -6291,6 +6422,8 @@ TUYỆT ĐỐI CHỈ TRẢ VỀ JSON HỢP LỆ, KHÔNG CHỨA BẤT KỲ VĂN B
             // Paragraph breaks
             out = out.replace(/\n\n/g, '<div style="margin-bottom:8px;"></div>');
             out = out.replace(/\n/g, '<br>');
+            out = out.replace(/<br>\s*(<div class="table-responsive">)/g, '$1');
+            out = out.replace(/(<\/div>)\s*<br>/g, '$1');
             return out;
         }
 
@@ -8105,7 +8238,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
             
             if (q.context && q.context.trim() !== "") {
                 const ctxWasHidden = (contextArea.style.display !== 'block');
-                contextArea.style.display = 'block'; contextText.innerHTML = escapeHtml(q.context).replace(/\n/g, '<br><br>');
+                contextArea.style.display = 'block'; contextText.innerHTML = renderFormattedContent(q.context);
                 if (ctxWasHidden) { contextArea.classList.remove('ctx-enter'); void contextArea.offsetWidth; contextArea.classList.add('ctx-enter'); }
                 if (q.contextImage) { contextImg.src = q.contextImage; contextImg.style.display = 'block'; } else { contextImg.style.display = 'none'; }
             } else { contextArea.style.display = 'none'; }
@@ -8161,7 +8294,7 @@ QUY TRÌNH DOUBLE-CHECK TRUNG LẬP (BẮT BUỘC ÁP DỤNG CHO TỪNG CÂU TRO
                 html += `<div id="socratic-hint-container-${idx}" class="socratic-hint-wrapper" style="display: ${isHintOpen ? 'block' : 'none'};"></div>`;
             }
 
-            let formattedText = escapeHtml(q.text).replace(/\n/g, '<br>');
+            let formattedText = renderFormattedContent(q.text);
 
             let scoreInfoHtml = "";
             if (currentSession.isSubmitted) {
@@ -9334,23 +9467,47 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
 
 
         // ======================================================================
-        // TINH NANG XUAT DU LIEU BAI LAM (MARKDOWN EXPORT FOR AI PROMPTING)
-        // ======================================================================
-
-        // ======================================================================
         // TÍNH NĂNG XUẤT DỮ LIỆU BÀI LÀM (MARKDOWN EXPORT CHO AI PROMPTING)
         // ======================================================================
 
-        // ======================================================================
-        // TÍNH NĂNG XUẤT DỮ LIỆU BÀI LÀM (MARKDOWN EXPORT CHO AI PROMPTING)
-        // ======================================================================
+        function normalizeTrueFalseValue(val) {
+            if (val === undefined || val === null || val === '') return 'Bỏ trống';
+            const s = String(val).trim().toLowerCase();
+            if (val === true || s === 'true' || s === 't' || s === '1' || s === 'đúng' || s === 'dung' || s === 'đ' || s === 'd') {
+                return 'Đúng';
+            }
+            if (val === false || s === 'false' || s === 'f' || s === '0' || s === 'sai' || s === 's') {
+                return 'Sai';
+            }
+            return 'Bỏ trống';
+        }
+
+        function getTrueFalseSubKeys(q, userAns, rightAns) {
+            const tfLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+            if (Array.isArray(q.options) && q.options.length > 0) {
+                return q.options.map((_, idx) => ({
+                    key: String(idx),
+                    label: tfLetters[idx] || String(idx + 1)
+                }));
+            }
+            const keySet = new Set();
+            if (rightAns && typeof rightAns === 'object') Object.keys(rightAns).forEach(k => keySet.add(k));
+            if (userAns && typeof userAns === 'object') Object.keys(userAns).forEach(k => keySet.add(k));
+            if (keySet.size > 0) {
+                return Array.from(keySet).sort().map(k => {
+                    const numK = parseInt(k, 10);
+                    const label = (!isNaN(numK) && tfLetters[numK]) ? tfLetters[numK] : k;
+                    return { key: k, label: label };
+                });
+            }
+            return [];
+        }
 
         function formatUserAnswerText(q, userAns) {
             if (userAns === undefined || userAns === null || userAns === '') {
                 return 'Chưa làm (Bỏ trống)';
             }
             const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-            const tfLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
             if (q.type === 'multiple_choice') {
                 const num = Number(userAns);
                 if (!isNaN(num) && letters[num]) {
@@ -9362,18 +9519,22 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 return String(userAns);
             }
             if (q.type === 'true_false') {
-                if (typeof userAns === 'object' && userAns !== null) {
-                    const keys = Object.keys(userAns).sort();
-                    if (keys.length === 0) return 'Chưa làm (Bỏ trống)';
-                    return keys.map(k => {
-                        const val = userAns[k];
-                        const cleanVal = (val === 'Đ' || val === true || val === 'D' || String(val).toUpperCase() === 'Đ') ? 'Đúng' : 'Sai';
-                        const numK = parseInt(k, 10);
-                        const label = (!isNaN(numK) && tfLetters[numK]) ? tfLetters[numK] : k;
-                        return `${label}) ${cleanVal}`;
-                    }).join(' | ');
+                const subKeys = getTrueFalseSubKeys(q, userAns, q.correct_answer);
+                if (subKeys.length > 0) {
+                    if (!userAns || typeof userAns !== 'object') {
+                        return normalizeTrueFalseValue(userAns);
+                    }
+                    let hasAnyAnswer = false;
+                    const parts = subKeys.map(item => {
+                        const val = userAns[item.key] !== undefined ? userAns[item.key] : userAns[item.label];
+                        const norm = normalizeTrueFalseValue(val);
+                        if (norm !== 'Bỏ trống') hasAnyAnswer = true;
+                        return `${item.label}) ${norm}`;
+                    });
+                    if (!hasAnyAnswer) return 'Chưa làm (Bỏ trống)';
+                    return parts.join(' | ');
                 }
-                return String(userAns);
+                return normalizeTrueFalseValue(userAns);
             }
             if (q.type === 'multiple_response') {
                 if (typeof userAns === 'object' && userAns !== null) {
@@ -9395,7 +9556,6 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
         function formatRightAnswerText(q, rightAns) {
             if (rightAns === undefined || rightAns === null) return 'Chưa có thông tin';
             const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-            const tfLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
             if (q.type === 'multiple_choice') {
                 const num = Number(rightAns);
                 if (!isNaN(num) && letters[num]) {
@@ -9407,17 +9567,17 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 return String(rightAns);
             }
             if (q.type === 'true_false') {
-                if (typeof rightAns === 'object' && rightAns !== null) {
-                    const keys = Object.keys(rightAns).sort();
-                    return keys.map(k => {
-                        const val = rightAns[k];
-                        const cleanVal = (val === 'Đ' || val === true || val === 'D' || String(val).toUpperCase() === 'Đ') ? 'Đúng' : 'Sai';
-                        const numK = parseInt(k, 10);
-                        const label = (!isNaN(numK) && tfLetters[numK]) ? tfLetters[numK] : k;
-                        return `${label}) ${cleanVal}`;
+                const subKeys = getTrueFalseSubKeys(q, undefined, rightAns);
+                if (subKeys.length > 0) {
+                    if (!rightAns || typeof rightAns !== 'object') {
+                        return normalizeTrueFalseValue(rightAns);
+                    }
+                    return subKeys.map(item => {
+                        const val = rightAns[item.key] !== undefined ? rightAns[item.key] : rightAns[item.label];
+                        return `${item.label}) ${normalizeTrueFalseValue(val)}`;
                     }).join(' | ');
                 }
-                return String(rightAns);
+                return normalizeTrueFalseValue(rightAns);
             }
             if (q.type === 'multiple_response') {
                 if (Array.isArray(rightAns)) {
@@ -9450,6 +9610,23 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             const unAnsweredCount = totalQ - answeredCount;
             const wrongCount = totalQ - correctCount - unAnsweredCount;
             
+            // Danh sách các câu học sinh đánh dấu cần chú ý
+            const bookmarkedIndices = [];
+            if (currentSession.bookmarks) {
+                Object.keys(currentSession.bookmarks).forEach(k => {
+                    if (currentSession.bookmarks[k]) {
+                        const num = parseInt(k, 10);
+                        if (!isNaN(num) && num >= 0 && num < totalQ) {
+                            bookmarkedIndices.push(num);
+                        }
+                    }
+                });
+            }
+            bookmarkedIndices.sort((a, b) => a - b);
+            const bookmarkedStr = bookmarkedIndices.length > 0 
+                ? bookmarkedIndices.map(i => `Câu ${i + 1}`).join(', ') 
+                : 'Không có';
+            
             const title = currentSession.title || "Bài luyện thi";
             const sub = currentSession.subject ? (subjectMap[currentSession.subject.toLowerCase()] || currentSession.subject.toUpperCase()) : "TSA / THPT";
 
@@ -9460,6 +9637,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             md += `- **Số câu làm đúng:** ${correctCount}/${totalQ} câu (${pct}%)\n`;
             md += `- **Số câu làm sai:** ${wrongCount} câu\n`;
             md += `- **Số câu bỏ qua:** ${unAnsweredCount} câu\n`;
+            md += `- **Các câu học sinh đánh dấu cần chú ý:** ${bookmarkedStr}\n`;
             const totalMin = Math.floor(totalActiveSeconds / 60);
             const totalSec = totalActiveSeconds % 60;
             const timeStr = totalMin > 0 ? `${totalMin}m ${totalSec}s` : `${totalSec}s`;
@@ -9467,7 +9645,8 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             md += `- **Thời gian trung bình mỗi câu:** ${avgSecondsPerQ} giây/câu\n\n`;
             md += `---\n\n`;
             md += `## YÊU CẦU CHO AI:\n`;
-            md += `> "Dưới đây là chi tiết bài làm của tôi trong kỳ thi. Hãy phân tích các câu tôi làm sai hoặc làm quá thời gian (> 3 phút) hoặc làm vội (< 20s). Chỉ ra lỗ hổng kiến thức, bẫy đề thi và hướng dẫn phương pháp giải tối ưu nhất."\n\n`;
+            md += `> "Dưới đây là chi tiết bài làm của tôi trong kỳ thi. Hãy phân tích các câu tôi làm sai hoặc làm quá thời gian (> 3 phút) hoặc làm vội (< 20s). Chỉ ra lỗ hổng kiến thức, bẫy đề thi và hướng dẫn phương pháp giải tối ưu nhất.\n`;
+            md += `> **Chỉ dẫn trọng tâm:** Ưu tiên phân tích phương pháp và viết lời giải chi tiết từng bước cho: (1) Toàn bộ các câu học sinh làm SAI và (2) Toàn bộ các câu học sinh CÓ ĐÁNH DẤU."\n\n`;
             md += `---\n\n`;
             md += `## CHI TIẾT TỪNG CÂU HỎI:\n\n`;
 
@@ -9475,6 +9654,7 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
             currentSession.questions.forEach((q, idx) => {
                 const isCorrect = currentSession.scoreCard ? currentSession.scoreCard[idx] : false;
                 const isAnswered = checkAnswered(idx);
+                const isBookmarked = !!(currentSession.bookmarks && currentSession.bookmarks[idx]);
                 const timeSec = timeSpentMap[idx] || 0;
                 
                 let statusTag = "";
@@ -9490,7 +9670,9 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 if (timeSec > 0 && timeSec < 20) timeTag += " [LÀM VỘI <20s]";
                 else if (timeSec >= 180) timeTag += " [SA LẦY >3p]";
                 
-                md += `### Câu ${idx + 1} (${statusTag} · Thời gian dừng: ${timeTag})\n\n`;
+                const bookmarkTag = isBookmarked ? " [CÓ ĐÁNH DẤU / CẦN GIẢI CHI TIẾT]" : "";
+                
+                md += `### Câu ${idx + 1} (${statusTag} · Thời gian dừng: ${timeTag})${bookmarkTag}\n\n`;
                 
                 // Ngữ liệu nếu có
                 if (q.context && q.context.trim() !== "") {
@@ -9544,6 +9726,9 @@ Hãy viết bằng tiếng Việt truyền cảm, sư phạm, chặt chẽ và c
                 md += `\n---\n\n`;
             });
             
+            md += `## LỜI NHẮC PROMPT CHO AI:\n`;
+            md += `> "Dựa vào toàn bộ dữ liệu bài làm ở trên, hãy đưa ra nhận xét tổng quan về năng lực, các chủ đề kiến thức còn hổng, và lập bảng kế hoạch ôn tập khắc phục. Ưu tiên phân tích phương pháp và viết lời giải chi tiết từng bước cho: (1) Toàn bộ các câu học sinh làm SAI và (2) Toàn bộ các câu học sinh CÓ ĐÁNH DẤU."\n`;
+
             return md;
         }
 
